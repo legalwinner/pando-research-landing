@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pando Research — Institutional Research for Digital Assets</title>
+<meta name="description" content="Strategic frameworks for navigating blockchain, treasury optimization, and Web 3.0 — for institutions." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400;1,8..60,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg:        #F4EFE2;
+    --bg-soft:   #EFE9DA;
+    --bg-deep:   #E8E1CE;
+    --ink:       #14201B;
+    --ink-soft:  #4A5853;
+    --ink-mute:  #8C8B7E;
+    --green:     #1A4D3E;
+    --green-deep:#0F3A2C;
+    --sage:      #7A9B8A;
+    --rule:      #C9C0A8;
+    --rule-soft: #DDD4BC;
+    --paper:     #F8F4E8;
+    --max:       1240px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  main, header, footer { position: relative; z-index: 1; }
+
+  a, a:visited { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; height: auto; }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Type ---------- */
+  .display {
+    font-family: 'Source Serif 4', 'Times New Roman', serif;
+    font-weight: 350;
+    font-style: normal;
+    letter-spacing: -0.022em;
+    line-height: 1.02;
+    font-variation-settings: "opsz" 60;
+  }
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--green);
+  }
+  .eyebrow .dot {
+    display: inline-block; width: 4px; height: 4px;
+    background: var(--green); border-radius: 50%;
+    margin: 0 10px 2px; vertical-align: middle;
+  }
+  .smallcaps {
+    font-family: 'Source Serif 4', serif;
+    font-variant-caps: small-caps;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+  }
+  .num {
+    font-family: 'Source Serif 4', serif;
+    font-feature-settings: "lnum", "tnum";
+    font-variation-settings: "opsz" 60;
+    font-weight: 350;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    border-bottom: 1px solid var(--rule-soft);
+    background: rgba(244,239,226,0.85);
+    backdrop-filter: saturate(120%) blur(8px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-logo {
+    height: 43px; width: auto; display: block;
+  }
+  footer .brand-logo { height: 50px; }
+  nav.primary {
+    display: flex; align-items: center; gap: 36px;
+  }
+  nav.primary ul {
+    display: flex; gap: 32px; list-style: none; padding: 0; margin: 0;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  nav.primary a:hover { color: var(--green); }
+  .pill, .pill:visited {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green);
+    color: var(--paper);
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border: 1px solid var(--green);
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .pill:hover, .pill:visited:hover {
+    background: #246851;
+    color: var(--paper);
+    border-color: #246851;
+    box-shadow: 0 4px 14px rgba(26, 77, 62, 0.18);
+  }
+  .pill .arrow { transform: translateX(0); transition: transform .2s ease; }
+  .pill:hover .arrow { transform: translateX(3px); }
+  .pill.outline, .pill.outline:visited {
+    background: transparent; color: var(--green);
+    border: 1px solid var(--green);
+    box-shadow: none;
+  }
+  .pill.outline:hover {
+    background: transparent; color: var(--green-deep);
+    border-color: var(--green-deep);
+    box-shadow: none;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 88px 0 72px;
+    border-bottom: 1px solid var(--rule-soft);
+    position: relative;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 36px;
+    align-items: center;
+  }
+  .hero-eyebrow { margin-bottom: 28px; }
+  .hero h1 {
+    margin: 0 0 28px;
+    font-size: clamp(46px, 5.6vw, 80px);
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 350;
+    color: var(--green);
+  }
+  .hero p.lede {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 0 40px;
+    font-variation-settings: "opsz" 24;
+  }
+  .hero-ctas { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .hero-meta {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule-soft);
+    display: flex; gap: 40px;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .hero-meta span b { color: var(--ink); font-weight: 500; }
+
+  .hero-art {
+    position: relative;
+    aspect-ratio: 5 / 3;
+    background: transparent;
+    overflow: visible;
+  }
+  .hero-svg {
+    width: 100%; height: 100%;
+    display: block;
+    overflow: visible;
+  }
+  .hero-tag {
+    position: absolute; left: 6px; bottom: 6px;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--green); background: rgba(248,244,232,0.9);
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    z-index: 2;
+  }
+
+  /* World map: realistic dot map (transparent PNG) */
+  .hero-svg .map-layer { opacity: 0.95; }
+
+  /* Trunk strands — endless flow loop:
+     line grows from origin to destination, then recedes from origin onward */
+  .hero-svg .strand {
+    fill: none;
+    stroke: #5a7669;
+    stroke-width: 0.9;
+    stroke-linecap: round;
+    stroke-dasharray: 1500 1500;
+    stroke-dashoffset: 1500;
+    opacity: 0.55;
+    animation: strandFlow 6.5s linear infinite;
+    animation-delay: var(--delay, 0s);
+    will-change: stroke-dashoffset;
+  }
+  .hero-svg .strand.long { stroke-width: 1.05; opacity: 0.7; }
+  @keyframes strandFlow {
+    0%   { stroke-dashoffset: 1500; }
+    100% { stroke-dashoffset: -1500; }
+  }
+
+  /* Travelling particles — spawn at trunk, ride strand to destination, fade out */
+  .hero-svg .particle {
+    fill: var(--green);
+    opacity: 0;
+  }
+  .hero-svg .particle.accent { fill: var(--green-deep); }
+
+  /* Map dots — subtle fade in (one-shot intro only) */
+  .hero-svg .map-layer {
+    opacity: 0;
+    animation: mapIn 1.6s ease-out 0.3s both;
+  }
+  @keyframes mapIn { to { opacity: 0.95; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-svg .strand,
+    .hero-svg .particle,
+    .hero-svg .map-layer {
+      animation: none;
+      opacity: 0.85;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* ---------- Coverage strip ---------- */
+  .coverage {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .coverage-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 36px;
+  }
+  .coverage h2 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .coverage-meta { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); }
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .stat {
+    padding: 40px 28px 32px;
+    border-right: 1px solid var(--rule-soft);
+    position: relative;
+    overflow: hidden;
+    min-height: 290px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .stat:first-child { padding-left: 0; }
+  .stat:last-child { border-right: none; padding-right: 0; }
+
+  /* Large background watermark icon — fades out toward the numerals */
+  .stat .stat-icon {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 168px;
+    height: 168px;
+    color: rgba(20, 56, 45, 0.14);
+    stroke-width: 1.25;
+    pointer-events: none;
+    z-index: 0;
+    -webkit-mask-image: linear-gradient(to bottom, #000 38%, rgba(0,0,0,0) 92%);
+            mask-image: linear-gradient(to bottom, #000 38%, rgba(0,0,0,0) 92%);
+  }
+  .stat:first-child .stat-icon  { left: 32px; transform: none; }
+  .stat:last-child .stat-icon   { right: 12px; left: auto; transform: none; }
+
+  .stat .num,
+  .stat .label,
+  .stat .sub { position: relative; z-index: 1; }
+
+  .stat .num {
+    font-size: 64px;
+    color: var(--green);
+    display: block;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+  .stat .num sup {
+    font-size: 24px;
+    vertical-align: super;
+    color: var(--sage);
+    font-weight: 400;
+    font-feature-settings: normal;
+  }
+  .stat .label {
+    font-family: 'Source Serif 4', serif;
+    font-variation-settings: "opsz" 24;
+    font-weight: 380;
+    font-size: 19px;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    letter-spacing: 0;
+  }
+  .stat .sub {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ---------- Capabilities ---------- */
+  .capabilities {
+    padding: 96px 0 80px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .section-head {
+    display: grid; grid-template-columns: 1fr 1.4fr;
+    gap: 80px; margin-bottom: 64px; align-items: end;
+  }
+  .section-head h2 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: clamp(34px, 4vw, 52px);
+    letter-spacing: -0.018em;
+    line-height: 1.05;
+    margin: 18px 0 0;
+  }
+  .section-head .lede {
+    font-size: 16px; color: var(--ink-soft); max-width: 460px;
+    margin: 0;
+  }
+  .cap-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .cap {
+    padding: 40px 40px 40px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .cap:nth-child(odd) {
+    border-right: 1px solid var(--rule-soft);
+    padding-right: 40px;
+  }
+  .cap:nth-child(even) {
+    padding-left: 40px;
+  }
+  .cap:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
+  .cap .num-mark {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: var(--sage);
+    letter-spacing: 0.08em;
+    padding-top: 6px;
+    border-top: 1px solid var(--green);
+    width: 40px;
+  }
+  .cap h3 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 400;
+    font-size: 24px;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .cap p {
+    font-size: 15px; line-height: 1.6; margin: 0;
+    color: var(--ink-soft);
+  }
+  .cap .icon {
+    margin-top: 4px;
+    color: var(--green);
+    width: 22px; height: 22px;
+  }
+
+  /* ---------- Editorial spread (image 2) ---------- */
+  .editorial {
+    padding: 96px 0;
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .editorial-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center;
+  }
+  .editorial-art {
+    aspect-ratio: 4 / 3;
+    background: var(--paper);
+    border: 1px solid var(--rule-soft);
+    overflow: hidden;
+  }
+  .editorial-art img { width: 100%; height: 100%; object-fit: cover; }
+  .editorial blockquote {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 300;
+    font-size: clamp(28px, 3vw, 40px);
+    line-height: 1.18;
+    letter-spacing: -0.012em;
+    margin: 0 0 28px;
+    color: var(--ink);
+  }
+  .editorial blockquote em { color: var(--green); font-style: italic; }
+  .editorial .attribution {
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .editorial .attribution b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- Themes ---------- */
+  .themes {
+    padding: 96px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .theme-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--rule);
+  }
+  .theme {
+    padding: 36px 32px 36px 0;
+    border-right: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+    position: relative;
+    transition: background .25s ease;
+  }
+  .theme:nth-child(3n) { border-right: none; }
+  .theme:not(:nth-child(3n)) { padding-right: 32px; }
+  .theme:nth-child(n+2):not(:nth-child(3n+1)) { padding-left: 32px; }
+  .theme:nth-child(3n+1):nth-child(n+4) { padding-left: 0; }
+  .theme:nth-last-child(-n+3) { border-bottom: 1px solid var(--rule); }
+  .theme:hover { background: var(--bg-soft); }
+  .theme .idx {
+    font-family: 'Source Serif 4', serif;
+    font-size: 12px;
+    color: var(--sage);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .theme .idx::after {
+    content: ""; flex: 1; height: 1px; background: var(--rule-soft); margin-left: 12px;
+  }
+  .theme h3 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 400;
+    font-size: 22px;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .theme p {
+    font-size: 14px; line-height: 1.55;
+    color: var(--ink-soft); margin: 0 0 28px;
+  }
+  .theme .read {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green);
+    display: inline-flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+  }
+  .theme:hover .read { border-bottom-color: var(--green); }
+
+  /* ---------- DAT Engine CTA ---------- */
+  .engine {
+    padding: 0;
+    background: var(--green);
+    color: var(--paper);
+    overflow: hidden;
+    position: relative;
+  }
+  .engine-grid {
+    display: grid; grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+  }
+  .engine-copy {
+    padding: 96px 64px 96px 0;
+  }
+  .engine .eyebrow { color: rgba(248,244,232,0.7); }
+  .engine .eyebrow .dot { background: var(--sage); }
+  .engine h2 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 4.6vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 24px 0 24px;
+    color: var(--paper);
+  }
+  .engine h2 em {
+    font-style: italic;
+    color: var(--sage);
+  }
+  .engine p {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 19px;
+    line-height: 1.5;
+    color: rgba(248,244,232,0.78);
+    max-width: 460px;
+    margin: 0 0 36px;
+  }
+  .engine .pill {
+    background: var(--paper); color: var(--green-deep);
+    border-color: var(--paper);
+    padding: 14px 26px; font-size: 14px;
+  }
+  .engine .pill:hover { background: var(--bg); }
+  .engine-art {
+    aspect-ratio: 16 / 10;
+    background: #0F3A2C;
+    border-left: 1px solid rgba(248,244,232,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .engine-art img {
+    width: 100%; height: 100%; object-fit: cover;
+    mix-blend-mode: lighten;
+    opacity: 0.92;
+    filter: contrast(1.05);
+  }
+  .engine-art::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(26,77,62,0.55), rgba(26,77,62,0) 30%),
+      linear-gradient(0deg, rgba(15,58,44,0.45), rgba(15,58,44,0) 60%);
+  }
+  .engine-stats {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(248,244,232,0.18);
+    display: flex; gap: 56px;
+  }
+  .engine-stats div .num {
+    font-size: 32px; color: var(--paper); display: block;
+  }
+  .engine-stats div .sub {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(248,244,232,0.6);
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    background: var(--bg-deep);
+    padding: 72px 0 28px;
+  }
+  .foot-grid {
+    display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 64px; padding-bottom: 56px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .foot-brand p {
+    color: var(--ink-soft); font-size: 14px; max-width: 320px;
+    margin: 16px 0 0;
+  }
+  .foot-col h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-mute); margin: 0 0 18px; font-weight: 500;
+  }
+  .foot-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .foot-col a { font-size: 14px; color: var(--ink); border-bottom: 1px solid transparent; padding-bottom: 1px; }
+  .foot-col a:hover { border-bottom-color: var(--green); color: var(--green); }
+  .meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 28px;
+    font-size: 12px; color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+  .meta-row .legal { display: flex; gap: 28px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 960px) {
+    .hero { padding: 56px 0 48px; }
+    .hero-grid, .editorial-grid, .engine-grid, .section-head { grid-template-columns: 1fr; gap: 40px; }
+    .hero h1 { font-size: 48px; }
+    .coverage-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(2) { border-right: none; }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--rule-soft); }
+    .cap-grid, .theme-grid { grid-template-columns: 1fr; }
+    .cap, .cap:nth-child(odd), .cap:nth-child(even) { padding: 32px 0; border-right: none; }
+    .theme, .theme:nth-child(3n), .theme:not(:nth-child(3n)) { padding: 28px 0; border-right: none; }
+    .engine-copy { padding: 64px 0; }
+    .engine-art { border-left: none; border-top: 1px solid rgba(248,244,232,0.12); }
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+    nav.primary ul { display: none; }
+    .brand-logo { height: 34px; }
+    .meta-row { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 22px; }
+    .coverage-grid { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid var(--rule-soft); padding: 24px 0; }
+    .stat .num { font-size: 44px; }
+    .foot-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="#" class="brand" aria-label="Pando Research home">
+      <img src="assets/pando-logo.svg" class="brand-logo" alt="Pando Research" />
+    </a>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#themes">Coverage</a></li>
+        <li><a href="#engine">DAT Engine</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#subscribe" class="pill">
+        Subscribe
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow hero-eyebrow">Institutional Research<span class="dot"></span>Digital Assets</div>
+      <h1 class="display">Research for<br/>a&nbsp;<em>decentralized</em><br/>future.</h1>
+      <p class="lede">Strategic frameworks for navigating blockchain, treasury optimization, and Web 3.0 — built for the institutions deciding how the next financial system gets adopted.</p>
+      <div class="hero-ctas">
+        <a href="#research" class="pill">Explore Insights <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="#reports" class="pill outline">View Latest Report</a>
+      </div>
+      <div class="hero-meta">
+        <span><b>40+</b> &nbsp;Reports</span>
+        <span><b>22</b> &nbsp;Coverage areas</span>
+        <span><b>2026</b> &nbsp;Edition</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <svg class="hero-svg" viewBox="0 50 1200 720" xmlns="http://www.w3.org/2000/svg" aria-label="Animated illustration: a fountain of arcing strands rising from a central trunk into a halftone-dotted world map">
+
+        <!-- World map: realistic halftone dot map of continents (transparent PNG) -->
+        <image
+          class="map-layer"
+          href="assets/dot-world-map.png"
+          x="20" y="140" width="1160" height="549"
+          preserveAspectRatio="xMidYMid meet" />
+
+
+        <!-- Trunk strands (filled by JS) -->
+        <g class="strands" fill="none" stroke="#5a7669"></g>
+
+        <!-- Accent nodes (filled by JS) -->
+        <g class="nodes"></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- COVERAGE STATS -->
+<section class="coverage">
+  <div class="wrap">
+    <div class="coverage-head">
+      <h2 class="display">Real-world asset market coverage</h2>
+      <span class="coverage-meta">Q1 2026 · USD</span>
+    </div>
+    <div class="coverage-grid">
+      <div class="stat">
+        <!-- Lucide: circle-dollar-sign -->
+        <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
+          <path d="M12 18V6"/>
+        </svg>
+        <span class="num">$185<sup>B</sup></span>
+        <div class="label">Stablecoins</div>
+        <div class="sub">Reserve · Payments</div>
+      </div>
+      <div class="stat">
+        <!-- Lucide: file-text -->
+        <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+          <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+          <path d="M10 9H8"/>
+          <path d="M16 13H8"/>
+          <path d="M16 17H8"/>
+        </svg>
+        <span class="num">$12<sup>B</sup></span>
+        <div class="label">Tokenized Treasury</div>
+        <div class="sub">T-bills · Money market</div>
+      </div>
+      <div class="stat">
+        <!-- Lucide: trending-up -->
+        <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <polyline points="16 7 22 7 22 13"/>
+        </svg>
+        <span class="num">$8<sup>B</sup></span>
+        <div class="label">Private Credit</div>
+        <div class="sub">Direct lending · Funds</div>
+      </div>
+      <div class="stat">
+        <!-- Lucide: landmark -->
+        <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="22" x2="21" y2="22"/>
+          <line x1="6" y1="18" x2="6" y2="11"/>
+          <line x1="10" y1="18" x2="10" y2="11"/>
+          <line x1="14" y1="18" x2="14" y2="11"/>
+          <line x1="18" y1="18" x2="18" y2="11"/>
+          <polygon points="12 2 20 7 4 7"/>
+        </svg>
+        <span class="num">$3<sup>B</sup></span>
+        <div class="label">Real Estate</div>
+        <div class="sub">Equity · Debt rails</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section class="capabilities" id="research">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">§ I &nbsp;·&nbsp; Capabilities</div>
+        <h2 class="display">Research<br/>capabilities.</h2>
+      </div>
+      <p class="lede">Four practice areas for institutions building, allocating, and integrating digital-asset strategies — designed to be defensible at the boardroom and the desk.</p>
+    </div>
+
+    <div class="cap-grid">
+      <div class="cap">
+        <div class="num-mark">01</div>
+        <div>
+          <h3>Asset Tokenization</h3>
+          <p>Framework design for treasury bills, private credit, and alternative assets — covering structuring, custody, and secondary-market mechanics.</p>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="num-mark">02</div>
+        <div>
+          <h3>Blockchain Infrastructure</h3>
+          <p>Best practices for institutional custody, settlement, and operational controls — written for risk, ops, and compliance, not for crypto-native readers.</p>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="num-mark">03</div>
+        <div>
+          <h3>Digital Asset Analysis</h3>
+          <p>Quantitative models for portfolio construction and risk management across liquid tokens, restaked yield, and emerging RWA categories.</p>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="num-mark">04</div>
+        <div>
+          <h3>Strategic Advisory</h3>
+          <p>Web 3.0 integration roadmaps aligned with institutional requirements — phased delivery, vendor selection, and stakeholder communication.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL SPREAD -->
+<section class="editorial">
+  <div class="wrap editorial-grid">
+    <div class="editorial-art">
+      <img src="assets/02-tokenization.png" alt="Editorial illustration of three classical columns dissolving into a digital lattice" />
+    </div>
+    <div>
+      <div class="eyebrow">From the desk &nbsp;·&nbsp; Tokenization</div>
+      <blockquote>
+        The institutions that win the next decade won't be the ones that <em>chase</em> tokenization — they'll be the ones who can defend their framework on a Tuesday morning at 7&nbsp;a.m.
+      </blockquote>
+      <div class="attribution"><b>Pando Research</b> &nbsp;·&nbsp; Tokenization Series, vol. III</div>
+    </div>
+  </div>
+</section>
+
+<!-- THEMES -->
+<section class="themes" id="themes">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">§ II &nbsp;·&nbsp; Coverage</div>
+        <h2 class="display">Thematic<br/>investment research.</h2>
+      </div>
+      <p class="lede">Six standing coverage areas — refreshed quarterly with new reports, primers, and data appendices for institutional subscribers.</p>
+    </div>
+
+    <div class="theme-grid">
+      <article class="theme">
+        <div class="idx">01 / Layer 1 Protocols</div>
+        <h3>Consensus & Scaling</h3>
+        <p>Mechanism design, throughput economics, and the trade-offs that determine which networks settle institutional flow.</p>
+        <a href="#" class="read">Read Series →</a>
+      </article>
+      <article class="theme">
+        <div class="idx">02 / Stablecoins</div>
+        <h3>Reserves & Rails</h3>
+        <p>Reserve architectures, redemption mechanics, and the payment-rail thesis behind a $185B float.</p>
+        <a href="#" class="read">Read Series →</a>
+      </article>
+      <article class="theme">
+        <div class="idx">03 / DeFi</div>
+        <h3>Liquidity & Derivatives</h3>
+        <p>How AMMs, perpetuals, and on-chain credit are quietly reorganizing market microstructure.</p>
+        <a href="#" class="read">Read Series →</a>
+      </article>
+      <article class="theme">
+        <div class="idx">04 / Enterprise</div>
+        <h3>Adoption Frameworks</h3>
+        <p>Case studies and implementation playbooks from banks, asset managers, and corporate treasuries.</p>
+        <a href="#" class="read">Read Series →</a>
+      </article>
+      <article class="theme">
+        <div class="idx">05 / Regulation</div>
+        <h3>Global Compliance</h3>
+        <p>Jurisdictional read-throughs on securities law, banking guidance, and stablecoin frameworks.</p>
+        <a href="#" class="read">Read Series →</a>
+      </article>
+      <article class="theme">
+        <div class="idx">06 / Market Structure</div>
+        <h3>Venues & Discovery</h3>
+        <p>Trading-venue evolution, price-formation research, and the institutional liquidity map.</p>
+        <a href="#" class="read">Read Series →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- SECONDARY EDITORIAL — INFRASTRUCTURE -->
+<section class="editorial" style="background: var(--bg);">
+  <div class="wrap editorial-grid" style="grid-template-columns: 1fr 1fr;">
+    <div>
+      <div class="eyebrow">Field note &nbsp;·&nbsp; Infrastructure</div>
+      <blockquote>
+        Custody, settlement, and operational control aren't features of digital-asset infrastructure. They <em>are</em> the infrastructure.
+      </blockquote>
+      <div class="attribution"><b>Pando Research</b> &nbsp;·&nbsp; Infrastructure Primer, 2026</div>
+    </div>
+    <div class="editorial-art">
+      <img src="assets/03-infrastructure.png" alt="Editorial illustration of a vault face with topographic contour lines" />
+    </div>
+  </div>
+</section>
+
+<!-- DAT IMPACT ENGINE -->
+<section class="engine" id="engine">
+  <div class="wrap engine-grid">
+    <div class="engine-copy">
+      <div class="eyebrow">§ III &nbsp;·&nbsp; The DAT Impact Engine<span class="dot"></span>Tool</div>
+      <h2>Quantify the valuation impact of a <em>digital-asset treasury</em> strategy.</h2>
+      <p>Model the multiple expansion, balance-sheet effect, and signaling premium of moving treasury into tokenized and digital assets — with assumptions you can defend to the board.</p>
+      <a href="https://www.pandoresearch.io/DAT" class="pill">Launch Calculator <span class="arrow" aria-hidden="true">→</span></a>
+      <div class="engine-stats">
+        <div>
+          <span class="num">7</span>
+          <span class="sub">Input Categories</span>
+        </div>
+        <div>
+          <span class="num">12</span>
+          <span class="sub">Valuation Drivers</span>
+        </div>
+        <div>
+          <span class="num">2-min</span>
+          <span class="sub">To First Output</span>
+        </div>
+      </div>
+    </div>
+    <div class="engine-art">
+      <img src="assets/04-dat-engine.png" alt="Editorial illustration of a valuation curve and a prism deflecting input rays" />
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="brand" aria-label="Pando Research home">
+          <img src="assets/pando-logo.svg" class="brand-logo" alt="Pando Research" />
+        </a>
+        <p>Institutional research for digital assets and blockchain infrastructure.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Research</h4>
+        <ul>
+          <li><a href="#">Latest Reports</a></li>
+          <li><a href="#">Market Insights</a></li>
+          <li><a href="https://www.pandoresearch.io/DAT">DAT Impact Engine</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#">Methodology</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="mailto:bd@dealbox.io">bd@dealbox.io</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Subscribe</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="meta-row">
+      <span>© 2026 Pando Research. All rights reserved.</span>
+      <div class="legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function buildHeroArt() {
+    const svg = document.querySelector('.hero-svg');
+    if (!svg) return;
+    const NS = 'http://www.w3.org/2000/svg';
+    const strands = svg.querySelector('.strands');
+    const nodes = svg.querySelector('.nodes');
+
+    // Trunk anchor — sits just below the map's bottom edge so the fountain reads as rising into the map
+    const cx = 600, cy = 720;
+    const N = 34;
+    const arcSpan = 132;          // tighter fan keeps endpoints within the map's continent range
+    const baseReach = 580;
+    const yCompress = 0.93;
+    const cycle = 6.5;
+
+    // Map placement (must match the <image> element above)
+    const mapX = 20, mapY = 140, mapW = 1160, mapH = 549;
+
+    // Pseudo-random phase per index (golden-ratio step → well-distributed)
+    const phaseFor = (i) => ((i * 0.6180339887) % 1) * cycle;
+
+    // Load the world-map PNG into an off-screen canvas so we can ray-cast onto land
+    const mapImg = new Image();
+    mapImg.src = 'assets/dot-world-map.png';
+    mapImg.onload = () => {
+      let imgData = null;
+      try {
+        const cvs = document.createElement('canvas');
+        cvs.width = mapImg.naturalWidth;
+        cvs.height = mapImg.naturalHeight;
+        const ctx = cvs.getContext('2d');
+        ctx.drawImage(mapImg, 0, 0);
+        imgData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+      } catch (e) {
+        imgData = null; // CORS or other → endpoints fall back to the raw fan
+      }
+      build(imgData);
+    };
+    mapImg.onerror = () => build(null);
+
+    // Sample a small neighborhood so we hit dots even when the cursor lands between them
+    function isLand(imgData, sx, sy) {
+      if (!imgData) return true;
+      const W = imgData.width, H = imgData.height;
+      const px = Math.round((sx - mapX) / mapW * W);
+      const py = Math.round((sy - mapY) / mapH * H);
+      if (px < 0 || px >= W || py < 0 || py >= H) return false;
+      for (let dy = -10; dy <= 10; dy += 5) {
+        for (let dx = -10; dx <= 10; dx += 5) {
+          const x = px + dx, y = py + dy;
+          if (x < 0 || x >= W || y < 0 || y >= H) continue;
+          if (imgData.data[(y * W + x) * 4 + 3] > 30) return true;
+        }
+      }
+      return false;
+    }
+
+    // Snap an arbitrary point to the nearest land pixel within maxRadius.
+    // If the point already sits on land, it returns unchanged.
+    function snapToNearestLand(imgData, sx, sy, maxRadius = 240) {
+      if (!imgData) return [sx, sy];
+      if (isLand(imgData, sx, sy)) return [sx, sy];
+      for (let r = 12; r <= maxRadius; r += 8) {
+        const steps = Math.max(10, Math.ceil(r / 4));
+        for (let i = 0; i < steps; i++) {
+          const a = (i / steps) * 2 * Math.PI;
+          const tx = sx + Math.cos(a) * r;
+          const ty = sy + Math.sin(a) * r;
+          if (isLand(imgData, tx, ty)) return [tx, ty];
+        }
+      }
+      return [sx, sy]; // no land within radius — keep original
+    }
+
+    function build(imgData) {
+      // ---- Strand paths, with endpoints snapped onto continents ----
+      for (let i = 0; i < N; i++) {
+        const t = N === 1 ? 0.5 : i / (N - 1);
+        const θdeg = -arcSpan / 2 + t * arcSpan;
+        const θ = θdeg * Math.PI / 180;
+
+        const jitter = Math.sin(i * 1.7 + 0.4) * 0.5 + Math.sin(i * 0.9 + 1.2) * 0.4;
+        const reach = baseReach + jitter * 90;
+
+        // Initial endpoint along the fan, then snap to the closest continent pixel
+        let ex = cx + Math.sin(θ) * reach;
+        let ey = cy - Math.cos(θ) * reach * yCompress;
+        const snapped = snapToNearestLand(imgData, ex, ey, 240);
+        ex = snapped[0]; ey = snapped[1];
+
+        // Recompute control points from the actual endpoint direction so the curve
+        // exits the trunk near-vertical and arrives smoothly at the land target.
+        const dx = ex - cx, dy = cy - ey; // dy > 0 means upward in screen coords
+        const θEnd = Math.atan2(dx, dy);
+        const D = Math.hypot(dx, dy);
+
+        const c1R = 0.32 + Math.sin(i * 0.6) * 0.04;
+        const c1A = θEnd * 0.18;
+        const c1x = cx + Math.sin(c1A) * D * c1R;
+        const c1y = cy - Math.cos(c1A) * D * c1R;
+
+        const c2R = 0.72 + Math.sin(i * 1.1) * 0.05;
+        const c2A = θEnd * 0.85;
+        const c2x = cx + Math.sin(c2A) * D * c2R;
+        const c2y = cy - Math.cos(c2A) * D * c2R;
+
+        const phase = phaseFor(i);
+
+        const path = document.createElementNS(NS, 'path');
+        path.setAttribute('id', `strand-${i}`);
+        path.setAttribute('d',
+          `M ${cx} ${cy} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+        path.setAttribute('class', 'strand' + (i % 5 === 0 ? ' long' : ''));
+        path.style.setProperty('--delay', `${(-phase).toFixed(2)}s`);
+        strands.appendChild(path);
+      }
+
+      // ---- Travelling particles, one per strand ----
+      const dur = `${cycle}s`;
+      for (let i = 0; i < N; i++) {
+        const phase = phaseFor(i);
+        const begin = `${(-phase).toFixed(2)}s`;
+        const isAccent = (i % 5 === 0);
+        const r = isAccent ? 5.5 : (3 + ((i * 7) % 4) * 0.5);
+
+        const c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', '0');
+        c.setAttribute('cy', '0');
+        c.setAttribute('r', r.toFixed(1));
+        c.setAttribute('class', 'particle' + (isAccent ? ' accent' : ''));
+
+        const motion = document.createElementNS(NS, 'animateMotion');
+        motion.setAttribute('dur', dur);
+        motion.setAttribute('repeatCount', 'indefinite');
+        motion.setAttribute('begin', begin);
+        motion.setAttribute('keyTimes', '0;0.5;1');
+        motion.setAttribute('keyPoints', '0;1;1');
+        motion.setAttribute('calcMode', 'linear');
+        motion.setAttribute('rotate', 'auto');
+        const mpath = document.createElementNS(NS, 'mpath');
+        mpath.setAttribute('href', `#strand-${i}`);
+        motion.appendChild(mpath);
+
+        const opacityAnim = document.createElementNS(NS, 'animate');
+        opacityAnim.setAttribute('attributeName', 'opacity');
+        opacityAnim.setAttribute('dur', dur);
+        opacityAnim.setAttribute('repeatCount', 'indefinite');
+        opacityAnim.setAttribute('begin', begin);
+        opacityAnim.setAttribute('values', '0;0;0.95;0.95;0;0');
+        opacityAnim.setAttribute('keyTimes', '0;0.04;0.18;0.55;0.85;1');
+        opacityAnim.setAttribute('calcMode', 'linear');
+
+        c.appendChild(motion);
+        c.appendChild(opacityAnim);
+        nodes.appendChild(c);
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>
