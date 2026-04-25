@@ -141,22 +141,21 @@
 
   /* ---------- Hero ---------- */
   .hero {
-    padding: 110px 0 96px;
+    padding: 88px 0 72px;
     border-bottom: 1px solid var(--rule-soft);
     position: relative;
   }
   .hero > .wrap { max-width: 1680px; padding: 0 56px; }
   .hero-grid {
     display: grid;
-    grid-template-columns: 1fr 1.32fr;
-    gap: 56px;
+    grid-template-columns: minmax(420px, 560px) 1fr;
+    gap: 48px;
     align-items: center;
   }
-  .hero-eyebrow { margin-bottom: 36px; font-size: 13px; letter-spacing: 0.22em; }
+  .hero-eyebrow { margin-bottom: 28px; }
   .hero h1 {
-    margin: 0 0 36px;
-    font-size: clamp(58px, 7.6vw, 124px);
-    line-height: 1.0;
+    margin: 0 0 28px;
+    font-size: clamp(46px, 5.6vw, 80px);
   }
   .hero h1 em {
     font-style: italic;
@@ -166,11 +165,11 @@
   .hero p.lede {
     font-family: 'Source Serif 4', serif;
     font-weight: 350;
-    font-size: clamp(20px, 1.55vw, 26px);
+    font-size: 21px;
     line-height: 1.45;
     color: var(--ink-soft);
-    max-width: 640px;
-    margin: 0 0 52px;
+    max-width: 520px;
+    margin: 0 0 40px;
     font-variation-settings: "opsz" 24;
   }
   .hero-ctas { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
