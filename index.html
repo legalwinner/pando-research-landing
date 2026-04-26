@@ -144,8 +144,8 @@
     padding: 88px 0 72px;
     border-bottom: 1px solid var(--rule-soft);
     position: relative;
+    overflow-x: clip;
   }
-  .hero > .wrap { max-width: 1680px; padding: 0 56px; }
   .hero-grid {
     display: grid;
     grid-template-columns: minmax(420px, 560px) 1fr;
@@ -190,9 +190,11 @@
     aspect-ratio: 5 / 3;
     background: transparent;
     overflow: visible;
-    margin-left: clamp(-149px, -8.25vw, -50px);
-    margin-right: clamp(-66px, -3.3vw, -17px);
-    transform: scale(0.97);
+    /* Slight bleed into the text column on the left */
+    margin-left: clamp(-120px, -6vw, -40px);
+    /* Bleed out to the viewport edge on the right when viewport > wrap */
+    margin-right: min(0px, calc((var(--max) - 100vw) / 2 + 32px));
+    transform: scale(1.04);
     transform-origin: center right;
     pointer-events: none;
   }
