@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pando-landing",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "6789"],
+      "port": 6789
+    }
+  ]
+}

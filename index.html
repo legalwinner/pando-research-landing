@@ -12,7 +12,7 @@
 
 <style>
   :root {
-    --bg:        #F4EFE2;
+    --bg:        #F7F5EE;
     --bg-soft:   #EFE9DA;
     --bg-deep:   #E8E1CE;
     --ink:       #14201B;
@@ -21,8 +21,8 @@
     --green:     #1A4D3E;
     --green-deep:#0F3A2C;
     --sage:      #7A9B8A;
-    --rule:      #C9C0A8;
-    --rule-soft: #DDD4BC;
+    --rule:      #DCD5BF;
+    --rule-soft: #DCD5BF;
     --paper:     #F8F4E8;
     --max:       1240px;
   }
@@ -87,7 +87,7 @@
   /* ---------- Header ---------- */
   .site-header {
     border-bottom: 1px solid var(--rule-soft);
-    background: rgba(244,239,226,0.85);
+    background: rgba(247,245,238,0.85);
     backdrop-filter: saturate(120%) blur(8px);
     position: sticky; top: 0; z-index: 50;
   }
@@ -108,7 +108,7 @@
     display: flex; gap: 32px; list-style: none; padding: 0; margin: 0;
     font-size: 14px; color: var(--ink-soft);
   }
-  nav.primary a:hover { color: var(--green); }
+  nav.primary a:not(.pill):hover { color: var(--green); }
   .pill, .pill:visited {
     display: inline-flex; align-items: center; gap: 8px;
     background: var(--green);
@@ -143,6 +143,7 @@
   /* ---------- Hero ---------- */
   .hero {
     padding: 88px 0 72px;
+    background: var(--bg);
     border-bottom: 1px solid var(--rule-soft);
     position: relative;
     overflow-x: clip;
@@ -216,15 +217,15 @@
   /* World map: realistic dot map (transparent PNG) */
   .hero-svg .map-layer { opacity: 0.95; }
 
-  /* Trunk strands — endless flow loop:
-     line grows from origin to destination, then recedes from origin onward */
+  /* City-to-city routes — endless flow loop:
+     line grows from origin city to destination city, then recedes from origin onward */
   .hero-svg .strand {
     fill: none;
     stroke: #5a7669;
     stroke-width: 0.9;
     stroke-linecap: round;
-    stroke-dasharray: 1500 1500;
-    stroke-dashoffset: 1500;
+    stroke-dasharray: 1000 1000;
+    stroke-dashoffset: 1000;
     opacity: 0.55;
     animation: strandFlow 6.5s linear infinite;
     animation-delay: var(--delay, 0s);
@@ -232,16 +233,21 @@
   }
   .hero-svg .strand.long { stroke-width: 1.05; opacity: 0.7; }
   @keyframes strandFlow {
-    0%   { stroke-dashoffset: 1500; }
-    100% { stroke-dashoffset: -1500; }
+    0%   { stroke-dashoffset: 1000; }
+    100% { stroke-dashoffset: -1000; }
   }
 
-  /* Travelling particles — spawn at trunk, ride strand to destination, fade out */
+  .hero-svg .city-node {
+    fill: var(--green);
+    opacity: 0.58;
+    filter: drop-shadow(0 0 4px rgba(26, 77, 62, 0.32));
+  }
+
+  /* Travelling particles — move from city to city, fade out */
   .hero-svg .particle {
     fill: var(--green);
     opacity: 0;
   }
-  .hero-svg .particle.accent { fill: var(--green-deep); }
 
   /* Map dots — subtle fade in (one-shot intro only) */
   .hero-svg .map-layer {
@@ -263,6 +269,7 @@
   /* ---------- Coverage strip ---------- */
   .coverage {
     padding: 56px 0;
+    background: var(--bg);
     border-bottom: 1px solid var(--rule-soft);
   }
   .coverage-head {
@@ -352,6 +359,7 @@
   /* ---------- Capabilities ---------- */
   .capabilities {
     padding: 96px 0 80px;
+    background: var(--bg);
     border-bottom: 1px solid var(--rule-soft);
   }
   .section-head {
@@ -420,8 +428,11 @@
   /* ---------- Editorial spread (image 2) ---------- */
   .editorial {
     padding: 96px 0;
-    background: var(--bg-soft);
+    background: var(--bg);
     border-bottom: 1px solid var(--rule-soft);
+  }
+  .infrastructure-editorial {
+    padding-top: 144px;
   }
   .editorial-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
@@ -453,6 +464,7 @@
   /* ---------- Themes ---------- */
   .themes {
     padding: 96px 0;
+    background: var(--bg);
     border-bottom: 1px solid var(--rule-soft);
   }
   .theme-grid {
@@ -464,14 +476,12 @@
     border-right: 1px solid var(--rule-soft);
     border-bottom: 1px solid var(--rule-soft);
     position: relative;
-    transition: background .25s ease;
   }
   .theme:nth-child(3n) { border-right: none; }
   .theme:not(:nth-child(3n)) { padding-right: 32px; }
   .theme:nth-child(n+2):not(:nth-child(3n+1)) { padding-left: 32px; }
   .theme:nth-child(3n+1):nth-child(n+4) { padding-left: 0; }
   .theme:nth-last-child(-n+3) { border-bottom: 1px solid var(--rule); }
-  .theme:hover { background: var(--bg-soft); }
   .theme .idx {
     font-family: 'Source Serif 4', serif;
     font-size: 12px;
@@ -586,7 +596,7 @@
 
   /* ---------- Footer ---------- */
   footer {
-    background: var(--bg-deep);
+    background: var(--bg);
     padding: 72px 0 28px;
   }
   .foot-grid {
@@ -634,6 +644,26 @@
   }
   @media (max-width: 560px) {
     .wrap { padding: 0 22px; }
+    .hero h1 { font-size: clamp(38px, 12vw, 48px); }
+    .nav {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .brand-logo { height: 27px; }
+    nav.primary .pill {
+      min-height: 38px;
+      padding: 8px 13px;
+      font-size: 12px;
+    }
+    .hero-art {
+      justify-self: start;
+      width: min(120%, calc((100vw - 44px) * 1.2));
+      margin-left: max(-10%, calc((100vw - 44px) * -0.1));
+      margin-right: 0;
+      transform: none;
+      transform-origin: center;
+      overflow: hidden;
+    }
     .coverage-grid { grid-template-columns: 1fr; }
     .stat { border-right: none; border-bottom: 1px solid var(--rule-soft); padding: 24px 0; }
     .stat .num { font-size: 44px; }
@@ -684,7 +714,7 @@
       </div>
     </div>
     <div class="hero-art">
-      <svg class="hero-svg" viewBox="0 50 1200 720" xmlns="http://www.w3.org/2000/svg" aria-label="Animated illustration: a fountain of arcing strands rising from a central trunk into a halftone-dotted world map">
+      <svg class="hero-svg" viewBox="0 50 1200 720" xmlns="http://www.w3.org/2000/svg" aria-label="Animated illustration: city-to-city routes crossing a halftone-dotted world map">
 
         <!-- World map: realistic halftone dot map of continents (transparent PNG) -->
         <image
@@ -694,10 +724,10 @@
           preserveAspectRatio="xMidYMid meet" />
 
 
-        <!-- Trunk strands (filled by JS) -->
+        <!-- City-to-city routes (filled by JS) -->
         <g class="strands" fill="none" stroke="#5a7669"></g>
 
-        <!-- Accent nodes (filled by JS) -->
+        <!-- City nodes and travelling particles (filled by JS) -->
         <g class="nodes"></g>
       </svg>
     </div>
@@ -769,7 +799,7 @@
   <div class="wrap">
     <div class="section-head">
       <div>
-        <div class="eyebrow">§ I &nbsp;·&nbsp; Capabilities</div>
+        <div class="eyebrow">I &nbsp;·&nbsp; Capabilities</div>
         <h2 class="display">Research<br/>capabilities.</h2>
       </div>
       <p class="lede">Four practice areas for institutions building, allocating, and integrating digital-asset strategies — designed to be defensible at the boardroom and the desk.</p>
@@ -829,7 +859,7 @@
   <div class="wrap">
     <div class="section-head">
       <div>
-        <div class="eyebrow">§ II &nbsp;·&nbsp; Coverage</div>
+        <div class="eyebrow">II &nbsp;·&nbsp; Coverage</div>
         <h2 class="display">Thematic<br/>investment research.</h2>
       </div>
       <p class="lede">Six standing coverage areas — refreshed quarterly with new reports, primers, and data appendices for institutional subscribers.</p>
@@ -877,7 +907,7 @@
 </section>
 
 <!-- SECONDARY EDITORIAL — INFRASTRUCTURE -->
-<section class="editorial" style="background: var(--bg);">
+<section class="editorial infrastructure-editorial" style="background: var(--bg);">
   <div class="wrap editorial-grid" style="grid-template-columns: 1fr 1fr;">
     <div>
       <div class="eyebrow">Field note &nbsp;·&nbsp; Infrastructure</div>
@@ -896,7 +926,7 @@
 <section class="engine" id="engine">
   <div class="wrap engine-grid">
     <div class="engine-copy">
-      <div class="eyebrow">§ III &nbsp;·&nbsp; The DAT Impact Engine<span class="dot"></span>Tool</div>
+      <div class="eyebrow">III &nbsp;·&nbsp; The DAT Impact Engine<span class="dot"></span>Tool</div>
       <h2>Quantify the valuation impact of a <em>digital-asset treasury</em> strategy.</h2>
       <p>Model the multiple expansion, balance-sheet effect, and signaling premium of moving treasury into tokenized and digital assets — with assumptions you can defend to the board.</p>
       <a href="https://www.pandoresearch.io/DAT" class="pill">Launch Calculator <span class="arrow" aria-hidden="true">→</span></a>
@@ -975,16 +1005,140 @@
     const strands = svg.querySelector('.strands');
     const nodes = svg.querySelector('.nodes');
 
-    // Trunk anchor — sits just below the map's bottom edge so the fountain reads as rising into the map
-    const cx = 600, cy = 720;
-    const N = 34;
-    const arcSpan = 132;          // tighter fan keeps endpoints within the map's continent range
-    const baseReach = 580;
-    const yCompress = 0.93;
     const cycle = 6.5;
 
     // Map placement (must match the <image> element above)
     const mapX = 20, mapY = 140, mapW = 1160, mapH = 549;
+
+    const cities = {
+      anchorage: cityPoint(0.080, 0.248),
+      vancouver: cityPoint(0.138, 0.315),
+      calgary: cityPoint(0.165, 0.300),
+      seattle: cityPoint(0.148, 0.335),
+      sanFrancisco: cityPoint(0.155, 0.395),
+      losAngeles: cityPoint(0.161, 0.430),
+      edmonton: cityPoint(0.172, 0.276),
+      denver: cityPoint(0.208, 0.384),
+      minneapolis: cityPoint(0.245, 0.330),
+      dallas: cityPoint(0.242, 0.445),
+      chicago: cityPoint(0.260, 0.350),
+      newYork: cityPoint(0.292, 0.365),
+      boston: cityPoint(0.306, 0.345),
+      toronto: cityPoint(0.282, 0.332),
+      montreal: cityPoint(0.300, 0.320),
+      atlanta: cityPoint(0.270, 0.418),
+      miami: cityPoint(0.290, 0.475),
+      mexicoCity: cityPoint(0.232, 0.502),
+      bogota: cityPoint(0.300, 0.595),
+      lima: cityPoint(0.292, 0.668),
+      santiago: cityPoint(0.316, 0.805),
+      saoPaulo: cityPoint(0.372, 0.724),
+      buenosAires: cityPoint(0.372, 0.812),
+      reykjavik: cityPoint(0.442, 0.238),
+      dublin: cityPoint(0.486, 0.312),
+      london: cityPoint(0.498, 0.318),
+      amsterdam: cityPoint(0.515, 0.318),
+      copenhagen: cityPoint(0.536, 0.296),
+      oslo: cityPoint(0.540, 0.262),
+      paris: cityPoint(0.508, 0.348),
+      frankfurt: cityPoint(0.535, 0.342),
+      berlin: cityPoint(0.546, 0.324),
+      zurich: cityPoint(0.528, 0.365),
+      milan: cityPoint(0.536, 0.382),
+      madrid: cityPoint(0.492, 0.405),
+      stockholm: cityPoint(0.555, 0.270),
+      helsinki: cityPoint(0.585, 0.266),
+      lagos: cityPoint(0.528, 0.570),
+      nairobi: cityPoint(0.610, 0.615),
+      johannesburg: cityPoint(0.588, 0.752),
+      capeTown: cityPoint(0.560, 0.812),
+      dubai: cityPoint(0.642, 0.462),
+      mumbai: cityPoint(0.674, 0.506),
+      singapore: cityPoint(0.742, 0.565),
+      hongKong: cityPoint(0.776, 0.487),
+      tokyo: cityPoint(0.845, 0.394),
+      sydney: cityPoint(0.858, 0.735),
+      melbourne: cityPoint(0.848, 0.792),
+      brisbane: cityPoint(0.874, 0.702)
+    };
+
+    const routes = [
+      ['anchorage', 'vancouver', 0.55],
+      ['vancouver', 'calgary', -0.48],
+      ['calgary', 'edmonton', 0.42],
+      ['calgary', 'minneapolis', -0.52],
+      ['vancouver', 'seattle', 0.62],
+      ['seattle', 'sanFrancisco', -0.52],
+      ['sanFrancisco', 'losAngeles', 0.58],
+      ['sanFrancisco', 'newYork', 0.75],
+      ['losAngeles', 'denver', -0.52],
+      ['losAngeles', 'dallas', 0.58],
+      ['denver', 'chicago', 0.52],
+      ['minneapolis', 'chicago', 0.46],
+      ['chicago', 'toronto', -0.62],
+      ['chicago', 'newYork', 0.46],
+      ['dallas', 'atlanta', -0.48],
+      ['atlanta', 'miami', 0.56],
+      ['miami', 'mexicoCity', -0.52],
+      ['newYork', 'london', -0.78],
+      ['newYork', 'boston', 0.6],
+      ['boston', 'dublin', -0.54],
+      ['montreal', 'reykjavik', -0.46],
+      ['reykjavik', 'dublin', 0.48],
+      ['toronto', 'frankfurt', -0.68],
+      ['montreal', 'paris', -0.58],
+      ['mexicoCity', 'newYork', 0.55],
+      ['mexicoCity', 'bogota', -0.54],
+      ['bogota', 'lima', 0.5],
+      ['lima', 'santiago', -0.56],
+      ['santiago', 'buenosAires', 0.52],
+      ['buenosAires', 'saoPaulo', -0.5],
+      ['newYork', 'saoPaulo', 0.52],
+      ['miami', 'bogota', 0.42],
+      ['london', 'frankfurt', 0.7],
+      ['dublin', 'london', 0.62],
+      ['london', 'amsterdam', -0.56],
+      ['amsterdam', 'copenhagen', 0.46],
+      ['amsterdam', 'berlin', 0.58],
+      ['amsterdam', 'frankfurt', -0.54],
+      ['copenhagen', 'oslo', -0.5],
+      ['copenhagen', 'stockholm', 0.5],
+      ['oslo', 'stockholm', 0.46],
+      ['stockholm', 'helsinki', -0.48],
+      ['paris', 'amsterdam', 0.54],
+      ['paris', 'madrid', -0.58],
+      ['paris', 'milan', 0.54],
+      ['frankfurt', 'berlin', -0.5],
+      ['london', 'dubai', -0.6],
+      ['frankfurt', 'zurich', 0.75],
+      ['zurich', 'milan', -0.62],
+      ['berlin', 'stockholm', 0.58],
+      ['frankfurt', 'mumbai', 0.56],
+      ['madrid', 'lagos', -0.48],
+      ['london', 'lagos', 0.42],
+      ['lagos', 'nairobi', -0.56],
+      ['nairobi', 'johannesburg', 0.5],
+      ['johannesburg', 'capeTown', -0.58],
+      ['capeTown', 'saoPaulo', 0.52],
+      ['capeTown', 'dubai', -0.44],
+      ['dubai', 'mumbai', -0.64],
+      ['mumbai', 'singapore', 0.58],
+      ['singapore', 'hongKong', -0.72],
+      ['hongKong', 'tokyo', 0.62],
+      ['tokyo', 'sanFrancisco', -0.7],
+      ['singapore', 'sydney', 0.6],
+      ['singapore', 'brisbane', -0.52],
+      ['brisbane', 'sydney', 0.56],
+      ['sydney', 'melbourne', -0.62],
+      ['melbourne', 'hongKong', 0.48],
+      ['saoPaulo', 'london', -0.48],
+      ['zurich', 'dubai', 0.66],
+      ['hongKong', 'sydney', -0.48]
+    ];
+
+    function cityPoint(xRatio, yRatio) {
+      return [mapX + xRatio * mapW, mapY + yRatio * mapH];
+    }
 
     // Pseudo-random phase per index (golden-ratio step → well-distributed)
     const phaseFor = (i) => ((i * 0.6180339887) % 1) * cycle;
@@ -1043,61 +1197,58 @@
     }
 
     function build(imgData) {
-      // ---- Strand paths, with endpoints snapped onto continents ----
-      for (let i = 0; i < N; i++) {
-        const t = N === 1 ? 0.5 : i / (N - 1);
-        const θdeg = -arcSpan / 2 + t * arcSpan;
-        const θ = θdeg * Math.PI / 180;
+      const snappedCities = Object.fromEntries(
+        Object.entries(cities).map(([name, point]) => [name, snapToNearestLand(imgData, point[0], point[1], 170)])
+      );
 
-        const jitter = Math.sin(i * 1.7 + 0.4) * 0.5 + Math.sin(i * 0.9 + 1.2) * 0.4;
-        const reach = baseReach + jitter * 90;
+      const activeCities = new Set(routes.flatMap(([from, to]) => [from, to]));
+      activeCities.forEach((name) => {
+        const [x, y] = snappedCities[name];
+        const node = document.createElementNS(NS, 'circle');
+        node.setAttribute('cx', x.toFixed(1));
+        node.setAttribute('cy', y.toFixed(1));
+        node.setAttribute('r', '2.35');
+        node.setAttribute('class', 'city-node');
+        nodes.appendChild(node);
+      });
 
-        // Initial endpoint along the fan, then snap to the closest continent pixel
-        let ex = cx + Math.sin(θ) * reach;
-        let ey = cy - Math.cos(θ) * reach * yCompress;
-        const snapped = snapToNearestLand(imgData, ex, ey, 240);
-        ex = snapped[0]; ey = snapped[1];
-
-        // Recompute control points from the actual endpoint direction so the curve
-        // exits the trunk near-vertical and arrives smoothly at the land target.
-        const dx = ex - cx, dy = cy - ey; // dy > 0 means upward in screen coords
-        const θEnd = Math.atan2(dx, dy);
-        const D = Math.hypot(dx, dy);
-
-        const c1R = 0.32 + Math.sin(i * 0.6) * 0.04;
-        const c1A = θEnd * 0.18;
-        const c1x = cx + Math.sin(c1A) * D * c1R;
-        const c1y = cy - Math.cos(c1A) * D * c1R;
-
-        const c2R = 0.72 + Math.sin(i * 1.1) * 0.05;
-        const c2A = θEnd * 0.85;
-        const c2x = cx + Math.sin(c2A) * D * c2R;
-        const c2y = cy - Math.cos(c2A) * D * c2R;
-
+      // ---- Route paths, with both endpoints snapped onto city land pixels ----
+      for (let i = 0; i < routes.length; i++) {
+        const [from, to, bend] = routes[i];
+        const [sx, sy] = snappedCities[from];
+        const [ex, ey] = snappedCities[to];
+        const dx = ex - sx, dy = ey - sy;
+        const distance = Math.hypot(dx, dy);
+        const nx = distance ? -dy / distance : 0;
+        const ny = distance ? dx / distance : -1;
+        const curve = Math.min(112, Math.max(22, distance * 0.18)) * bend;
+        const c1x = sx + dx * 0.34 + nx * curve;
+        const c1y = sy + dy * 0.34 + ny * curve;
+        const c2x = sx + dx * 0.68 + nx * curve;
+        const c2y = sy + dy * 0.68 + ny * curve;
         const phase = phaseFor(i);
 
         const path = document.createElementNS(NS, 'path');
         path.setAttribute('id', `strand-${i}`);
         path.setAttribute('d',
-          `M ${cx} ${cy} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+          `M ${sx.toFixed(1)} ${sy.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${ex.toFixed(1)} ${ey.toFixed(1)}`);
         path.setAttribute('class', 'strand' + (i % 5 === 0 ? ' long' : ''));
+        path.setAttribute('pathLength', '1000');
         path.style.setProperty('--delay', `${(-phase).toFixed(2)}s`);
         strands.appendChild(path);
       }
 
-      // ---- Travelling particles, one per strand ----
+      // ---- Travelling particles, one per city-to-city route ----
       const dur = `${cycle}s`;
-      for (let i = 0; i < N; i++) {
+      for (let i = 0; i < routes.length; i++) {
         const phase = phaseFor(i);
         const begin = `${(-phase).toFixed(2)}s`;
-        const isAccent = (i % 5 === 0);
-        const r = isAccent ? 5.5 : (3 + ((i * 7) % 4) * 0.5);
 
         const c = document.createElementNS(NS, 'circle');
         c.setAttribute('cx', '0');
         c.setAttribute('cy', '0');
-        c.setAttribute('r', r.toFixed(1));
-        c.setAttribute('class', 'particle' + (isAccent ? ' accent' : ''));
+        c.setAttribute('r', '2.35');
+        c.setAttribute('class', 'particle');
 
         const motion = document.createElementNS(NS, 'animateMotion');
         motion.setAttribute('dur', dur);
