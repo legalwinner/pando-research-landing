@@ -64,6 +64,7 @@
     text-transform: uppercase;
     font-weight: 500;
     color: var(--green);
+    padding-bottom: 16px;
   }
   .eyebrow .dot {
     display: inline-block; width: 4px; height: 4px;
@@ -487,11 +488,22 @@
     font-size: 12px;
     color: var(--sage);
     letter-spacing: 0.1em;
-    margin-bottom: 24px;
+    margin-bottom: 52px;
+    padding-right: 76px;
     display: flex; justify-content: space-between; align-items: center;
   }
   .theme .idx::after {
     content: ""; flex: 1; height: 1px; background: var(--rule-soft); margin-left: 12px;
+  }
+  .theme-icon {
+    position: absolute;
+    top: 23px;
+    right: 32px;
+    width: 44px;
+    height: 44px;
+    color: var(--green);
+    stroke-width: 1.15;
+    opacity: 0.88;
   }
   .theme h3 {
     font-family: 'Source Serif 4', serif;
@@ -635,12 +647,23 @@
     .cap-grid, .theme-grid { grid-template-columns: 1fr; }
     .cap, .cap:nth-child(odd), .cap:nth-child(even) { padding: 32px 0; border-right: none; }
     .theme, .theme:nth-child(3n), .theme:not(:nth-child(3n)) { padding: 28px 0; border-right: none; }
+    .theme-icon { right: 0; }
     .engine-copy { padding: 64px 0; }
     .engine-art { border-left: none; border-top: 1px solid rgba(248,244,232,0.12); }
     .foot-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
     nav.primary ul { display: none; }
     .brand-logo { height: 34px; }
     .meta-row { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+  @media (min-width: 961px) and (max-width: 1120px) {
+    .hero-grid {
+      grid-template-columns: minmax(390px, 500px) minmax(536px, 1fr);
+      gap: 24px;
+    }
+    .hero-art {
+      width: 536px;
+      margin-left: -64px;
+    }
   }
   @media (max-width: 560px) {
     .wrap { padding: 0 22px; }
@@ -868,36 +891,65 @@
     <div class="theme-grid">
       <article class="theme">
         <div class="idx">01 / Layer 1 Protocols</div>
+        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m12 2 9 5-9 5-9-5 9-5Z"/>
+          <path d="m3 12 9 5 9-5"/>
+          <path d="m3 17 9 5 9-5"/>
+        </svg>
         <h3>Consensus & Scaling</h3>
         <p>Mechanism design, throughput economics, and the trade-offs that determine which networks settle institutional flow.</p>
         <a href="#" class="read">Read Series →</a>
       </article>
       <article class="theme">
         <div class="idx">02 / Stablecoins</div>
+        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
+          <path d="M12 18V6"/>
+        </svg>
         <h3>Reserves & Rails</h3>
         <p>Reserve architectures, redemption mechanics, and the payment-rail thesis behind a $185B float.</p>
         <a href="#" class="read">Read Series →</a>
       </article>
       <article class="theme">
         <div class="idx">03 / DeFi</div>
+        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
         <h3>Liquidity & Derivatives</h3>
         <p>How AMMs, perpetuals, and on-chain credit are quietly reorganizing market microstructure.</p>
         <a href="#" class="read">Read Series →</a>
       </article>
       <article class="theme">
         <div class="idx">04 / Enterprise</div>
+        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/>
+          <path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2"/>
+          <path d="M10 6h4"/>
+          <path d="M10 10h4"/>
+          <path d="M10 14h4"/>
+          <path d="M10 18h4"/>
+        </svg>
         <h3>Adoption Frameworks</h3>
         <p>Case studies and implementation playbooks from banks, asset managers, and corporate treasuries.</p>
         <a href="#" class="read">Read Series →</a>
       </article>
       <article class="theme">
         <div class="idx">05 / Regulation</div>
+        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1v7Z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
         <h3>Global Compliance</h3>
         <p>Jurisdictional read-throughs on securities law, banking guidance, and stablecoin frameworks.</p>
         <a href="#" class="read">Read Series →</a>
       </article>
       <article class="theme">
         <div class="idx">06 / Market Structure</div>
+        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 3v18h18"/>
+          <path d="m19 9-5 5-4-4-3 3"/>
+        </svg>
         <h3>Venues & Discovery</h3>
         <p>Trading-venue evolution, price-formation research, and the institutional liquidity map.</p>
         <a href="#" class="read">Read Series →</a>
