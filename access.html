@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Access · Pando Research</title>
+<meta name="description" content="Sign in or request access to Pando Research's institutional library — 40+ reports across digital asset infrastructure, RWAs, stablecoins, and AI-finance convergence." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400;1,8..60,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg:        #F7F5EE;
+    --bg-soft:   #EFE9DA;
+    --bg-deep:   #E8E1CE;
+    --ink:       #14201B;
+    --ink-soft:  #4A5853;
+    --ink-mute:  #8C8B7E;
+    --green:     #1A4D3E;
+    --green-deep:#0F3A2C;
+    --green-darker:#07241B;
+    --sage:      #7A9B8A;
+    --rule:      #DCD5BF;
+    --rule-soft: #DCD5BF;
+    --paper:     #F8F4E8;
+    --max:       1280px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Header (matches index.html) ---------- */
+  .site-header {
+    border-bottom: 1px solid var(--rule-soft);
+    background: rgba(247,245,238,0.85);
+    backdrop-filter: saturate(120%) blur(8px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-logo {
+    height: 43px; width: auto; display: block;
+  }
+  nav.primary {
+    display: flex; align-items: center; gap: 36px;
+  }
+  nav.primary ul {
+    display: flex; gap: 32px; list-style: none; padding: 0; margin: 0;
+    font-size: 14px; color: var(--ink-soft);
+  }
+  nav.primary a:not(.pill):hover { color: var(--green); }
+  .pill, .pill:visited {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green);
+    color: var(--paper);
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border: 1px solid var(--green);
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .pill:hover, .pill:visited:hover {
+    background: #246851;
+    color: var(--paper);
+    border-color: #246851;
+    box-shadow: 0 4px 14px rgba(26, 77, 62, 0.18);
+  }
+  .pill .arrow { transform: translateX(0); transition: transform .2s ease; }
+  .pill:hover .arrow { transform: translateX(3px); }
+  .pill.outline, .pill.outline:visited {
+    background: transparent; color: var(--green);
+    border: 1px solid var(--green);
+    box-shadow: none;
+  }
+  .pill.outline:hover {
+    background: transparent; color: var(--green-deep);
+    border-color: var(--green-deep);
+    box-shadow: none;
+  }
+
+  /* ---------- Main 2-pane layout ---------- */
+  .access-main {
+    min-height: calc(100vh - 88px);
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* paper grain on background */
+  .access-main::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 30% 30%, rgba(26,77,62,0.05), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(26,77,62,0.04), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* faint editorial grid */
+  .access-main::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(26,77,62,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(26,77,62,0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 80% at 30% 50%, black, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 80% at 30% 50%, black, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---------- LEFT PANE: coverflow stage ---------- */
+  .stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 56px 48px 48px;
+    z-index: 2;
+    overflow: hidden;
+  }
+  .stage-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .stage-eyebrow .dot {
+    width: 5px; height: 5px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulseDot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 0.4; transform: scale(0.8); }
+    50%      { opacity: 1; transform: scale(1.1); }
+  }
+  .stage h1 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 64px;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin: 22px 0 18px;
+    color: var(--ink);
+  }
+  .stage h1 em { font-style: italic; color: var(--green); font-weight: 300; }
+  .stage .lede {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 480px;
+    margin: 0 0 4px;
+    font-weight: 350;
+  }
+
+  /* Coverflow */
+  .coverflow {
+    flex: 1;
+    position: relative;
+    margin-top: 28px;
+    perspective: 1900px;
+    perspective-origin: 50% 55%;
+    overflow: visible;
+    min-height: 420px;
+  }
+  .coverflow-track {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform-style: preserve-3d;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .cf-card {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 240px; height: 336px;
+    transform-style: preserve-3d;
+    transform-origin: center;
+    transition: transform 0.7s cubic-bezier(0.22, 0.7, 0.18, 1),
+                opacity   0.7s cubic-bezier(0.22, 0.7, 0.18, 1),
+                filter    0.7s cubic-bezier(0.22, 0.7, 0.18, 1);
+    will-change: transform, opacity;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .cf-card .face {
+    position: absolute;
+    inset: 0;
+    background: var(--green-deep);
+    color: var(--paper);
+    border: 1px solid #061d16;
+    box-shadow:
+      0 60px 100px -36px rgba(15,58,44,0.45),
+      0 24px 50px -18px rgba(15,58,44,0.32),
+      inset 0 0 0 1px rgba(248,244,232,0.05);
+    padding: 24px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    transform: translateZ(7px);
+    overflow: hidden;
+  }
+  .cf-card.tone-paper .face {
+    background: var(--paper);
+    color: var(--green-deep);
+    border-color: var(--rule);
+  }
+  .cf-card.tone-sage .face {
+    background: #2c5d4d;
+    color: var(--paper);
+  }
+  .cf-card .face::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid currentColor;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  .cf-card .face::after {
+    /* corner registration tick */
+    content: "";
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 12px; height: 12px;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    opacity: 0.45;
+  }
+  .cf-card .spine {
+    position: absolute;
+    top: 0; left: 0;
+    width: 14px;
+    height: 100%;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.30) 100%),
+      var(--green-darker);
+    transform-origin: left center;
+    transform: translateZ(7px) rotateY(-90deg);
+    backface-visibility: hidden;
+  }
+  .cf-card.tone-paper .spine {
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.20), rgba(0,0,0,0)),
+      var(--bg-deep);
+  }
+  .cf-card.tone-sage .spine {
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.45), rgba(0,0,0,0.10)),
+      #1f4a3c;
+  }
+  .cf-card .back {
+    position: absolute;
+    inset: 0;
+    background: var(--green-darker);
+    transform: translateZ(-7px);
+    backface-visibility: hidden;
+  }
+  .cf-card.tone-paper .back { background: var(--bg-deep); }
+  .cf-card.tone-sage  .back { background: #163729; }
+
+  /* card content */
+  .cf-vol {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .cf-rule {
+    height: 1px;
+    background: currentColor;
+    opacity: 0.25;
+    margin: 14px 0 10px;
+  }
+  .cf-cat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+  .cf-title {
+    margin: auto 0;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 22px;
+    line-height: 1.08;
+    letter-spacing: -0.014em;
+    text-align: center;
+  }
+  .cf-title em { font-style: italic; opacity: 0.85; }
+  .cf-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .cf-foot .pages strong {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    display: block;
+    margin-bottom: 2px;
+    opacity: 1;
+  }
+  /* tiny diagram in middle of card to differentiate */
+  .cf-glyph {
+    margin: 14px auto;
+    width: 56px; height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+    opacity: 0.85;
+  }
+  .cf-glyph svg { width: 100%; height: 100%; }
+
+  /* Lock overlay on covers */
+  .cf-lock {
+    position: absolute;
+    bottom: 18px; right: 18px;
+    width: 26px; height: 26px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+  }
+  .cf-lock::before {
+    content: "";
+    width: 8px; height: 8px;
+    border: 1px solid currentColor;
+    border-radius: 1px;
+  }
+  .cf-lock::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    width: 5px; height: 4px;
+    border: 1px solid currentColor;
+    border-bottom: 0;
+    border-radius: 2.5px 2.5px 0 0;
+  }
+
+  /* Coverflow controls */
+  .cf-controls {
+    position: relative;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 3;
+  }
+  .cf-arrow {
+    width: 44px; height: 44px;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green);
+    background: var(--bg-soft);
+    transition: background .2s, border-color .2s, transform .2s;
+    font-family: 'Source Serif 4', serif;
+    font-size: 18px;
+  }
+  .cf-arrow:hover {
+    background: var(--green);
+    color: var(--paper);
+    border-color: var(--green);
+  }
+  .cf-arrow:active { transform: scale(0.96); }
+  .cf-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .cf-counter b { color: var(--green); font-weight: 500; }
+  .cf-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .cf-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--rule);
+    transition: background .25s, transform .25s;
+  }
+  .cf-dot.active {
+    background: var(--green);
+    transform: scale(1.4);
+  }
+
+  /* center spotlight on the active card */
+  .stage-spotlight {
+    position: absolute;
+    left: 50%; bottom: 14%;
+    transform: translateX(-50%);
+    width: 360px; height: 30px;
+    background: radial-gradient(ellipse at center, rgba(15,58,44,0.32), transparent 70%);
+    filter: blur(6px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ---------- RIGHT PANE: auth ---------- */
+  .auth {
+    position: relative;
+    background: var(--paper);
+    border-left: 1px solid var(--rule);
+    padding: 56px 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+    overflow: hidden;
+  }
+  .auth::before {
+    /* subtle vertical strip */
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 4px;
+    background: var(--green);
+  }
+  .auth::after {
+    /* corner registration */
+    content: "";
+    position: absolute;
+    top: 32px; right: 32px;
+    width: 18px; height: 18px;
+    border-top: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    pointer-events: none;
+  }
+  .auth-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .auth-eyebrow .num {
+    color: var(--ink-mute);
+  }
+  .auth h2 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.018em;
+    margin: 0 0 32px;
+    color: var(--ink);
+  }
+  .auth h2 em { font-style: italic; color: var(--green); }
+
+  .panels {
+    position: relative;
+  }
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .tab {
+    padding: 12px 0;
+    margin-right: 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+    border-bottom: 1px solid transparent;
+    transform: translateY(1px);
+    transition: color .25s, border-color .25s;
+  }
+  .tab.active {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+  .tab .small {
+    color: var(--ink-mute);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-left: 6px;
+  }
+
+  .panel { display: none; animation: panelIn 0.45s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .panel.active { display: block; }
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+  .field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 8px;
+  }
+  .input {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+    outline: none;
+  }
+  .input:focus {
+    border-color: var(--green);
+    background: #fbf9f1;
+    box-shadow: 0 0 0 3px rgba(26,77,62,0.08);
+  }
+  .input::placeholder { color: var(--ink-mute); opacity: 0.65; font-style: italic; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .field-aux {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -6px;
+    margin-bottom: 22px;
+  }
+  .checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .checkbox input { display: none; }
+  .checkbox .box {
+    width: 14px; height: 14px;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    position: relative;
+    transition: background .15s, border-color .15s;
+  }
+  .checkbox input:checked + .box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .checkbox input:checked + .box::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 4px;
+    width: 4px; height: 7px;
+    border: 1.5px solid var(--paper);
+    border-top: 0; border-left: 0;
+    transform: rotate(45deg);
+  }
+  .field-aux a {
+    font-size: 12px;
+    color: var(--green);
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s;
+  }
+  .field-aux a:hover { border-bottom-color: var(--green); }
+
+  .submit {
+    width: 100%;
+    padding: 15px 24px;
+    background: var(--green);
+    color: var(--paper);
+    border: 1px solid var(--green);
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: background .2s, box-shadow .2s, transform .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .submit:hover { background: #246851; box-shadow: 0 6px 20px rgba(26,77,62,0.22); }
+  .submit:active { transform: translateY(1px); }
+  .submit .arrow { transition: transform .2s; }
+  .submit:hover .arrow { transform: translateX(3px); }
+
+  /* What you get list (under signup tab) */
+  .perks {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+  }
+  .perks .heading {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .perks ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .perks li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .perks li .pip {
+    width: 5px; height: 5px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .perks li b {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* legal footer */
+  .auth-foot {
+    margin-top: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+  .auth-foot a { color: var(--green); border-bottom: 1px dotted var(--green); }
+
+  /* ---------- Status ticker (ambient) ---------- */
+  .ticker {
+    position: absolute;
+    left: 48px;
+    bottom: 32px;
+    z-index: 3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .ticker .live {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulseDot 1.8s ease-in-out infinite;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1080px) {
+    .access-main { grid-template-columns: 1fr; }
+    .auth { border-left: 0; border-top: 1px solid var(--rule); }
+    .auth::before { width: 100%; height: 4px; left: 0; bottom: auto; }
+    .stage h1 { font-size: 48px; }
+    .stage { padding: 40px 24px 32px; }
+    .auth { padding: 40px 24px; }
+    .ticker { left: 24px; bottom: 16px; }
+    nav.primary ul { display: none; }
+    .brand-logo { height: 34px; }
+  }
+  @media (max-width: 640px) {
+    .stage h1 { font-size: 36px; }
+    .field-row { grid-template-columns: 1fr; }
+    .wrap { padding: 0 22px; }
+    .nav { padding-top: 14px; padding-bottom: 14px; }
+    .brand-logo { height: 27px; }
+    nav.primary .pill { padding: 8px 13px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand" aria-label="Pando Research home">
+      <img src="assets/pando-logo.svg" class="brand-logo" alt="Pando Research" />
+    </a>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="index.html#research">Research</a></li>
+        <li><a href="index.html#themes">Coverage</a></li>
+        <li><a href="index.html#engine">DAT Engine</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <a href="index.html" class="pill outline">
+        ← Back to site
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="access-main">
+
+  <!-- LEFT: Coverflow stage -->
+  <section class="stage">
+    <span class="stage-eyebrow"><span class="dot"></span> Pando Research · Restricted</span>
+    <h1>The library<br/>behind the <em>institutions.</em></h1>
+    <p class="lede">Forty-two reports. Six standing coverage areas. Five years of conviction. Every Pando dossier, primer, and data appendix — gated for qualified recipients.</p>
+
+    <div class="coverflow" id="coverflow" aria-label="Pando research library coverflow">
+      <div class="coverflow-track" id="cfTrack"></div>
+      <div class="stage-spotlight"></div>
+    </div>
+
+    <div class="cf-controls">
+      <button class="cf-arrow" id="cfPrev" aria-label="Previous report">‹</button>
+      <button class="cf-arrow" id="cfNext" aria-label="Next report">›</button>
+      <div class="cf-counter"><b id="cfIdx">01</b> / <span id="cfTotal">07</span> &nbsp; · &nbsp; <span id="cfMeta">Featured</span></div>
+      <div class="cf-dots" id="cfDots"></div>
+    </div>
+
+    <div class="ticker">
+      <span class="live"></span>
+      <span><b style="color:var(--ink-soft);font-weight:500;">42 reports</b> · 1,820 institutional readers · Updated quarterly</span>
+    </div>
+  </section>
+
+  <!-- RIGHT: Auth -->
+  <section class="auth">
+    <div class="auth-eyebrow">
+      <span class="num">§ 02</span>
+      <span>Access Request</span>
+    </div>
+    <h2>Sign in, or <em>request access.</em></h2>
+
+    <div class="panels">
+      <div class="tabs">
+        <button class="tab active" data-tab="signin">Sign in <span class="small">existing</span></button>
+        <button class="tab" data-tab="signup">Request access <span class="small">new</span></button>
+      </div>
+
+      <!-- SIGN IN -->
+      <form class="panel active" data-panel="signin" autocomplete="on" onsubmit="event.preventDefault();">
+        <div class="field">
+          <label for="si-email">Institutional email</label>
+          <input class="input" type="email" id="si-email" name="email" placeholder="you@yourfirm.com" required />
+        </div>
+        <div class="field">
+          <label for="si-password">Password</label>
+          <input class="input" type="password" id="si-password" name="password" placeholder="••••••••••" required />
+        </div>
+        <div class="field-aux">
+          <label class="checkbox">
+            <input type="checkbox" checked />
+            <span class="box"></span>
+            Keep me signed in
+          </label>
+          <a href="#">Forgot password →</a>
+        </div>
+        <button class="submit" type="submit">
+          Open the library <span class="arrow">→</span>
+        </button>
+      </form>
+
+      <!-- SIGN UP -->
+      <form class="panel" data-panel="signup" autocomplete="on" onsubmit="event.preventDefault();">
+        <div class="field">
+          <label for="su-email">Institutional email</label>
+          <input class="input" type="email" id="su-email" name="email" placeholder="you@yourfirm.com" required />
+        </div>
+        <div class="field-row">
+          <div class="field" style="margin-bottom: 0;">
+            <label for="su-name">Full name</label>
+            <input class="input" type="text" id="su-name" name="name" placeholder="Eleanor Whitfield" required />
+          </div>
+          <div class="field" style="margin-bottom: 0;">
+            <label for="su-firm">Firm</label>
+            <input class="input" type="text" id="su-firm" name="firm" placeholder="Bridgewater Asset Mgmt." required />
+          </div>
+        </div>
+        <div class="field" style="margin-top: 18px;">
+          <label for="su-role">Role</label>
+          <input class="input" type="text" id="su-role" name="role" placeholder="CIO, Treasurer, Strategist…" />
+        </div>
+        <div class="field-aux">
+          <label class="checkbox">
+            <input type="checkbox" checked />
+            <span class="box"></span>
+            I am a qualified institutional recipient
+          </label>
+        </div>
+        <button class="submit" type="submit">
+          Request the library <span class="arrow">→</span>
+        </button>
+
+        <div class="perks">
+          <div class="heading">What you unlock</div>
+          <ul>
+            <li><span class="pip"></span><span><b>The 2026 Global Digital Asset Infrastructure Report</b> — 200 pages, four risk matrices, plus the full coverage primer.</span></li>
+            <li><span class="pip"></span><span><b>The full archive</b> of 42 dossiers across L1s, stablecoins, DeFi, RWAs, and AI–quantum convergence.</span></li>
+            <li><span class="pip"></span><span><b>Quarterly briefings</b> — the data appendices, model sheets, and the DAT Impact Engine outputs.</span></li>
+            <li><span class="pip"></span><span><b>Analyst office hours</b> with the Pando research desk for institutional subscribers.</span></li>
+          </ul>
+        </div>
+      </form>
+    </div>
+
+    <div class="auth-foot">
+      Pando Research is published for qualified institutional recipients. By requesting access you agree to the <a href="#">terms of use</a> and <a href="#">distribution policy</a>.
+    </div>
+  </section>
+</main>
+
+<script>
+  /* =============================================================
+     Cover-flow data — these reflect the Pando coverage areas + featured report.
+     Each card carries its own visual treatment so the carousel feels alive.
+  ============================================================= */
+  const CARDS = [
+    {
+      vol: "Vol. IV · 2026",
+      cat: "Featured Report",
+      title: '<em>The 2026 Global</em><br/>Digital Asset Infrastructure Report',
+      pages: 200,
+      meta: "April 2026 · Featured",
+      tone: "",       // default deep green
+      glyph: glyphTokens()
+    },
+    {
+      vol: "Series 01",
+      cat: "Layer 1 Protocols",
+      title: "Consensus &amp;<br/><em>Scaling.</em>",
+      pages: 84,
+      meta: "Layer 1 Protocols",
+      tone: "tone-paper",
+      glyph: glyphCubes()
+    },
+    {
+      vol: "Series 02",
+      cat: "Stablecoins",
+      title: "Reserves &amp;<br/><em>Rails.</em>",
+      pages: 96,
+      meta: "Stablecoins · $185B float",
+      tone: "tone-sage",
+      glyph: glyphCircle()
+    },
+    {
+      vol: "Series 03",
+      cat: "DeFi",
+      title: "Liquidity &amp;<br/><em>Derivatives.</em>",
+      pages: 72,
+      meta: "DeFi · Microstructure",
+      tone: "",
+      glyph: glyphPulse()
+    },
+    {
+      vol: "Series 04",
+      cat: "Enterprise",
+      title: "Adoption<br/><em>Frameworks.</em>",
+      pages: 108,
+      meta: "Enterprise · Treasury",
+      tone: "tone-paper",
+      glyph: glyphBuilding()
+    },
+    {
+      vol: "Series 05",
+      cat: "Regulation",
+      title: "Global<br/><em>Compliance.</em>",
+      pages: 64,
+      meta: "Regulation · Jurisdictional",
+      tone: "tone-sage",
+      glyph: glyphShield()
+    },
+    {
+      vol: "Series 06",
+      cat: "Market Structure",
+      title: "Venues &amp;<br/><em>Discovery.</em>",
+      pages: 88,
+      meta: "Market Structure",
+      tone: "",
+      glyph: glyphChart()
+    }
+  ];
+
+  /* glyph SVG factories — small inline marks that match the editorial style */
+  function glyphTokens() {
+    return `<svg viewBox="0 0 56 56" stroke="currentColor" fill="none" stroke-width="1.2">
+      <rect x="6"  y="6"  width="14" height="14"/>
+      <rect x="22" y="6"  width="14" height="14"/>
+      <rect x="38" y="6"  width="12" height="14"/>
+      <rect x="6"  y="22" width="14" height="14" fill="currentColor" fill-opacity=".15"/>
+      <rect x="22" y="22" width="14" height="14"/>
+      <rect x="38" y="22" width="12" height="14"/>
+      <rect x="6"  y="38" width="14" height="12"/>
+      <rect x="22" y="38" width="14" height="12" fill="currentColor" fill-opacity=".15"/>
+      <rect x="38" y="38" width="12" height="12"/>
+    </svg>`;
+  }
+  function glyphCubes() {
+    return `<svg viewBox="0 0 56 56" stroke="currentColor" fill="none" stroke-width="1.2">
+      <path d="M28 6l20 11-20 11L8 17 28 6z"/>
+      <path d="M8 28l20 11 20-11"/>
+      <path d="M8 39l20 11 20-11"/>
+    </svg>`;
+  }
+  function glyphCircle() {
+    return `<svg viewBox="0 0 56 56" stroke="currentColor" fill="none" stroke-width="1.2">
+      <circle cx="28" cy="28" r="22"/>
+      <circle cx="28" cy="28" r="14"/>
+      <circle cx="28" cy="28" r="2.5" fill="currentColor"/>
+      <line x1="28" y1="6" x2="28" y2="50"/>
+    </svg>`;
+  }
+  function glyphPulse() {
+    return `<svg viewBox="0 0 56 56" stroke="currentColor" fill="none" stroke-width="1.2">
+      <path d="M4 28h10l5-16 8 32 6-22 6 12h13"/>
+    </svg>`;
+  }
+  function glyphBuilding() {
+    return `<svg viewBox="0 0 56 56" stroke="currentColor" fill="none" stroke-width="1.2">
+      <path d="M14 50V12a2 2 0 0 1 2-2h18a2 2 0 0 1 2 2v38"/>
+      <path d="M14 28H8a2 2 0 0 0-2 2v20h44V30a2 2 0 0 0-2-2h-6"/>
+      <line x1="22" y1="18" x2="28" y2="18"/>
+      <line x1="22" y1="26" x2="28" y2="26"/>
+      <line x1="22" y1="34" x2="28" y2="34"/>
+    </svg>`;
+  }
+  function glyphShield() {
+    return `<svg viewBox="0 0 56 56" stroke="currentColor" fill="none" stroke-width="1.2">
+      <path d="M46 30c0 12-8 17-17 21a2 2 0 0 1-1.5 0C19 47 11 42 11 30V14a2 2 0 0 1 2-2c4 0 9-2.5 13-5.5a2.5 2.5 0 0 1 3 0C33 9.5 38 12 42 12a2 2 0 0 1 2 2v16Z"/>
+      <path d="m20 28 5 5 10-10"/>
+    </svg>`;
+  }
+  function glyphChart() {
+    return `<svg viewBox="0 0 56 56" stroke="currentColor" fill="none" stroke-width="1.2">
+      <path d="M6 6v44h44"/>
+      <path d="M44 18l-12 12-9-9-7 7"/>
+      <circle cx="44" cy="18" r="2.5" fill="currentColor"/>
+      <circle cx="32" cy="30" r="2.5" fill="currentColor"/>
+      <circle cx="23" cy="21" r="2.5" fill="currentColor"/>
+    </svg>`;
+  }
+
+  /* =============================================================
+     Build cards
+  ============================================================= */
+  const track = document.getElementById('cfTrack');
+  const dotsEl = document.getElementById('cfDots');
+  CARDS.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = `cf-card ${c.tone || ''}`;
+    card.dataset.idx = i;
+    card.innerHTML = `
+      <div class="back"></div>
+      <div class="spine"></div>
+      <div class="face">
+        <div class="cf-vol">${c.vol}</div>
+        <div class="cf-rule"></div>
+        <div class="cf-cat">${c.cat}</div>
+
+        <div class="cf-glyph">${c.glyph}</div>
+
+        <div class="cf-title">${c.title}</div>
+
+        <div class="cf-foot">
+          <div class="pages"><strong>${c.pages}pp</strong>institutional</div>
+          <div>Pando · IV</div>
+        </div>
+
+        <div class="cf-lock"></div>
+      </div>
+    `;
+    card.addEventListener('click', () => goTo(i));
+    track.appendChild(card);
+
+    const dot = document.createElement('span');
+    dot.className = 'cf-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(dot);
+  });
+
+  document.getElementById('cfTotal').textContent = String(CARDS.length).padStart(2, '0');
+
+  /* =============================================================
+     Coverflow layout — each card is positioned on a horizontal arc
+  ============================================================= */
+  let active = 0;
+  const cards = [...track.querySelectorAll('.cf-card')];
+  const dots = [...dotsEl.querySelectorAll('.cf-dot')];
+
+  // Geometry: fan (editorial arc)
+  function layout() {
+    cards.forEach((card, i) => {
+      const offset = i - active;
+      const abs = Math.abs(offset);
+
+      const x = offset * 145;
+      const z = -abs * 90;
+      const ry = -offset * 28;
+      const scale = abs === 0 ? 1.05 : (1 - Math.min(abs, 4) * 0.07);
+      const opacity = abs > 3 ? 0 : (1 - abs * 0.12);
+      const blur = abs === 0 ? 0 : Math.min(abs * 0.6, 2.2);
+      const zIndex = 100 - abs;
+
+      card.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${abs * 4}px, ${z}px) rotateY(${ry}deg) scale(${scale})`;
+      card.style.opacity = opacity;
+      card.style.filter = `blur(${blur}px)`;
+      card.style.zIndex = zIndex;
+      card.style.pointerEvents = abs > 3 ? 'none' : 'auto';
+    });
+    dots.forEach((d, i) => d.classList.toggle('active', i === active));
+    document.getElementById('cfIdx').textContent = String(active + 1).padStart(2, '0');
+    document.getElementById('cfMeta').textContent = CARDS[active].meta;
+  }
+
+  function goTo(i) {
+    active = (i + CARDS.length) % CARDS.length;
+    layout();
+  }
+  function next() { goTo(active + 1); }
+  function prev() { goTo(active - 1); }
+
+  document.getElementById('cfNext').addEventListener('click', next);
+  document.getElementById('cfPrev').addEventListener('click', prev);
+
+  // Keyboard
+  window.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea')) return;
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft')  prev();
+  });
+
+  // Drag / swipe
+  let dragX = null, dragStart = 0;
+  const cf = document.getElementById('coverflow');
+  cf.addEventListener('pointerdown', (e) => {
+    dragX = e.clientX; dragStart = active;
+    cf.setPointerCapture(e.pointerId);
+  });
+  cf.addEventListener('pointermove', (e) => {
+    if (dragX == null) return;
+    const dx = e.clientX - dragX;
+    const step = Math.round(-dx / 90);
+    if (step !== 0) goTo(dragStart + step);
+  });
+  cf.addEventListener('pointerup', () => { dragX = null; });
+  cf.addEventListener('pointercancel', () => { dragX = null; });
+
+  // Auto-advance until user interacts
+  let userInteracted = false;
+  const auto = setInterval(() => {
+    if (userInteracted) { clearInterval(auto); return; }
+    next();
+  }, 3600);
+  ['click', 'keydown', 'pointerdown'].forEach(ev =>
+    document.addEventListener(ev, () => { userInteracted = true; }, { once: true })
+  );
+
+  // Initial layout — start with the featured one centered
+  layout();
+
+  /* =============================================================
+     Tabs
+  ============================================================= */
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.querySelectorAll('.panel').forEach(p =>
+        p.classList.toggle('active', p.dataset.panel === target)
+      );
+    });
+  });
+
+  /* small page-load animation: cards drop in */
+  cards.forEach((card, i) => {
+    card.style.opacity = 0;
+    card.style.transform += ' translateY(40px)';
+  });
+  requestAnimationFrame(() => {
+    setTimeout(() => layout(), 60);
+  });
+</script>
+
+</body>
+</html>

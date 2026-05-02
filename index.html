@@ -441,7 +441,7 @@
   }
   .editorial-art {
     aspect-ratio: 4 / 3;
-    background: var(--paper);
+    background: #F7F5EF;
     border: 1px solid var(--rule-soft);
     overflow: hidden;
   }
@@ -579,18 +579,29 @@
     position: relative;
     overflow: hidden;
   }
-  .engine-art img {
-    width: 100%; height: 100%; object-fit: cover;
-    mix-blend-mode: lighten;
-    opacity: 0.92;
-    filter: contrast(1.05);
+  .engine-art .illus-prism {
+    width: 100%; height: 100%; display: block;
   }
-  .engine-art::after {
-    content: "";
-    position: absolute; inset: 0;
-    background:
-      linear-gradient(90deg, rgba(26,77,62,0.55), rgba(26,77,62,0) 30%),
-      linear-gradient(0deg, rgba(15,58,44,0.45), rgba(15,58,44,0) 60%);
+  .engine-art .illus-meta {
+    position: absolute;
+    right: 18px; top: 14px;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: rgba(248,244,232,0.55);
+    z-index: 2;
+  }
+  .engine-art .illus-tag {
+    position: absolute;
+    left: 18px; bottom: 14px;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(248,244,232,0.85);
+    background: rgba(15,58,44,0.7);
+    padding: 5px 10px;
+    border: 1px solid rgba(248,244,232,0.2);
+    z-index: 2;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
   }
   .engine-stats {
     margin-top: 56px;
@@ -604,6 +615,332 @@
   .engine-stats div .sub {
     font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
     color: rgba(248,244,232,0.6);
+  }
+
+  /* ---------- Featured Report (after DAT Engine) ---------- */
+  .report {
+    padding: 120px 0 128px;
+    background: var(--bg);
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+    overflow: hidden;
+  }
+  .report-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 96px;
+    align-items: center;
+  }
+
+  /* Floating cover stage */
+  .report-stage {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    perspective: 1800px;
+    perspective-origin: 60% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .report-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 50%, rgba(26,77,62,0.08), transparent 70%);
+    pointer-events: none;
+  }
+  /* Faint editorial grid behind the cover */
+  .report-stage::after {
+    content: "";
+    position: absolute;
+    inset: 8% 12%;
+    background-image:
+      linear-gradient(to right, rgba(26,77,62,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(26,77,62,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, black, transparent 80%);
+    pointer-events: none;
+  }
+
+  .report-cover {
+    position: relative;
+    width: 64%;
+    aspect-ratio: 5 / 7;
+    transform-style: preserve-3d;
+    --thick: 14px;
+    transform: rotateY(-22deg) rotateX(6deg) rotateZ(-1.5deg);
+    transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+    animation: reportFloat 9s ease-in-out infinite;
+  }
+  .report-cover:hover { transform: rotateY(-12deg) rotateX(6deg) rotateZ(-0.5deg); }
+  @keyframes reportFloat {
+    0%, 100% { translate: 0 -6px; }
+    50%      { translate: 0 6px; }
+  }
+
+  /* Cover face */
+  .report-face {
+    position: absolute;
+    inset: 0;
+    background: var(--green);
+    color: var(--paper);
+    border: 1px solid #0a2b21;
+    box-shadow:
+      0 80px 120px -40px rgba(15,58,44,0.35),
+      0 30px 60px -20px rgba(15,58,44,0.28),
+      inset 0 0 0 1px rgba(248,244,232,0.04);
+    padding: 11% 10% 9%;
+    display: flex;
+    flex-direction: column;
+    transform: translateZ(var(--thick));
+    backface-visibility: hidden;
+  }
+  .report-face::before {
+    /* inner archival frame */
+    content: "";
+    position: absolute;
+    inset: 5%;
+    border: 1px solid rgba(248,244,232,0.18);
+    pointer-events: none;
+  }
+  .report-face::after {
+    /* corner registration tick */
+    content: "";
+    position: absolute;
+    top: 7%; right: 7%;
+    width: 14px; height: 14px;
+    border-top: 1px solid rgba(248,244,232,0.45);
+    border-right: 1px solid rgba(248,244,232,0.45);
+  }
+
+  .cover-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(248,244,232,0.65);
+    font-weight: 500;
+  }
+  .cover-logo {
+    display: block;
+    width: 47.5%;
+    max-width: 175px;
+    height: auto;
+    opacity: 0.92;
+  }
+  .cover-rule {
+    height: 1px;
+    background: rgba(248,244,232,0.25);
+    margin: 14px 0;
+  }
+  .cover-title {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.018em;
+    color: var(--paper);
+    margin: 8px 0 6px;
+  }
+  .cover-title em { font-style: italic; color: var(--sage); }
+  .cover-sub {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(248,244,232,0.7);
+    margin: 0;
+  }
+  .cover-mid-mark {
+    margin: auto 0;
+    text-align: center;
+    color: rgba(248,244,232,0.7);
+  }
+  .cover-mid-mark .glyph {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 38px;
+    line-height: 1;
+  }
+  .cover-mid-mark .vol {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(248,244,232,0.55);
+    margin-top: 14px;
+  }
+  .cover-foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+  }
+  .cover-foot .l, .cover-foot .r {
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(248,244,232,0.55);
+    line-height: 1.4;
+  }
+  .cover-foot .r { text-align: right; }
+  .cover-foot strong {
+    display: block;
+    font-weight: 500;
+    color: rgba(248,244,232,0.85);
+    letter-spacing: 0.22em;
+    margin-bottom: 2px;
+  }
+
+  /* Spine — left edge plane spanning from the front cover (+thick) to the back (-thick) */
+  .report-spine {
+    position: absolute;
+    top: 0; left: 0;
+    width: calc(var(--thick) * 2);
+    height: 100%;
+    /* Solid dark green binding, slightly darker than the cover, with directional shading */
+    background:
+      linear-gradient(90deg,
+        rgba(0,0,0,0.55) 0%,
+        rgba(0,0,0,0.25) 30%,
+        rgba(0,0,0,0.10) 70%,
+        rgba(0,0,0,0.35) 100%),
+      #0c3326;
+    /* Anchor to the LEFT edge of the front cover (left:0 + z=+thick), then rotate
+       around that edge so the spine sweeps backward to the back cover. */
+    transform-origin: left center;
+    transform: translateZ(var(--thick)) rotateY(-90deg);
+    backface-visibility: hidden;
+  }
+
+  /* Back cover */
+  .report-back {
+    position: absolute;
+    inset: 0;
+    background: #07241b;
+    transform: translateZ(calc(var(--thick) * -1));
+    backface-visibility: hidden;
+  }
+
+  /* Floor shadow */
+  .report-stage .floor {
+    position: absolute;
+    bottom: 4%;
+    left: 50%;
+    width: 60%;
+    height: 36px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(15,58,44,0.28), transparent 65%);
+    filter: blur(8px);
+    animation: reportShadow 9s ease-in-out infinite;
+    z-index: 0;
+  }
+  @keyframes reportShadow {
+    0%, 100% { transform: translateX(-50%) scale(0.95); opacity: 0.85; }
+    50%      { transform: translateX(-50%) scale(1.05); opacity: 0.7; }
+  }
+
+  /* RIGHT column */
+  .report-copy { max-width: 480px; }
+  .report-copy h2 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 350;
+    font-size: 56px;
+    line-height: 1.02;
+    letter-spacing: -0.024em;
+    margin: 0 0 22px;
+  }
+  .report-copy h2 em {
+    font-style: italic;
+    color: var(--green);
+  }
+  .report-copy .lede {
+    font-family: 'Source Serif 4', serif;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 36px;
+    font-weight: 350;
+  }
+  .report-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .report-meta dt {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .report-meta dd {
+    margin: 0;
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+  .report-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-bottom: 36px;
+  }
+  .report-stat {
+    padding: 4px 16px 4px 0;
+    border-left: 1px solid var(--rule);
+    padding-left: 16px;
+  }
+  .report-stat:first-child { border-left: none; padding-left: 0; }
+  .report-stat .num {
+    font-family: 'Source Serif 4', serif;
+    font-size: 28px;
+    font-weight: 350;
+    color: var(--green);
+    letter-spacing: -0.02em;
+    display: block;
+  }
+  .report-stat .lab {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 6px;
+    line-height: 1.4;
+    display: block;
+  }
+  .report-cta {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .report-foot-meta {
+    margin-top: 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .report-foot-meta .pip {
+    width: 5px; height: 5px;
+    background: var(--green);
+    border-radius: 50%;
   }
 
   /* ---------- Footer ---------- */
@@ -636,11 +973,191 @@
   }
   .meta-row .legal { display: flex; gap: 28px; }
 
+  /* ---------- Code-based illustrations ---------- */
+  .editorial-art {
+    background: #F7F5EF;
+    position: relative;
+  }
+  .editorial-art .illus {
+    width: 100%; height: 100%;
+    display: block;
+    color: var(--green);
+  }
+  .editorial-art .illus-tag {
+    position: absolute;
+    left: 14px; bottom: 12px;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--green);
+    background: rgba(247,245,239,0.92);
+    padding: 5px 10px;
+    border: 1px solid var(--rule);
+    z-index: 2;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+  .editorial-art .illus-meta {
+    position: absolute;
+    right: 8%; top: 11%;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-mute);
+    z-index: 2;
+  }
+
+  /* Tokenization: certificate fragmenting into a token grid */
+  .illus-token .doc-stroke   { stroke: currentColor; fill: none; stroke-width: 1.0; }
+  .illus-token .doc-thin     { stroke: currentColor; fill: none; stroke-width: 0.5; opacity: 0.5; }
+  .illus-token .doc-fill     { fill: currentColor; opacity: 0.04; }
+  .illus-token .doc-line     { stroke: currentColor; stroke-width: 0.5; opacity: 0.4; }
+  .illus-token .seal-stroke  { stroke: currentColor; fill: none; stroke-width: 0.7; }
+  .illus-token .tok-fill     { fill: var(--paper); opacity: 1; }
+  .illus-token .tok-stroke   { stroke: currentColor; fill: none; stroke-width: 0.7; opacity: 0.9; }
+  .illus-token .tok-hash     { stroke: currentColor; stroke-width: 0.4; opacity: 0.55; }
+  .illus-token .tok-dot      { fill: currentColor; opacity: 0.75; }
+  .illus-token .axis-mark    { stroke: currentColor; stroke-width: 0.55; opacity: 0.3; stroke-dasharray: 2 3; }
+  .illus-token .micro-text   {
+    font-family: 'Source Serif 4', serif;
+    font-size: 6px;
+    letter-spacing: 0.08em;
+    fill: currentColor;
+  }
+  .illus-token .lib-text     {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 8.5px;
+    fill: currentColor;
+    opacity: 0.7;
+  }
+
+  @keyframes tokFlowIn {
+    0%   { opacity: 0; transform: translate(-8px, 4px) scale(0.7); }
+    35%  { opacity: 1; transform: translate(0, 0) scale(1); }
+    78%  { opacity: 1; transform: translate(0, 0) scale(1); }
+    100% { opacity: 0.4; transform: translate(0, 0) scale(1); }
+  }
+  .illus-token .tok-cell {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: tokFlowIn 5.2s ease-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+  }
+  .illus-token .pulse {
+    animation: shimmer 3s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+  @keyframes traceFlow {
+    0%   { stroke-dashoffset: 60; }
+    100% { stroke-dashoffset: 0; }
+  }
+  .illus-token .trace {
+    stroke: currentColor;
+    stroke-width: 0.55;
+    fill: none;
+    opacity: 0.55;
+    stroke-dasharray: 3 4;
+    animation: traceFlow 4s linear infinite;
+  }
+
+  /* Infrastructure: vault dial with topographic waves */
+  @keyframes dialSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes dialCounter {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+  }
+  @keyframes wavePulse {
+    0%, 100% { opacity: 0.18; }
+    50%      { opacity: 0.42; }
+  }
+  .illus-vault .vault-stroke { stroke: currentColor; fill: none; stroke-width: 1; }
+  .illus-vault .vault-thin   { stroke: currentColor; fill: none; stroke-width: 0.6; opacity: 0.55; }
+  .illus-vault .vault-tick   { stroke: currentColor; stroke-width: 1; }
+  .illus-vault .dial-outer {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: dialSpin 38s linear infinite;
+  }
+  .illus-vault .dial-inner {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: dialCounter 22s linear infinite;
+  }
+  .illus-vault .topo {
+    stroke: currentColor; fill: none; stroke-width: 0.55;
+    stroke-dasharray: 1 3;
+    animation: wavePulse 6s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+
+  /* DAT Engine: calculator readout — inputs → valuation stack */
+  .illus-prism { color: var(--paper); }
+  .illus-prism .axis        { stroke: currentColor; opacity: 0.32; stroke-width: 0.8; }
+  .illus-prism .grid-fine   { stroke: currentColor; opacity: 0.10; stroke-width: 0.5; stroke-dasharray: 2 3; }
+  .illus-prism .panel       { stroke: currentColor; fill: none; opacity: 0.28; stroke-width: 1; }
+  .illus-prism .panel-rule  { stroke: currentColor; opacity: 0.16; stroke-width: 0.6; }
+  .illus-prism .panel-label { fill: currentColor; opacity: 0.5; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; }
+  .illus-prism .panel-key   { fill: currentColor; opacity: 0.85; font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em; }
+  .illus-prism .panel-val   { fill: currentColor; opacity: 0.95; font-family: 'Source Serif 4', serif; font-size: 14px; }
+  .illus-prism .track       { stroke: currentColor; opacity: 0.20; stroke-width: 2.2; stroke-linecap: round; }
+  .illus-prism .track-fill  { stroke: var(--sage); stroke-width: 2.2; stroke-linecap: round; fill: none; }
+  .illus-prism .knob        { fill: var(--paper); stroke: var(--sage); stroke-width: 1.5; }
+
+  .illus-prism .stack-base  { fill: rgba(248,244,232,0.06); stroke: currentColor; stroke-width: 0.8; opacity: 0.6; }
+  .illus-prism .stack-seg   { stroke: rgba(15,58,44,0.85); stroke-width: 1; }
+  .illus-prism .stack-seg.s1{ fill: var(--sage); opacity: 0.85; }
+  .illus-prism .stack-seg.s2{ fill: var(--sage); opacity: 0.65; }
+  .illus-prism .stack-seg.s3{ fill: var(--sage); opacity: 0.45; }
+  .illus-prism .delta-line  { stroke: currentColor; opacity: 0.45; stroke-width: 0.6; stroke-dasharray: 2 3; }
+  .illus-prism .out-ray     { stroke: currentColor; stroke-width: 0.7; opacity: 0.55; fill: none; }
+  .illus-prism .arrow-head  { fill: currentColor; opacity: 0.55; }
+  .illus-prism .label-text {
+    fill: currentColor; opacity: 0.55;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 11px;
+    font-feature-settings: "lnum","tnum";
+  }
+  @keyframes datFlow {
+    0% { stroke-dashoffset: 22; }
+    100% { stroke-dashoffset: 0; }
+  }
+  .illus-prism .out-ray {
+    stroke-dasharray: 6 4;
+    animation: datFlow 2.4s linear infinite;
+  }
+  .illus-prism .stack-seg {
+    /* static; rely on initial fill */
+  }
+  @keyframes datKnobBlink {
+    0%, 100% { fill: var(--paper); }
+    50%      { fill: var(--sage); }
+  }
+  .illus-prism .knob {
+    animation: datKnobBlink 3s ease-in-out infinite;
+    animation-delay: var(--kd, 0s);
+  }
+
+  /* Responsive */
+  @media (max-width: 960px) {
+    .editorial-art .illus-meta { display: none; }
+  }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 960px) {
     .hero { padding: 56px 0 48px; }
-    .hero-grid, .editorial-grid, .engine-grid, .section-head { grid-template-columns: 1fr; gap: 40px; }
+    .hero-grid, .editorial-grid, .engine-grid, .section-head, .report-grid { grid-template-columns: 1fr; gap: 40px; }
     .hero h1 { font-size: 48px; }
+    .report { padding: 80px 0 88px; }
+    .report-copy h2 { font-size: 40px; }
+    .report-stage { aspect-ratio: 5 / 4; }
+    .report-cover { width: 50%; }
     .coverage-grid { grid-template-columns: repeat(2, 1fr); }
     .stat:nth-child(2) { border-right: none; }
     .stat:nth-child(n+3) { border-top: 1px solid var(--rule-soft); }
@@ -865,10 +1382,244 @@
 <section class="editorial">
   <div class="wrap editorial-grid">
     <div class="editorial-art">
-      <img src="assets/02-tokenization.png" alt="Editorial illustration of three classical columns dissolving into a digital lattice" />
+      <svg class="illus illus-token" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <!-- Token cell symbol: refined programmable ledger unit -->
+          <symbol id="tok" viewBox="0 0 40 40">
+            <rect x="2.5" y="2.5" width="35" height="35" fill="#F7F5EF" stroke="#1A4D3E" stroke-width="0.7" />
+            <rect x="5.5" y="5.5" width="29" height="29" fill="none" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.45" />
+            <line x1="9"  y1="11" x2="20" y2="11" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <circle cx="30" cy="30" r="0.9" fill="#1A4D3E" fill-opacity="0.75" />
+          </symbol>
+
+          <!-- Variant: token with extra serial detail -->
+          <symbol id="tok2" viewBox="0 0 40 40">
+            <rect x="2.5" y="2.5" width="35" height="35" fill="#F7F5EF" stroke="#1A4D3E" stroke-width="0.7" />
+            <rect x="5.5" y="5.5" width="29" height="29" fill="none" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.45" />
+            <line x1="9"  y1="11" x2="20" y2="11" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <line x1="9"  y1="14" x2="16" y2="14" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <circle cx="30" cy="30" r="0.9" fill="#1A4D3E" fill-opacity="0.75" />
+          </symbol>
+
+          <!-- Metadata panel: financial asset metadata card -->
+          <symbol id="ledger" viewBox="0 0 80 28">
+            <rect x="0.5" y="0.5" width="79" height="27" fill="#F7F5EF" stroke="#1A4D3E" stroke-width="0.7" />
+            <line x1="0.5" y1="7" x2="79.5" y2="7" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <line x1="5"  y1="14" x2="32" y2="14" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <line x1="5"  y1="19" x2="26" y2="19" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <line x1="5"  y1="24" x2="22" y2="24" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <line x1="48" y1="14" x2="74" y2="14" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <line x1="48" y1="19" x2="68" y2="19" stroke="#1A4D3E" stroke-width="0.4" stroke-opacity="0.55" />
+            <circle cx="72" cy="23" r="0.9" fill="#1A4D3E" fill-opacity="0.75" />
+          </symbol>
+        </defs>
+
+        <!-- Subtle backdrop axes / measurement frame -->
+        <g class="axis-marks">
+          <line class="axis-mark" x1="40"  y1="40"  x2="40"  y2="560" />
+          <line class="axis-mark" x1="760" y1="40"  x2="760" y2="560" />
+          <line class="axis-mark" x1="40"  y1="40"  x2="760" y2="40" />
+          <line class="axis-mark" x1="40"  y1="560" x2="760" y2="560" />
+        </g>
+
+        <!-- Corner registration marks -->
+        <g class="doc-thin">
+          <path d="M 40 56 L 40 40 L 56 40" />
+          <path d="M 744 40 L 760 40 L 760 56" />
+          <path d="M 760 544 L 760 560 L 744 560" />
+          <path d="M 56 560 L 40 560 L 40 544" />
+        </g>
+
+        <!-- Header microtype -->
+        <text class="micro-text" x="40" y="32" style="opacity:.55">PANDO · ASSET RECORD</text>
+        <text class="micro-text" x="760" y="32" text-anchor="end" style="opacity:.55">FORM T-2026 · CLASS A</text>
+        <text class="micro-text" x="40" y="582" style="opacity:.55">ANALOGUE INSTRUMENT</text>
+        <text class="micro-text" x="760" y="582" text-anchor="end" style="opacity:.55">PROGRAMMABLE LEDGER</text>
+
+        <!-- ==========================================================
+             LEFT: a single physical certificate with a peeling corner
+             ========================================================== -->
+        <g transform="translate(72, 110)">
+          <!-- soft drop shadow plate -->
+          <rect class="doc-fill" x="6" y="10" width="280" height="380" />
+
+          <!-- main certificate -->
+          <rect class="doc-stroke" x="0" y="0" width="280" height="380" />
+          <rect class="doc-thin"   x="10" y="10" width="260" height="360" />
+          <rect class="doc-thin"   x="16" y="16" width="248" height="348" />
+
+          <!-- header band — airy, no heavy divider -->
+          <text class="micro-text" x="140" y="36" text-anchor="middle" style="font-size:7.5px; letter-spacing:0.36em;">CERTIFICATE OF ASSET</text>
+          <!-- delicate centered divider w/ typographic mark -->
+          <line class="doc-thin" x1="80"  y1="46" x2="124" y2="46" style="opacity:.45"/>
+          <text class="micro-text" x="140" y="49" text-anchor="middle" style="font-size:5px; letter-spacing:0.3em; opacity:.6;">·  ·  ·</text>
+          <line class="doc-thin" x1="156" y1="46" x2="200" y2="46" style="opacity:.45"/>
+          <text class="lib-text"   x="140" y="62" text-anchor="middle">— Real Property, Series III —</text>
+
+          <!-- engraved body lines (text placeholder) -->
+          <g class="doc-line">
+            <line x1="32" y1="86"  x2="248" y2="86" />
+            <line x1="32" y1="96"  x2="232" y2="96" />
+            <line x1="32" y1="106" x2="248" y2="106" />
+            <line x1="32" y1="116" x2="216" y2="116" />
+            <line x1="32" y1="126" x2="240" y2="126" />
+            <line x1="32" y1="136" x2="208" y2="136" />
+          </g>
+
+          <!-- value box -->
+          <rect class="doc-thin" x="32" y="158" width="216" height="64" />
+          <text class="micro-text" x="42" y="173" style="font-size:6.5px; letter-spacing:0.2em;">DECLARED VALUE</text>
+          <text x="140" y="208" text-anchor="middle"
+            style="font-family:'Source Serif 4',serif; font-weight:350; font-size:32px; letter-spacing:-0.02em; fill:currentColor;">
+            $ 1,000,000
+          </text>
+
+          <!-- footer body -->
+          <g class="doc-line">
+            <line x1="32" y1="246" x2="220" y2="246" />
+            <line x1="32" y1="256" x2="248" y2="256" />
+            <line x1="32" y1="266" x2="200" y2="266" />
+          </g>
+
+          <!-- signature lines -->
+          <line class="doc-stroke" x1="32"  y1="324" x2="120" y2="324" />
+          <line class="doc-stroke" x1="160" y1="324" x2="248" y2="324" />
+          <text class="micro-text" x="32"  y="336" style="font-size:6px; letter-spacing:0.2em; opacity:.7">CUSTODIAN</text>
+          <text class="micro-text" x="160" y="336" style="font-size:6px; letter-spacing:0.2em; opacity:.7">REGISTRAR</text>
+
+          <!-- engraved seal (left-bottom) -->
+          <g transform="translate(60, 296)" class="seal-stroke">
+            <circle cx="0" cy="0" r="22" />
+            <circle cx="0" cy="0" r="17" />
+            <circle cx="0" cy="0" r="11" style="opacity:.5"/>
+            <!-- radial ticks -->
+            <g>
+              <line x1="0" y1="-22" x2="0" y2="-17" />
+              <line x1="15.6" y1="-15.6" x2="12" y2="-12" />
+              <line x1="22" y1="0" x2="17" y2="0" />
+              <line x1="15.6" y1="15.6" x2="12" y2="12" />
+              <line x1="0" y1="22" x2="0" y2="17" />
+              <line x1="-15.6" y1="15.6" x2="-12" y2="12" />
+              <line x1="-22" y1="0" x2="-17" y2="0" />
+              <line x1="-15.6" y1="-15.6" x2="-12" y2="-12" />
+            </g>
+            <text x="0" y="2" text-anchor="middle"
+              style="font-family:'Source Serif 4',serif; font-style:italic; font-size:9px; fill:currentColor;">P</text>
+          </g>
+
+          <!-- =========== Subtle archival registration mark, top-right =========== -->
+          <g class="doc-thin" style="opacity:.6">
+            <!-- nested corner ticks -->
+            <path d="M 268 10 L 270 10 L 270 12" />
+            <path d="M 264 10 L 266 10 L 266 14" fill="none" />
+            <!-- tiny crop mark -->
+            <line x1="252" y1="6" x2="258" y2="6" />
+            <line x1="252" y1="6" x2="252" y2="12" />
+          </g>
+          <text class="micro-text" x="262" y="22" text-anchor="end" style="font-size:5px; letter-spacing:0.2em; opacity:.55;">REG. 04 · 26</text>
+        </g>
+
+        <!-- ==========================================================
+             MIDDLE: the transformation hinge — TOKENIZE node
+             ========================================================== -->
+        <g transform="translate(424, 280)">
+          <!-- elegant curved dashed paths from cert edge to convergence dot -->
+          <path class="trace" d="M -72 -90 C -36 -90, -16 -50, 0 0" />
+          <path class="trace" d="M -72 0   C -36 0,    -16 0,   0 0"   style="animation-delay: -0.8s"/>
+          <path class="trace" d="M -72 90  C -36 90,   -16 50,  0 0"  style="animation-delay: -1.6s"/>
+
+          <!-- outflow: dot → token grid (right side) -->
+          <path class="trace" d="M 0 0 C 16 -50, 36 -90, 72 -90" style="animation-delay: -0.4s"/>
+          <path class="trace" d="M 0 0 C 16 0,   36 0,   72 0"   style="animation-delay: -1.2s"/>
+          <path class="trace" d="M 0 0 C 16 50,  36 90,  72 90"  style="animation-delay: -2.0s"/>
+
+          <!-- center node: single convergence dot -->
+          <circle class="tok-dot pulse" cx="0" cy="0" r="3" style="--d: 0s; opacity:.95"/>
+
+          <!-- annotation: bigger, deliberate -->
+          <text class="micro-text" x="0" y="-44" text-anchor="middle"
+            style="font-size:12px; letter-spacing:0.42em; font-weight:500;">TOKENIZE</text>
+          <line class="doc-thin" x1="-32" y1="-38" x2="32" y2="-38" style="opacity:.45"/>
+          <text class="lib-text"   x="0" y="56" text-anchor="middle" style="opacity:.7">→ on-chain</text>
+        </g>
+
+        <!-- ==========================================================
+             RIGHT: the certificate, broken into a 6×6 token grid
+             plus a few "ledger row" entries at the top
+             ========================================================== -->
+        <g transform="translate(496, 110)">
+
+          <!-- ledger header rows -->
+          <g transform="translate(0, 0)">
+            <use href="#ledger" x="0"   y="0" width="80" height="28" class="tok-cell" style="--d:0.0s"/>
+            <use href="#ledger" x="86"  y="0" width="80" height="28" class="tok-cell" style="--d:0.15s"/>
+            <use href="#ledger" x="172" y="0" width="80" height="28" class="tok-cell" style="--d:0.3s"/>
+          </g>
+          <line class="doc-thin" x1="0" y1="40" x2="252" y2="40" />
+          <text class="micro-text" x="0" y="52" style="opacity:.55; font-size:6.5px; letter-spacing:0.2em;">CLASS-A · 36 UNITS</text>
+          <text class="micro-text" x="252" y="52" text-anchor="end" style="opacity:.55; font-size:6.5px; letter-spacing:0.2em;">$27,778 / TOKEN</text>
+
+          <!-- the 6x6 token grid -->
+          <g transform="translate(0, 64)">
+            <!-- row 1 -->
+            <use href="#tok"  x="0"   y="0"   width="40" height="40" class="tok-cell" style="--d:0.5s"/>
+            <use href="#tok2" x="42"  y="0"   width="40" height="40" class="tok-cell" style="--d:0.6s"/>
+            <use href="#tok"  x="84"  y="0"   width="40" height="40" class="tok-cell" style="--d:0.7s"/>
+            <use href="#tok"  x="126" y="0"   width="40" height="40" class="tok-cell" style="--d:0.8s"/>
+            <use href="#tok2" x="168" y="0"   width="40" height="40" class="tok-cell" style="--d:0.9s"/>
+            <use href="#tok"  x="210" y="0"   width="40" height="40" class="tok-cell" style="--d:1.0s"/>
+            <!-- row 2 -->
+            <use href="#tok"  x="0"   y="42"  width="40" height="40" class="tok-cell" style="--d:0.7s"/>
+            <use href="#tok"  x="42"  y="42"  width="40" height="40" class="tok-cell" style="--d:0.8s"/>
+            <use href="#tok2" x="84"  y="42"  width="40" height="40" class="tok-cell" style="--d:0.9s"/>
+            <use href="#tok"  x="126" y="42"  width="40" height="40" class="tok-cell" style="--d:1.0s"/>
+            <use href="#tok"  x="168" y="42"  width="40" height="40" class="tok-cell" style="--d:1.1s"/>
+            <use href="#tok2" x="210" y="42"  width="40" height="40" class="tok-cell" style="--d:1.2s"/>
+            <!-- row 3 -->
+            <use href="#tok2" x="0"   y="84"  width="40" height="40" class="tok-cell" style="--d:0.9s"/>
+            <use href="#tok"  x="42"  y="84"  width="40" height="40" class="tok-cell" style="--d:1.0s"/>
+            <use href="#tok"  x="84"  y="84"  width="40" height="40" class="tok-cell" style="--d:1.1s"/>
+            <use href="#tok2" x="126" y="84"  width="40" height="40" class="tok-cell" style="--d:1.2s"/>
+            <use href="#tok"  x="168" y="84"  width="40" height="40" class="tok-cell" style="--d:1.3s"/>
+            <use href="#tok"  x="210" y="84"  width="40" height="40" class="tok-cell" style="--d:1.4s"/>
+            <!-- row 4 -->
+            <use href="#tok"  x="0"   y="126" width="40" height="40" class="tok-cell" style="--d:1.1s"/>
+            <use href="#tok2" x="42"  y="126" width="40" height="40" class="tok-cell" style="--d:1.2s"/>
+            <use href="#tok"  x="84"  y="126" width="40" height="40" class="tok-cell" style="--d:1.3s"/>
+            <use href="#tok"  x="126" y="126" width="40" height="40" class="tok-cell" style="--d:1.4s"/>
+            <use href="#tok2" x="168" y="126" width="40" height="40" class="tok-cell" style="--d:1.5s"/>
+            <use href="#tok"  x="210" y="126" width="40" height="40" class="tok-cell" style="--d:1.6s"/>
+            <!-- row 5 -->
+            <use href="#tok"  x="0"   y="168" width="40" height="40" class="tok-cell" style="--d:1.3s"/>
+            <use href="#tok"  x="42"  y="168" width="40" height="40" class="tok-cell" style="--d:1.4s"/>
+            <use href="#tok2" x="84"  y="168" width="40" height="40" class="tok-cell" style="--d:1.5s"/>
+            <use href="#tok"  x="126" y="168" width="40" height="40" class="tok-cell" style="--d:1.6s"/>
+            <use href="#tok"  x="168" y="168" width="40" height="40" class="tok-cell" style="--d:1.7s"/>
+            <use href="#tok2" x="210" y="168" width="40" height="40" class="tok-cell" style="--d:1.8s"/>
+            <!-- row 6 -->
+            <use href="#tok2" x="0"   y="210" width="40" height="40" class="tok-cell" style="--d:1.5s"/>
+            <use href="#tok"  x="42"  y="210" width="40" height="40" class="tok-cell" style="--d:1.6s"/>
+            <use href="#tok"  x="84"  y="210" width="40" height="40" class="tok-cell" style="--d:1.7s"/>
+            <use href="#tok2" x="126" y="210" width="40" height="40" class="tok-cell" style="--d:1.8s"/>
+            <use href="#tok"  x="168" y="210" width="40" height="40" class="tok-cell" style="--d:1.9s"/>
+            <use href="#tok"  x="210" y="210" width="40" height="40" class="tok-cell" style="--d:2.0s"/>
+          </g>
+
+          <!-- bottom annotation -->
+          <line class="doc-thin" x1="0" y1="332" x2="252" y2="332" />
+          <text class="micro-text" x="0" y="346" style="opacity:.55; font-size:6.5px; letter-spacing:0.2em;">ATTRIBUTES</text>
+          <g transform="translate(0, 354)">
+            <text class="lib-text" x="0"   y="10">— transparent</text>
+            <text class="lib-text" x="84"  y="10">— liquid</text>
+            <text class="lib-text" x="160" y="10">— programmable</text>
+          </g>
+        </g>
+      </svg>
+      <span class="illus-meta">Fig. II — From Instrument to Token</span>
+      <span class="illus-tag">Tokenization</span>
     </div>
     <div>
-      <div class="eyebrow">From the desk &nbsp;·&nbsp; Tokenization</div>
+      <div class="eyebrow" style="padding: 0px 0px 16px">From the desk &nbsp;·&nbsp; Tokenization</div>
       <blockquote>
         Public companies won't tokenize real-world assets to follow a trend — they'll do it because capital markets will increasingly reward assets that are <em>transparent, liquid, programmable,</em> and ready to move at the speed of software.
       </blockquote>
@@ -969,7 +1720,138 @@
       <div class="attribution"><b>Pando Research</b> &nbsp;·&nbsp; Infrastructure Primer, 2026</div>
     </div>
     <div class="editorial-art">
-      <img src="assets/03-infrastructure.png" alt="Editorial illustration of a vault face with topographic contour lines" />
+      <svg class="illus illus-vault" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Topographic wave lines, left and right -->
+        <g class="topo-lines">
+          <path class="topo" d="M 10 100 Q 80 80 130 110 T 240 100" style="--d:0s"/>
+          <path class="topo" d="M 10 130 Q 80 110 140 140 T 250 130" style="--d:0.3s"/>
+          <path class="topo" d="M 10 160 Q 90 140 150 170 T 260 160" style="--d:0.6s"/>
+          <path class="topo" d="M 10 200 Q 90 180 150 210 T 260 200" style="--d:0.9s"/>
+          <path class="topo" d="M 10 240 Q 90 220 150 250 T 260 240" style="--d:1.2s"/>
+          <path class="topo" d="M 10 290 Q 90 270 150 300 T 260 290" style="--d:1.5s"/>
+          <path class="topo" d="M 10 340 Q 90 320 150 350 T 260 340" style="--d:1.8s"/>
+          <path class="topo" d="M 10 390 Q 90 370 150 400 T 260 390" style="--d:2.1s"/>
+          <path class="topo" d="M 10 440 Q 90 420 150 450 T 260 440" style="--d:2.4s"/>
+          <path class="topo" d="M 10 490 Q 90 470 150 500 T 260 490" style="--d:2.7s"/>
+
+          <path class="topo" d="M 540 100 Q 620 80 680 110 T 790 100" style="--d:0.2s"/>
+          <path class="topo" d="M 540 130 Q 620 110 680 140 T 790 130" style="--d:0.5s"/>
+          <path class="topo" d="M 540 160 Q 620 140 680 170 T 790 160" style="--d:0.8s"/>
+          <path class="topo" d="M 540 200 Q 620 180 680 210 T 790 200" style="--d:1.1s"/>
+          <path class="topo" d="M 540 240 Q 620 220 680 250 T 790 240" style="--d:1.4s"/>
+          <path class="topo" d="M 540 290 Q 620 270 680 300 T 790 290" style="--d:1.7s"/>
+          <path class="topo" d="M 540 340 Q 620 320 680 350 T 790 340" style="--d:2.0s"/>
+          <path class="topo" d="M 540 390 Q 620 370 680 400 T 790 390" style="--d:2.3s"/>
+          <path class="topo" d="M 540 440 Q 620 420 680 450 T 790 440" style="--d:2.6s"/>
+          <path class="topo" d="M 540 490 Q 620 470 680 500 T 790 490" style="--d:2.9s"/>
+        </g>
+
+        <!-- Vault arch frame -->
+        <g class="vault-frame">
+          <path class="vault-stroke" d="M 240 540 L 240 290 A 160 160 0 0 1 560 290 L 560 540" />
+          <path class="vault-thin"   d="M 256 540 L 256 290 A 144 144 0 0 1 544 290 L 544 540" />
+          <path class="vault-thin"   d="M 270 540 L 270 290 A 130 130 0 0 1 530 290 L 530 540" />
+          <line class="vault-stroke" x1="220" y1="540" x2="580" y2="540" />
+          <line class="vault-thin"   x1="225" y1="546" x2="575" y2="546" />
+          <!-- plinth/border at bottom -->
+          <rect class="vault-thin" x="270" y="450" width="260" height="80" />
+          <rect class="vault-thin" x="280" y="460" width="240" height="60" />
+        </g>
+
+        <!-- Vault door body -->
+        <g class="vault-door">
+          <!-- hinge plate -->
+          <rect class="vault-stroke" x="240" y="320" width="20" height="40" />
+          <rect class="vault-stroke" x="240" y="380" width="20" height="40" />
+          <circle class="vault-stroke" cx="250" cy="340" r="3" />
+          <circle class="vault-stroke" cx="250" cy="400" r="3" />
+
+          <!-- outer ring with bolts -->
+          <circle class="vault-stroke" cx="400" cy="370" r="138" />
+          <circle class="vault-thin"   cx="400" cy="370" r="130" />
+          <g class="vault-bolts">
+            <circle class="vault-stroke" cx="400" cy="240" r="4" />
+            <circle class="vault-stroke" cx="463" cy="257" r="4" />
+            <circle class="vault-stroke" cx="510" cy="307" r="4" />
+            <circle class="vault-stroke" cx="528" cy="370" r="4" />
+            <circle class="vault-stroke" cx="510" cy="433" r="4" />
+            <circle class="vault-stroke" cx="463" cy="483" r="4" />
+            <circle class="vault-stroke" cx="400" cy="500" r="4" />
+            <circle class="vault-stroke" cx="337" cy="483" r="4" />
+            <circle class="vault-stroke" cx="290" cy="433" r="4" />
+            <circle class="vault-stroke" cx="272" cy="370" r="4" />
+            <circle class="vault-stroke" cx="290" cy="307" r="4" />
+            <circle class="vault-stroke" cx="337" cy="257" r="4" />
+          </g>
+
+          <!-- rotating outer dial -->
+          <g class="dial-outer" transform="translate(400 370)">
+            <circle class="vault-thin"   cx="0" cy="0" r="118" />
+            <circle class="vault-thin"   cx="0" cy="0" r="108" />
+            <!-- tick marks -->
+            <g class="vault-tick">
+              <line x1="0" y1="-118" x2="0" y2="-108" />
+              <line x1="59" y1="-102" x2="54" y2="-93.5" transform="rotate(0)"/>
+              <line x1="102" y1="-59" x2="93.5" y2="-54" />
+              <line x1="118" y1="0" x2="108" y2="0" />
+              <line x1="102" y1="59" x2="93.5" y2="54" />
+              <line x1="59" y1="102" x2="54" y2="93.5" />
+              <line x1="0" y1="118" x2="0" y2="108" />
+              <line x1="-59" y1="102" x2="-54" y2="93.5" />
+              <line x1="-102" y1="59" x2="-93.5" y2="54" />
+              <line x1="-118" y1="0" x2="-108" y2="0" />
+              <line x1="-102" y1="-59" x2="-93.5" y2="-54" />
+              <line x1="-59" y1="-102" x2="-54" y2="-93.5" />
+            </g>
+            <!-- numerals (small) -->
+            <g style="font-family: 'Source Serif 4', serif; font-size: 9px; fill: currentColor; opacity: .75;">
+              <text x="0" y="-92" text-anchor="middle">0</text>
+              <text x="80" y="-46" text-anchor="middle">15</text>
+              <text x="92" y="3"  text-anchor="middle">30</text>
+              <text x="80" y="52" text-anchor="middle">45</text>
+              <text x="0" y="98" text-anchor="middle">60</text>
+              <text x="-80" y="52" text-anchor="middle">75</text>
+              <text x="-92" y="3" text-anchor="middle">90</text>
+              <text x="-80" y="-46" text-anchor="middle">105</text>
+            </g>
+          </g>
+
+          <!-- middle ring -->
+          <circle class="vault-thin" cx="400" cy="370" r="92" />
+          <circle class="vault-thin" cx="400" cy="370" r="78" />
+
+          <!-- inner counter-rotating dial -->
+          <g class="dial-inner" transform="translate(400 370)">
+            <circle class="vault-thin" cx="0" cy="0" r="64" />
+            <g class="vault-tick">
+              <line x1="0" y1="-64" x2="0" y2="-56" />
+              <line x1="32" y1="-55" x2="28" y2="-49" />
+              <line x1="55" y1="-32" x2="49" y2="-28" />
+              <line x1="64" y1="0" x2="56" y2="0" />
+              <line x1="55" y1="32" x2="49" y2="28" />
+              <line x1="32" y1="55" x2="28" y2="49" />
+              <line x1="0" y1="64" x2="0" y2="56" />
+              <line x1="-32" y1="55" x2="-28" y2="49" />
+              <line x1="-55" y1="32" x2="-49" y2="28" />
+              <line x1="-64" y1="0" x2="-56" y2="0" />
+              <line x1="-55" y1="-32" x2="-49" y2="-28" />
+              <line x1="-32" y1="-55" x2="-28" y2="-49" />
+            </g>
+            <!-- spokes -->
+            <line class="vault-stroke" x1="0" y1="-50" x2="0" y2="50" />
+            <line class="vault-stroke" x1="-50" y1="0" x2="50" y2="0" />
+            <line class="vault-thin"   x1="-35" y1="-35" x2="35" y2="35" />
+            <line class="vault-thin"   x1="-35" y1="35" x2="35" y2="-35" />
+          </g>
+
+          <!-- core handle -->
+          <circle class="vault-stroke" cx="400" cy="370" r="22" />
+          <circle class="vault-thin"   cx="400" cy="370" r="14" />
+          <circle class="vault-stroke" cx="400" cy="370" r="4" style="fill: currentColor; opacity:.5"/>
+        </g>
+      </svg>
+      <span class="illus-meta">Fig. III — Custodial Mechanism</span>
+      <span class="illus-tag">Infrastructure</span>
     </div>
   </div>
 </section>
@@ -998,7 +1880,235 @@
       </div>
     </div>
     <div class="engine-art">
-      <img src="assets/04-dat-engine.png" alt="Editorial illustration of a valuation curve and a prism deflecting input rays" />
+      <svg class="illus illus-prism" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- ============================ -->
+        <!-- LEFT: INPUTS PANEL          -->
+        <!-- ============================ -->
+        <g transform="translate(40,52)">
+          <!-- Panel frame -->
+          <rect class="panel" x="0" y="0" width="320" height="396" rx="3" />
+
+          <!-- Header -->
+          <text class="panel-label" x="14" y="22">INPUTS</text>
+          <text class="panel-label" x="306" y="22" text-anchor="end">7 / 7</text>
+          <line class="panel-rule" x1="14" y1="32" x2="306" y2="32" />
+
+          <!-- Slider rows: x=14..306; track from x=130..292; knob position varies -->
+          <!-- Row 1: Treasury allocation -->
+          <text class="panel-key" x="14" y="64">Treasury allocation</text>
+          <text class="panel-val" x="306" y="64" text-anchor="end">28%</text>
+          <line class="track"      x1="14" y1="78" x2="306" y2="78" />
+          <line class="track-fill" x1="14" y1="78" x2="95"  y2="78" />
+          <circle class="knob" cx="95"  cy="78" r="5" style="--kd:0s" />
+
+          <!-- Row 2: Valuation multiple uplift -->
+          <text class="panel-key" x="14" y="108">Valuation multiple uplift</text>
+          <text class="panel-val" x="306" y="108" text-anchor="end">1.8×</text>
+          <line class="track"      x1="14" y1="122" x2="306" y2="122" />
+          <line class="track-fill" x1="14" y1="122" x2="178" y2="122" />
+          <circle class="knob" cx="178" cy="122" r="5" style="--kd:0.4s" />
+
+          <!-- Row 3: Market signaling premium -->
+          <text class="panel-key" x="14" y="152">Market signaling premium</text>
+          <text class="panel-val" x="306" y="152" text-anchor="end">+12%</text>
+          <line class="track"      x1="14" y1="166" x2="306" y2="166" />
+          <line class="track-fill" x1="14" y1="166" x2="120" y2="166" />
+          <circle class="knob" cx="120" cy="166" r="5" style="--kd:0.8s" />
+
+          <!-- Row 4: Balance-sheet impact -->
+          <text class="panel-key" x="14" y="196">Balance-sheet impact</text>
+          <text class="panel-val" x="306" y="196" text-anchor="end">+$420M</text>
+          <line class="track"      x1="14" y1="210" x2="306" y2="210" />
+          <line class="track-fill" x1="14" y1="210" x2="220" y2="210" />
+          <circle class="knob" cx="220" cy="210" r="5" style="--kd:1.2s" />
+
+          <!-- Row 5: Discount rate -->
+          <text class="panel-key" x="14" y="240">Discount rate</text>
+          <text class="panel-val" x="306" y="240" text-anchor="end">9.4%</text>
+          <line class="track"      x1="14" y1="254" x2="306" y2="254" />
+          <line class="track-fill" x1="14" y1="254" x2="80"  y2="254" />
+          <circle class="knob" cx="80"  cy="254" r="5" style="--kd:1.6s" />
+
+          <!-- Row 6: Asset velocity -->
+          <text class="panel-key" x="14" y="284">Asset velocity</text>
+          <text class="panel-val" x="306" y="284" text-anchor="end">2.6×</text>
+          <line class="track"      x1="14" y1="298" x2="306" y2="298" />
+          <line class="track-fill" x1="14" y1="298" x2="156" y2="298" />
+          <circle class="knob" cx="156" cy="298" r="5" style="--kd:2.0s" />
+
+          <!-- Row 7: Adoption horizon -->
+          <text class="panel-key" x="14" y="328">Adoption horizon</text>
+          <text class="panel-val" x="306" y="328" text-anchor="end">36 mo.</text>
+          <line class="track"      x1="14" y1="342" x2="306" y2="342" />
+          <line class="track-fill" x1="14" y1="342" x2="200" y2="342" />
+          <circle class="knob" cx="200" cy="342" r="5" style="--kd:2.4s" />
+
+          <!-- Footer rule + caption -->
+          <line class="panel-rule" x1="14" y1="368" x2="306" y2="368" />
+          <text class="panel-label" x="14" y="384">SCENARIO · BASE</text>
+          <text class="panel-label" x="306" y="384" text-anchor="end">v 4.2</text>
+        </g>
+
+        <!-- ============================ -->
+        <!-- CONNECTOR (inputs → output)  -->
+        <!-- ============================ -->
+        <g>
+          <line class="out-ray" x1="364" y1="250" x2="430" y2="250" />
+          <polygon class="arrow-head" points="430,245 442,250 430,255" />
+          <text class="panel-label" x="397" y="240" text-anchor="middle" style="opacity:.55">SOLVE</text>
+        </g>
+
+        <!-- ============================ -->
+        <!-- RIGHT: OUTPUT — VALUATION    -->
+        <!-- ============================ -->
+        <g transform="translate(450,52)">
+          <!-- Frame -->
+          <rect class="panel" x="0" y="0" width="310" height="396" rx="3" />
+          <text class="panel-label" x="14" y="22">VALUATION IMPACT</text>
+          <text class="panel-label" x="296" y="22" text-anchor="end">USD · BN</text>
+          <line class="panel-rule" x1="14" y1="32" x2="296" y2="32" />
+
+          <!-- Y-axis ticks (chart area: y from 60 (top) to 320 (baseline)) -->
+          <!-- baseline = 320, max top = 60 -->
+          <g class="grid-fine">
+            <line x1="38" y1="80"  x2="296" y2="80"  />
+            <line x1="38" y1="140" x2="296" y2="140" />
+            <line x1="38" y1="200" x2="296" y2="200" />
+            <line x1="38" y1="260" x2="296" y2="260" />
+          </g>
+          <line class="axis" x1="38" y1="60" x2="38" y2="320" />
+          <line class="axis" x1="38" y1="320" x2="296" y2="320" />
+
+          <text class="panel-label" x="32" y="84"  text-anchor="end">12</text>
+          <text class="panel-label" x="32" y="144" text-anchor="end">9</text>
+          <text class="panel-label" x="32" y="204" text-anchor="end">6</text>
+          <text class="panel-label" x="32" y="264" text-anchor="end">3</text>
+          <text class="panel-label" x="32" y="324" text-anchor="end">0</text>
+
+          <!-- BAR 1: BASELINE  (x=70, w=70) -->
+          <!-- Baseline = 3.2 → height = 3.2 × 21.67 ≈ 69 → y = 320 - 69 = 251 -->
+          <rect class="stack-base" x="70" y="251" width="70" height="69" />
+          <text class="panel-label" x="105" y="338" text-anchor="middle">BASELINE</text>
+          <text class="panel-val" x="105" y="243" text-anchor="middle" style="font-size:13px;opacity:.9">3.2</text>
+
+          <!-- Dotted delta line from baseline top across to adjusted bar -->
+          <line class="delta-line" x1="140" y1="251" x2="240" y2="251" />
+
+          <!-- BAR 2: ADJUSTED  (x=180, w=70) — baseline 3.2 + multiple uplift +2.56 + signaling +0.69 + balance sheet +0.42 = 6.87 -->
+          <!-- Total height ≈ 6.9 × 21.67 ≈ 150 → top y = 170 -->
+          <!-- Baseline portion (3.2 → 69px) -->
+          <rect class="stack-base" x="180" y="251" width="70" height="69" />
+
+          <!-- Multiple uplift +2.56 → 55px segment, sits 196..251 -->
+          <rect class="stack-seg s1" x="180" y="196" width="70" height="55" style="--d:0.2s" />
+          <!-- Signaling premium +0.69 → 15px segment, sits 181..196 -->
+          <rect class="stack-seg s2" x="180" y="181" width="70" height="15" style="--d:0.5s" />
+          <!-- Balance-sheet impact +0.42 → 11px segment, sits 170..181 -->
+          <rect class="stack-seg s3" x="180" y="170" width="70" height="11" style="--d:0.8s" />
+
+          <text class="panel-label" x="215" y="338" text-anchor="middle">ADJUSTED</text>
+          <text class="panel-val"   x="215" y="162" text-anchor="middle" style="font-size:13px;opacity:.95">6.9</text>
+
+          <!-- Formula hint (above the net delta row) -->
+          <text x="14" y="350" style="font-family:'Source Serif 4',serif; font-style:italic; font-size:9px; fill:currentColor; opacity:.5">
+            adjusted = baseline × multiple × (1 + signaling) + balance-sheet
+          </text>
+
+          <!-- Net delta callout -->
+          <text class="panel-label" x="14" y="368">Δ NET</text>
+          <text class="panel-val"   x="62" y="370" style="font-size:14px;fill:var(--sage);opacity:1">+ $3.7 B</text>
+          <text class="panel-label" x="296" y="368" text-anchor="end">2.2×</text>
+
+          <line class="panel-rule" x1="14" y1="378" x2="296" y2="378" />
+          <text class="panel-label" x="14" y="390" style="opacity:.5">FIG · IV</text>
+          <text class="panel-label" x="296" y="390" text-anchor="end" style="opacity:.5">CONFIDENCE  82%</text>
+        </g>
+      </svg>
+      <span class="illus-meta">Fig. IV — Valuation Impact</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED RESEARCH REPORT -->
+<section class="report" id="report">
+  <div class="wrap report-grid">
+
+    <!-- LEFT: floating 3D cover -->
+    <div class="report-stage" aria-hidden="true">
+      <div class="floor"></div>
+      <div class="report-cover">
+        <div class="report-back"></div>
+        <div class="report-spine"></div>
+        <div class="report-face">
+          <div>
+            <img class="cover-logo" src="assets/pando-logo-white.svg" alt="Pando Research" />
+            <div class="cover-rule"></div>
+            <div class="cover-eyebrow" style="opacity:.55">Institutional Research Series &nbsp;·&nbsp; Vol. 04</div>
+          </div>
+
+          <div class="cover-mid-mark">
+            <h3 class="cover-title">The 2026 Global<br/><em>Digital Asset</em><br/>Infrastructure Report</h3>
+            <p class="cover-sub">Tokenization · Real-World Assets · Stablecoins · AI &amp; Quantum Convergence</p>
+          </div>
+
+          <div class="cover-foot">
+            <div class="l">
+              <strong>Author</strong>
+              Thomas Carter
+            </div>
+            <div class="r">
+              <strong>April 2026</strong>
+              For Qualified<br/>Recipients
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: copy + stats + CTA -->
+    <div class="report-copy">
+      <div class="eyebrow" style="padding:0 0 18px;">IV &nbsp;·&nbsp; Featured Report</div>
+      <h2>The 2026 Global<br/><em>Digital Asset</em><br/>Infrastructure Report.</h2>
+      <p class="lede">A detailed institutional read on the structural inflection underway across tokenization, real-world assets, stablecoins, and the AI–quantum frontier — with the data, frameworks, and risk matrices CFOs and investment committees actually need.</p>
+
+      <dl class="report-meta">
+        <div>
+          <dt>Author</dt>
+          <dd>Thomas Carter<br/><span style="font-size:12px;color:var(--ink-mute);">Founder &amp; CEO, Deal Box</span></dd>
+        </div>
+        <div>
+          <dt>Published</dt>
+          <dd>April 2026<br/><span style="font-size:12px;color:var(--ink-mute);">Vol. IV — annual</span></dd>
+        </div>
+        <div>
+          <dt>Coverage</dt>
+          <dd>10 chapters<br/><span style="font-size:12px;color:var(--ink-mute);">+ risk matrix &amp; methodology</span></dd>
+        </div>
+      </dl>
+
+      <div class="report-stats">
+        <div class="report-stat">
+          <span class="num">$3.01T</span>
+          <span class="lab">Tokenization market<br/>projection 2026</span>
+        </div>
+        <div class="report-stat">
+          <span class="num">$23.6B</span>
+          <span class="lab">RWAs on-chain,<br/>+66% YTD</span>
+        </div>
+        <div class="report-stat">
+          <span class="num">86%</span>
+          <span class="lab">Institutions w/ digital<br/>asset exposure</span>
+        </div>
+      </div>
+
+      <div class="report-cta">
+        <a href="access.html" class="pill">Get the Report <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="report-foot-meta">
+        <span class="pip"></span>
+        Institutional research &nbsp;·&nbsp; PDF, 12 MB &nbsp;·&nbsp; For qualified recipients only
+      </div>
     </div>
   </div>
 </section>
