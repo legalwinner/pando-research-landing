@@ -667,17 +667,24 @@
     transform-origin: center;
   }
 
-  .report-cover {
+  .report-reveal {
     position: relative;
     width: 64%;
     aspect-ratio: 5 / 7;
+    transform-style: preserve-3d;
+  }
+
+  .report-cover {
+    position: relative;
+    width: 100%;
+    height: 100%;
     transform-style: preserve-3d;
     --thick: 14px;
     transform: rotateY(-22deg) rotateX(6deg) rotateZ(-1.5deg);
     transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
     animation: reportFloat 9s ease-in-out infinite;
   }
-  .report-cover:hover { transform: rotateY(-12deg) rotateX(6deg) rotateZ(-0.5deg); }
+  .report-reveal:hover .report-cover { transform: rotateY(-12deg) rotateX(6deg) rotateZ(-0.5deg); }
   @keyframes reportFloat {
     0%, 100% { translate: 0 -6px; }
     50%      { translate: 0 6px; }
@@ -696,28 +703,19 @@
       opacity 900ms cubic-bezier(0.22, 1, 0.36, 1) 120ms,
       transform 1200ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
   }
-  .report-stage.motion-ready .report-cover {
-    opacity: 0;
-    filter: blur(8px) saturate(0.86);
-    transform: translate3d(-18px, 50px, 0) rotateY(-36deg) rotateX(14deg) rotateZ(-5deg) scale(0.88);
+  .report-stage.motion-ready .report-reveal {
+    transform: translate3d(-30px, 54px, -80px) rotateY(-10deg) rotateX(8deg) rotateZ(-3deg) scale(0.88);
     transition:
-      opacity 850ms cubic-bezier(0.22, 1, 0.36, 1) 140ms,
-      filter 950ms cubic-bezier(0.22, 1, 0.36, 1) 140ms,
       transform 1250ms cubic-bezier(0.16, 1, 0.3, 1) 140ms;
-    will-change: opacity, filter, transform;
+    will-change: transform;
   }
   .report-stage.motion-ready.is-visible::before,
   .report-stage.motion-ready.is-visible::after {
     opacity: 1;
     transform: scale(1);
   }
-  .report-stage.motion-ready.is-visible .report-cover {
-    opacity: 1;
-    filter: none;
-    transform: rotateY(-22deg) rotateX(6deg) rotateZ(-1.5deg);
-  }
-  .report-stage.motion-ready.is-visible .report-cover:hover {
-    transform: rotateY(-12deg) rotateX(6deg) rotateZ(-0.5deg);
+  .report-stage.motion-ready.is-visible .report-reveal {
+    transform: translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1);
   }
 
   /* Cover face */
@@ -900,15 +898,14 @@
   @media (prefers-reduced-motion: reduce) {
     .report-stage.motion-ready::before,
     .report-stage.motion-ready::after,
-    .report-stage.motion-ready .report-cover,
+    .report-stage.motion-ready .report-reveal,
     .report-stage.motion-ready .floor {
       opacity: 1;
-      filter: none;
       transition: none;
       will-change: auto;
     }
-    .report-stage.motion-ready .report-cover {
-      transform: rotateY(-22deg) rotateX(6deg) rotateZ(-1.5deg);
+    .report-stage.motion-ready .report-reveal {
+      transform: none;
     }
     .report-stage.motion-ready .floor {
       transform: translateX(-50%) scale(0.95);
@@ -1229,7 +1226,7 @@
     .report { padding: 80px 0 88px; }
     .report-copy h2 { font-size: 40px; }
     .report-stage { aspect-ratio: 5 / 4; }
-    .report-cover { width: 50%; }
+    .report-reveal { width: 50%; }
     .coverage-grid { grid-template-columns: repeat(2, 1fr); }
     .stat:nth-child(2) { border-right: none; }
     .stat:nth-child(n+3) { border-top: 1px solid var(--rule-soft); }
@@ -2108,29 +2105,31 @@
     <!-- LEFT: floating 3D cover -->
     <div class="report-stage" aria-hidden="true">
       <div class="floor"></div>
-      <div class="report-cover">
-        <div class="report-back"></div>
-        <div class="report-spine"></div>
-        <div class="report-face">
-          <div>
-            <img class="cover-logo" src="assets/pando-logo-white.svg" alt="Pando Research" />
-            <div class="cover-rule"></div>
-            <div class="cover-eyebrow" style="opacity:.55">Institutional Research Series &nbsp;·&nbsp; Vol. 04</div>
-          </div>
-
-          <div class="cover-mid-mark">
-            <h3 class="cover-title">The 2026 Global<br/><em>Digital Asset</em><br/>Infrastructure Report</h3>
-            <p class="cover-sub">Tokenization · Real-World Assets · Stablecoins · AI &amp; Quantum Convergence</p>
-          </div>
-
-          <div class="cover-foot">
-            <div class="l">
-              <strong>Author</strong>
-              Thomas Carter
+      <div class="report-reveal">
+        <div class="report-cover">
+          <div class="report-back"></div>
+          <div class="report-spine"></div>
+          <div class="report-face">
+            <div>
+              <img class="cover-logo" src="assets/pando-logo-white.svg" alt="Pando Research" />
+              <div class="cover-rule"></div>
+              <div class="cover-eyebrow" style="opacity:.55">Institutional Research Series &nbsp;·&nbsp; Vol. 04</div>
             </div>
-            <div class="r">
-              <strong>April 2026</strong>
-              For Qualified<br/>Recipients
+
+            <div class="cover-mid-mark">
+              <h3 class="cover-title">The 2026 Global<br/><em>Digital Asset</em><br/>Infrastructure Report</h3>
+              <p class="cover-sub">Tokenization · Real-World Assets · Stablecoins · AI &amp; Quantum Convergence</p>
+            </div>
+
+            <div class="cover-foot">
+              <div class="l">
+                <strong>Author</strong>
+                Thomas Carter
+              </div>
+              <div class="r">
+                <strong>April 2026</strong>
+                For Qualified<br/>Recipients
+              </div>
             </div>
           </div>
         </div>
