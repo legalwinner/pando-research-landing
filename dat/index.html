@@ -74,20 +74,12 @@
   .eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
     margin: 0;
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     font-weight: 600;
     color: var(--green);
-  }
-  .eyebrow::before {
-    content: "";
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--green);
   }
 
   .site-header {
@@ -354,34 +346,6 @@
     color: var(--ink-soft);
     font-weight: 350;
   }
-  .hero-proof {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 34px;
-  }
-  .proof-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 36px;
-    padding: 7px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(26,77,62,0.18);
-    background: rgba(248,244,232,0.68);
-    color: var(--ink-soft);
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-  .proof-chip::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--sage);
-  }
-
   .search-card {
     background: rgba(248,244,232,0.94);
     border: 1px solid var(--rule);
@@ -397,7 +361,6 @@
     font-weight: 380;
     letter-spacing: -0.012em;
   }
-  .search-card p { margin: 0; color: var(--ink-soft); font-size: 14px; }
   .search-form { margin-top: 24px; }
   .ticker-row {
     display: grid;
@@ -463,15 +426,6 @@
     transition: transform .2s ease, border-color .2s ease, background .2s ease;
   }
   .quick-ticker:hover { transform: translateY(-1px); border-color: rgba(26,77,62,0.36); background: var(--white); }
-  .feed-note {
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid var(--rule-soft);
-    font-size: 12px;
-    line-height: 1.55;
-    color: var(--ink-mute);
-  }
-
   .dat-section { padding: 54px 0 92px; }
   .empty-grid {
     display: grid;
@@ -516,13 +470,14 @@
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(26,77,62,0.08);
-    color: var(--green);
+    background: var(--green);
+    color: var(--paper);
     font-family: 'Source Serif 4', serif;
+    font-weight: 600;
     font-size: 21px;
   }
   .step strong { display: block; margin-bottom: 3px; color: var(--ink); }
-  .step span { color: var(--ink-soft); font-size: 14px; }
+  .step div span { color: var(--ink-soft); font-size: 14px; }
   .preview-card {
     padding: 30px;
     overflow: hidden;
@@ -978,19 +933,60 @@
   }
 
   footer {
-    padding: 52px 0;
-    border-top: 1px solid var(--rule-soft);
     background: var(--bg);
+    padding: 72px 0 28px;
   }
-  .footer-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 22px;
-    color: var(--ink-mute);
-    font-size: 12px;
-    letter-spacing: 0.12em;
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 64px;
+    padding-bottom: 56px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .foot-brand p {
+    color: var(--ink-soft);
+    font-size: 14px;
+    max-width: 320px;
+    margin: 16px 0 0;
+  }
+  .foot-col h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 18px;
+    font-weight: 500;
+  }
+  .foot-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .foot-col a {
+    font-size: 14px;
+    color: var(--ink);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+  }
+  .foot-col a:hover {
+    border-bottom-color: var(--green);
+    color: var(--green);
+  }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 28px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+  .meta-row .legal {
+    display: flex;
+    gap: 28px;
   }
   footer .brand-logo { height: 48px; }
 
@@ -1040,6 +1036,30 @@
     .output-panel { order: 0; }
     .control-panel { order: 1; }
     body.has-mobile-impact { padding-bottom: 110px; }
+    footer {
+      padding: 56px 0 26px;
+    }
+    footer .brand-logo { height: 42px; }
+    .foot-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 34px 42px;
+      padding-bottom: 42px;
+    }
+    .foot-brand {
+      grid-column: 1 / -1;
+    }
+    .foot-brand p {
+      font-size: 15px;
+      max-width: 360px;
+    }
+    .foot-col ul { gap: 4px; }
+    .foot-col a {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 15px;
+    }
   }
 
   @media (min-width: 861px) {
@@ -1057,8 +1077,6 @@
     .nav { min-height: 74px; }
     .brand-logo { height: 36px; max-width: 196px; object-fit: contain; object-position: left center; }
     .hero-copy h1 { font-size: clamp(42px, 13vw, 58px); }
-    .hero-proof { gap: 8px; margin-top: 24px; }
-    .proof-chip { width: 100%; justify-content: flex-start; }
     .search-card, .model-card, .preview-card, .company-card, .assumption-card, .summary-card, .chart-card, .breakdown-card { border-radius: 22px; }
     .search-card { padding: 22px; }
     .ticker-row { grid-template-columns: 1fr 54px; }
@@ -1072,7 +1090,23 @@
     .chart-wrap { height: 242px; margin-left: -6px; margin-right: -6px; width: calc(100% + 12px); }
     .breakdown-row { grid-template-columns: 1fr; gap: 6px; }
     .breakdown-value { text-align: left; }
-    .footer-inner { display: grid; gap: 18px; }
+    .foot-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding-bottom: 38px;
+    }
+    .foot-brand {
+      grid-column: auto;
+    }
+    .meta-row {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .meta-row .legal {
+      flex-direction: column;
+      gap: 8px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1145,15 +1179,9 @@
           <p class="eyebrow">Treasury Impact Engine</p>
           <h1 class="display">Model the equity impact of a <em>digital asset treasury</em>.</h1>
           <p class="lede">Enter a public ticker, tune four practical levers, and see the implied valuation case without fighting a spreadsheet.</p>
-          <div class="hero-proof" aria-label="Calculator features">
-            <span class="proof-chip">SEC-side company inputs</span>
-            <span class="proof-chip">Sticky price feedback</span>
-            <span class="proof-chip">Mobile-first control flow</span>
-          </div>
         </div>
         <aside class="search-card" aria-labelledby="searchTitle">
           <h2 id="searchTitle">Enter company ticker</h2>
-          <p>Start with a ticker, then play with the assumptions. The model keeps controls and outputs side by side on desktop, adds a sticky quote strip while you tune assumptions, and uses a bottom impact bar on mobile.</p>
           <form class="search-form" id="tickerForm" autocomplete="off">
             <div class="ticker-row">
               <input class="ticker-input" id="tickerInput" name="ticker" type="text" inputmode="latin" placeholder="Any public ticker (e.g. AAPL, GDDY, MSFT)" aria-describedby="helperText" maxlength="12" />
@@ -1170,7 +1198,6 @@
             <button class="quick-ticker" type="button" data-ticker="COIN">COIN</button>
             <button class="quick-ticker" type="button" data-ticker="MSTR">MSTR</button>
           </div>
-          <div class="feed-note">Live mode calls <code>/api/company?ticker=</code> from the server. No provider key belongs in the browser. If the endpoint is unavailable, this page still runs from curated fallback records.</div>
         </aside>
       </div>
     </section>
@@ -1343,10 +1370,47 @@
     </div>
   </div>
 
-  <footer>
-    <div class="wrap footer-inner">
-      <a class="brand" href="../" aria-label="Pando Research home"><img class="brand-logo" src="../assets/pando-logo.svg" alt="Pando Research" /></a>
-      <span>Institutional research for digital assets</span>
+  <footer id="contact">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <a href="../" class="brand" aria-label="Pando Research home">
+            <img src="../assets/pando-logo.svg" class="brand-logo" alt="Pando Research" />
+          </a>
+          <p>Institutional research for digital assets and blockchain infrastructure.</p>
+        </div>
+        <div class="foot-col">
+          <h4>Research</h4>
+          <ul>
+            <li><a href="../#report">Latest Reports</a></li>
+            <li><a href="../#research">Market Insights</a></li>
+            <li><a href="./">DAT Impact Engine</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../#about">About</a></li>
+            <li><a href="../#contact">Contact</a></li>
+            <li><a href="../#research">Methodology</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="mailto:bd@dealbox.io">bd@dealbox.io</a></li>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="../#subscribe">Subscribe</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="meta-row">
+        <span>© 2026 Pando Research. All rights reserved.</span>
+        <div class="legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
     </div>
   </footer>
 
