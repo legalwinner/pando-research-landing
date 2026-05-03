@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#EFE9DA" />
 <title>Pando Research — Treasury Impact Engine</title>
 <meta name="description" content="An interactive digital asset treasury calculator for modelling potential equity uplift from treasury allocation, employee participation, infrastructure efficiency, and asset tokenization." />
 <link rel="icon" href="../assets/pando-logo.svg" type="image/svg+xml" />
@@ -28,6 +29,8 @@
     --amber:     #B7893C;
     --shadow:    0 22px 70px rgba(20, 32, 27, 0.10);
     --shadow-soft: 0 12px 42px rgba(20, 32, 27, 0.075);
+    --page-bg:    var(--bg);
+    --mobile-safe-bg: var(--bg-soft);
     --max:       1240px;
     --nav-height: 84px;
     --desktop-strip-height: 76px;
@@ -36,10 +39,19 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; min-height: 100%; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    background-color: var(--page-bg);
+  }
   html { scroll-behavior: smooth; }
   body {
-    background: var(--bg);
+    background: var(--page-bg);
     color: var(--ink);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: 400;
@@ -47,14 +59,40 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "ss01", "cv11";
+    position: relative;
   }
   body.has-mobile-impact { padding-bottom: 0; }
   a, a:visited { color: inherit; text-decoration: none; }
-  button, input { font: inherit; }
+  button, input, textarea, select { font: inherit; }
   button { cursor: pointer; }
   button:disabled, input:disabled { cursor: not-allowed; opacity: 0.62; }
   img { display: block; max-width: 100%; height: auto; }
   [hidden] { display: none !important; }
+  #root,
+  main {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  @supports (overflow: clip) {
+    #root,
+    main {
+      overflow-x: clip;
+    }
+  }
+  :where(
+    input[type="text"],
+    input[type="email"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select,
+    [contenteditable="true"]
+  ) {
+    font-size: 16px;
+  }
 
   .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
   .display {
@@ -1010,6 +1048,27 @@
   }
 
   @media (max-width: 860px) {
+    html,
+    body {
+      --page-bg: var(--mobile-safe-bg);
+      background-color: var(--mobile-safe-bg);
+    }
+    main,
+    footer {
+      background-color: var(--mobile-safe-bg);
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select,
+    [contenteditable="true"] {
+      font-size: 16px !important;
+    }
     .desktop-price-strip { display: none !important; }
     nav.primary { display: none; }
     .mobile-menu-toggle {
@@ -1043,6 +1102,17 @@
     .output-panel { order: 0; }
     .control-panel { order: 1; }
     body.has-mobile-impact { padding-bottom: 110px; }
+    body.has-mobile-impact::after {
+      content: "";
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: calc(104px + env(safe-area-inset-bottom));
+      background: var(--mobile-safe-bg);
+      z-index: 55;
+      pointer-events: none;
+    }
     footer {
       padding: 56px 0 26px;
     }
@@ -1078,6 +1148,12 @@
     .mobile-impact-grid { gap: 6px; }
     .mobile-impact-grid > div:not(.mobile-jump) { padding-right: 6px; }
     .mobile-ticker-logo { --logo-size: 32px; }
+    .mobile-impact-bar {
+      left: max(10px, env(safe-area-inset-left));
+      right: max(10px, env(safe-area-inset-right));
+      bottom: max(10px, env(safe-area-inset-bottom));
+      padding: 10px;
+    }
   }
 
   @media (max-width: 620px) {
@@ -1094,7 +1170,7 @@
     .check-content { min-height: 58px; }
     .assumption-note { display: block; }
     .assumption-note strong { display: block; margin-top: 4px; }
-    .chart-wrap { height: 242px; margin-left: -6px; margin-right: -6px; width: calc(100% + 12px); }
+    .chart-wrap { height: 242px; margin-left: 0; margin-right: 0; width: 100%; }
     .breakdown-row { grid-template-columns: 1fr; gap: 6px; }
     .breakdown-value { text-align: left; }
     .foot-grid {
