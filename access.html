@@ -346,55 +346,143 @@
   .cf-glyph svg { width: 100%; height: 100%; }
 
   /* Coverflow controls */
+  .stage-console {
+    position: relative;
+    z-index: 3;
+    margin-top: 22px;
+    padding: 14px 16px 12px;
+    border: 1px solid rgba(220,213,191,0.82);
+    border-radius: 28px;
+    background:
+      linear-gradient(145deg, rgba(255,253,247,0.58), rgba(239,233,218,0.42)),
+      rgba(247,245,238,0.58);
+    box-shadow:
+      0 24px 58px -42px rgba(7,36,27,0.38),
+      inset 0 1px 0 rgba(255,255,255,0.64);
+    backdrop-filter: blur(5px);
+  }
   .cf-controls {
     position: relative;
-    margin-top: 20px;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-    gap: 16px;
-    z-index: 3;
+    gap: 12px 18px;
+  }
+  .cf-arrows {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
   .cf-arrow {
-    width: 44px; height: 44px;
-    border: 1px solid var(--rule);
+    width: 38px; height: 38px;
+    border: 1px solid rgba(26,77,62,0.18);
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--green);
-    background: var(--bg-soft);
-    transition: background .2s, border-color .2s, transform .2s;
-    font-family: 'Source Serif 4', serif;
-    font-size: 18px;
+    background:
+      linear-gradient(145deg, rgba(255,253,247,0.9), rgba(239,233,218,0.78));
+    transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
+    font-size: 0;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.86),
+      0 12px 28px -22px rgba(7,36,27,0.58);
+  }
+  .cf-arrow::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+  }
+  .cf-arrow:first-child::before {
+    transform: translateX(2px) rotate(-135deg);
+  }
+  .cf-arrow:last-child::before {
+    transform: translateX(-2px) rotate(45deg);
   }
   .cf-arrow:hover {
     background: var(--green);
     color: var(--paper);
     border-color: var(--green);
+    box-shadow: 0 12px 28px -18px rgba(7,36,27,0.55);
+    transform: translateY(-1px);
   }
   .cf-arrow:active { transform: scale(0.96); }
   .cf-counter {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.22em;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 14px;
+    color: var(--ink-mute);
+  }
+  .cf-count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
     color: var(--ink-mute);
     text-transform: uppercase;
-    flex: 1;
   }
-  .cf-counter b { color: var(--green); font-weight: 500; }
-  .cf-dots {
+  .cf-count b {
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+  }
+  .cf-total {
+    color: rgba(74,88,83,0.64);
+  }
+  .cf-slash {
+    color: rgba(74,88,83,0.38);
+  }
+  .cf-meta {
+    min-width: 0;
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 9px;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .cf-meta strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .cf-meta span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cf-meta-sep {
+    color: rgba(74,88,83,0.38);
+  }
+  .cf-dots {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    align-items: center;
+    gap: 7px;
+    padding: 2px 2px 0;
   }
   .cf-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--rule);
-    transition: background .25s, transform .25s;
+    width: 100%; height: 3px;
+    border-radius: 999px;
+    background: rgba(220,213,191,0.9);
+    transition: background .25s, transform .25s, width .25s;
   }
   .cf-dot.active {
     background: var(--green);
-    transform: scale(1.4);
+    width: 100%;
   }
 
   /* center spotlight on the active card */
@@ -734,24 +822,43 @@
 
   /* ---------- Status ticker (ambient) ---------- */
   .ticker {
-    position: absolute;
-    left: 48px;
-    bottom: 32px;
-    z-index: 3;
+    margin-top: 11px;
+    padding-top: 11px;
+    border-top: 1px solid rgba(220,213,191,0.58);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    font-size: 9px;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
     color: var(--ink-mute);
     display: flex;
     align-items: center;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 7px 0;
   }
   .ticker .live {
     width: 6px; height: 6px;
+    flex: 0 0 6px;
     border-radius: 50%;
     background: var(--green);
     animation: pulseDot 1.8s ease-in-out infinite;
+    margin-right: 12px;
+  }
+  .ticker span:not(.live) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 20px;
+  }
+  .ticker span:not(.live) + span:not(.live)::before {
+    content: "";
+    width: 3px;
+    height: 3px;
+    margin: 0 10px;
+    border-radius: 50%;
+    background: rgba(140,139,126,0.46);
+  }
+  .ticker b {
+    color: var(--ink-soft);
+    font-weight: 600;
   }
 
   /* ---------- Responsive ---------- */
@@ -772,12 +879,33 @@
       margin: 18px auto 48px;
       padding: 40px 34px 34px;
     }
-    .ticker { left: 24px; bottom: 16px; }
+    .stage-console {
+      margin-top: 18px;
+    }
     nav.primary ul { display: none; }
     .brand-logo { height: 34px; }
   }
   @media (max-width: 640px) {
     .stage h1 { font-size: 36px; }
+    .stage-console {
+      padding: 13px 13px 12px;
+      border-radius: 22px;
+    }
+    .cf-controls {
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+    }
+    .cf-counter {
+      grid-template-columns: 1fr;
+      row-gap: 4px;
+    }
+    .cf-dots {
+      grid-column: 1 / -1;
+    }
+    .ticker {
+      font-size: 8.5px;
+      letter-spacing: 0.13em;
+    }
     .field-row { grid-template-columns: 1fr; }
     .auth {
       width: calc(100% - 32px);
@@ -837,16 +965,29 @@
       <div class="stage-spotlight"></div>
     </div>
 
-    <div class="cf-controls">
-      <button class="cf-arrow" id="cfPrev" aria-label="Previous report">‹</button>
-      <button class="cf-arrow" id="cfNext" aria-label="Next report">›</button>
-      <div class="cf-counter"><b id="cfIdx">01</b> / <span id="cfTotal">07</span> &nbsp; · &nbsp; <span id="cfMeta">Featured</span></div>
-      <div class="cf-dots" id="cfDots"></div>
-    </div>
+    <div class="stage-console">
+      <div class="cf-controls">
+        <div class="cf-arrows">
+          <button class="cf-arrow" id="cfPrev" aria-label="Previous report">Previous</button>
+          <button class="cf-arrow" id="cfNext" aria-label="Next report">Next</button>
+        </div>
+        <div class="cf-counter" aria-live="polite">
+          <div class="cf-count"><b id="cfIdx">01</b><span class="cf-slash">/</span><span class="cf-total" id="cfTotal">07</span></div>
+          <div class="cf-meta">
+            <strong id="cfMetaPrimary">Featured Report</strong>
+            <span class="cf-meta-sep" id="cfMetaSep">·</span>
+            <span id="cfMetaSecondary">April 2026</span>
+          </div>
+        </div>
+        <div class="cf-dots" id="cfDots"></div>
+      </div>
 
-    <div class="ticker">
-      <span class="live"></span>
-      <span><b style="color:var(--ink-soft);font-weight:500;">42 reports</b> · 1,820 institutional readers · Updated quarterly</span>
+      <div class="ticker">
+        <span class="live"></span>
+        <span><b>42 reports</b></span>
+        <span>1,820 readers</span>
+        <span>Updated quarterly</span>
+      </div>
     </div>
   </section>
 
@@ -1116,6 +1257,18 @@
   const cards = [...track.querySelectorAll('.cf-card')];
   const dots = [...dotsEl.querySelectorAll('.cf-dot')];
   const VISIBLE_SIDE_COVERS = 2;
+  const metaPrimary = document.getElementById('cfMetaPrimary');
+  const metaSecondary = document.getElementById('cfMetaSecondary');
+  const metaSep = document.getElementById('cfMetaSep');
+
+  function updateMetaLabel(meta) {
+    const parts = meta.split('·').map(part => part.trim()).filter(Boolean);
+    metaPrimary.textContent = parts[0] || 'Featured Report';
+    const secondary = parts.slice(1).join(' · ');
+    metaSecondary.textContent = secondary;
+    metaSecondary.hidden = !secondary;
+    metaSep.hidden = !secondary;
+  }
 
   // Geometry: fan (editorial arc)
   function layout() {
@@ -1149,7 +1302,7 @@
     });
     dots.forEach((d, i) => d.classList.toggle('active', i === active));
     document.getElementById('cfIdx').textContent = String(active + 1).padStart(2, '0');
-    document.getElementById('cfMeta').textContent = CARDS[active].meta;
+    updateMetaLabel(CARDS[active].meta);
   }
 
   function goTo(i) {
