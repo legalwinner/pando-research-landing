@@ -596,6 +596,13 @@
   }
   .metric-cell span { display: block; color: var(--ink-mute); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
   .metric-cell strong { display: block; margin-top: 5px; color: var(--green); font-size: 25px; line-height: 1; white-space: nowrap; }
+  .metric-cell small {
+    display: block;
+    margin-top: 8px;
+    color: var(--ink-mute);
+    font-size: 10px;
+    line-height: 1.25;
+  }
 
   .assumption-card {
     padding: 22px;
@@ -1210,7 +1217,7 @@
             <h2>Less scrolling. More signal.</h2>
             <p>The old calculator stacked every input above every output. This version moves the experience into a control panel plus live output panel, so the user can see cause and effect immediately.</p>
             <div class="step-list">
-              <div class="step"><span class="step-number num">1</span><div><strong>Load company baseline</strong><span>Price, market cap, cash, book value, and headcount are pulled server-side or from fallback records.</span></div></div>
+              <div class="step"><span class="step-number num">1</span><div><strong>Load company baseline</strong><span>Price, market cap, cash, book value, and employee count are pulled server-side or enriched from fallback records.</span></div></div>
               <div class="step"><span class="step-number num">2</span><div><strong>Adjust four levers</strong><span>Cash allocation, employee adoption, infrastructure modules, and tokenized assets update instantly.</span></div></div>
               <div class="step"><span class="step-number num">3</span><div><strong>Read the valuation case</strong><span>Executive summary, price scenarios, and contribution bars stay visible while users explore.</span></div></div>
             </div>
@@ -1249,7 +1256,7 @@
               <div class="metric-grid">
                 <div class="metric-cell"><span>Market cap</span><strong class="num" id="metricMarketCap">—</strong></div>
                 <div class="metric-cell"><span>Cash</span><strong class="num" id="metricCash">—</strong></div>
-                <div class="metric-cell"><span>Headcount</span><strong class="num" id="metricHeadcount">—</strong></div>
+                <div class="metric-cell"><span>Employees</span><strong class="num" id="metricHeadcount">—</strong><small id="metricEmployeeSource">—</small></div>
               </div>
             </section>
 
@@ -1417,11 +1424,11 @@
 <script>
 (() => {
   const FALLBACK_COMPANIES = {
-    AAPL: { name: 'Apple Inc.', ticker: 'AAPL', marketCap: 3450000000000, cashPosition: 166000000000, headcount: 164000, currentStockPrice: 189.50, bookValue: 62000000000 },
-    MSFT: { name: 'Microsoft Corporation', ticker: 'MSFT', marketCap: 3100000000000, cashPosition: 144000000000, headcount: 221000, currentStockPrice: 425.50, bookValue: 125000000000 },
-    TSLA: { name: 'Tesla, Inc.', ticker: 'TSLA', marketCap: 840000000000, cashPosition: 22500000000, headcount: 127855, currentStockPrice: 260.00, bookValue: 62800000000 },
-    COIN: { name: 'Coinbase Global, Inc.', ticker: 'COIN', marketCap: 62000000000, cashPosition: 7200000000, headcount: 4900, currentStockPrice: 245.00, bookValue: 15000000000 },
-    MSTR: { name: 'MicroStrategy Incorporated', ticker: 'MSTR', marketCap: 85000000000, cashPosition: 500000000, headcount: 2400, currentStockPrice: 445.00, bookValue: 3500000000 }
+    AAPL: { name: 'Apple Inc.', ticker: 'AAPL', marketCap: 3450000000000, cashPosition: 166000000000, headcount: 164000, employeeCount: 164000, employeeCountRange: '100,001+', employeeCountSource: 'static_fallback', employeeCountConfidence: 'medium', employeeCountLastUpdated: '2026-05-03', employeeCountIsEstimated: false, currentStockPrice: 189.50, bookValue: 62000000000 },
+    MSFT: { name: 'Microsoft Corporation', ticker: 'MSFT', marketCap: 3100000000000, cashPosition: 144000000000, headcount: 221000, employeeCount: 221000, employeeCountRange: '100,001+', employeeCountSource: 'static_fallback', employeeCountConfidence: 'medium', employeeCountLastUpdated: '2026-05-03', employeeCountIsEstimated: false, currentStockPrice: 425.50, bookValue: 125000000000 },
+    TSLA: { name: 'Tesla, Inc.', ticker: 'TSLA', marketCap: 840000000000, cashPosition: 22500000000, headcount: 127855, employeeCount: 127855, employeeCountRange: '100,001+', employeeCountSource: 'static_fallback', employeeCountConfidence: 'medium', employeeCountLastUpdated: '2026-05-03', employeeCountIsEstimated: false, currentStockPrice: 260.00, bookValue: 62800000000 },
+    COIN: { name: 'Coinbase Global, Inc.', ticker: 'COIN', marketCap: 62000000000, cashPosition: 7200000000, headcount: 4900, employeeCount: 4900, employeeCountRange: '1,001–5,000', employeeCountSource: 'static_fallback', employeeCountConfidence: 'medium', employeeCountLastUpdated: '2026-05-03', employeeCountIsEstimated: false, currentStockPrice: 245.00, bookValue: 15000000000 },
+    MSTR: { name: 'MicroStrategy Incorporated', ticker: 'MSTR', marketCap: 85000000000, cashPosition: 500000000, headcount: 2400, employeeCount: 2400, employeeCountRange: '1,001–5,000', employeeCountSource: 'static_fallback', employeeCountConfidence: 'medium', employeeCountLastUpdated: '2026-05-03', employeeCountIsEstimated: false, currentStockPrice: 445.00, bookValue: 3500000000 }
   };
 
   const ASSET_UNLOCK = {
@@ -1480,6 +1487,7 @@
     metricMarketCap: document.getElementById('metricMarketCap'),
     metricCash: document.getElementById('metricCash'),
     metricHeadcount: document.getElementById('metricHeadcount'),
+    metricEmployeeSource: document.getElementById('metricEmployeeSource'),
     cashAllocation: document.getElementById('cashAllocation'),
     cashAllocationValue: document.getElementById('cashAllocationValue'),
     employeeOptIn: document.getElementById('employeeOptIn'),
@@ -1548,12 +1556,19 @@
   }
 
   function normalizeCompany(company, ticker) {
+    const employeeCount = numberOrZero(company.employeeCount || company.headcount);
     const normalized = {
       name: String(company.name || ticker),
       ticker: String(company.ticker || ticker).toUpperCase(),
       marketCap: numberOrZero(company.marketCap),
       cashPosition: numberOrZero(company.cashPosition),
-      headcount: numberOrZero(company.headcount),
+      headcount: employeeCount,
+      employeeCount,
+      employeeCountRange: company.employeeCountRange || '',
+      employeeCountSource: company.employeeCountSource || (employeeCount ? 'legacy_company_record' : ''),
+      employeeCountConfidence: company.employeeCountConfidence || (employeeCount ? 'medium' : 'low'),
+      employeeCountLastUpdated: company.employeeCountLastUpdated || '',
+      employeeCountIsEstimated: Boolean(company.employeeCountIsEstimated),
       currentStockPrice: numberOrZero(company.currentStockPrice),
       bookValue: numberOrZero(company.bookValue),
       ceo: company.ceo || '',
@@ -1595,8 +1610,21 @@
   function formatHeadcount(value) {
     const count = numberOrZero(value);
     if (!count) return '—';
-    if (count >= 1000) return `${(count / 1000).toFixed(0)}K`;
-    return count.toLocaleString('en-US');
+    return `~${Math.round(count).toLocaleString('en-US')}`;
+  }
+
+  function employeeSourceLabel(company) {
+    const labels = {
+      fmp_profile: 'Company profile',
+      sec_filing: 'SEC filing',
+      financial_model_estimate: 'Estimated from financials',
+      sector_fallback_estimate: 'Sector fallback estimate',
+      static_fallback: 'Static fallback',
+      legacy_company_record: 'Company record'
+    };
+    const source = labels[company.employeeCountSource] || company.employeeCountSource || 'Employee estimate';
+    const range = company.employeeCountIsEstimated && company.employeeCountRange ? ` · ${company.employeeCountRange}` : '';
+    return `${source}${range}`;
   }
 
   function metricMoneyB(value) {
@@ -1801,6 +1829,7 @@
     el.metricMarketCap.textContent = metricMoneyB(company.marketCap);
     el.metricCash.textContent = metricMoneyB(company.cashPosition);
     el.metricHeadcount.textContent = formatHeadcount(company.headcount);
+    el.metricEmployeeSource.textContent = employeeSourceLabel(company);
 
     if (hasActiveAssumption) {
       el.summaryText.textContent = `Based on the current configuration, ${company.name} (${company.ticker}) could realize a pro-forma equity uplift of approximately +${calc.upliftPercent.toFixed(1)}%, moving the implied share price from ${formatMoney(company.currentStockPrice)} to ${formatMoney(calc.optimizedPrice)}. This scenario assumes ${assumptions.join('; ')}. Under a conservative case, the uplift narrows to approximately +${(0.5 * calc.upliftPercent).toFixed(1)}%; with a favorable macro overlay, the bull scenario reaches approximately ${formatMoney(calc.bullPrice)}.`;

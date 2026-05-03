@@ -2,6 +2,7 @@ const SEC_COMPANY_TICKERS_URL = 'https://www.sec.gov/files/company_tickers.json'
 const SEC_FACTS_URL = cik => `https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`;
 const STOOQ_URL = symbol => `https://stooq.com/q/l/?s=${encodeURIComponent(symbol)}&f=sd2t2ohlcv&h&e=csv`;
 const YAHOO_CHART_URL = ticker => `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(toYahooSymbol(ticker))}?range=5d&interval=1d`;
+const FMP_PROFILE_URL = (ticker, apiKey) => `https://financialmodelingprep.com/stable/profile?symbol=${encodeURIComponent(ticker)}&apikey=${encodeURIComponent(apiKey)}`;
 const FMP_LOGO_URL = ticker => `https://financialmodelingprep.com/image-stock/${encodeURIComponent(ticker)}.png`;
 const CLEARBIT_LOGO_URL = domain => `https://logo.clearbit.com/${encodeURIComponent(domain)}`;
 
@@ -10,8 +11,42 @@ const LOGO_DOMAIN_OVERRIDES = {
 };
 
 const USER_AGENT = process.env.SEC_USER_AGENT || 'Pando Research Treasury Impact Engine contact@pandoresearch.io';
+const FMP_API_KEY = process.env.FMP_API_KEY || '';
 const CACHE_TTL_MS = 1000 * 60 * 60 * 6;
 const cache = new Map();
+
+const EMPLOYEE_RANGES = [
+  [10, '1–10'],
+  [50, '11–50'],
+  [200, '51–200'],
+  [500, '201–500'],
+  [1000, '501–1,000'],
+  [5000, '1,001–5,000'],
+  [10000, '5,001–10,000'],
+  [50000, '10,001–50,000'],
+  [100000, '50,001–100,000'],
+  [Number.POSITIVE_INFINITY, '100,001+']
+];
+
+const DEFAULT_EMPLOYEE_ASSUMPTION = {
+  revenuePerEmployee: 350_000,
+  revenueMultiple: 3.5
+};
+
+const SECTOR_EMPLOYEE_ASSUMPTIONS = {
+  technology: { revenuePerEmployee: 600_000, revenueMultiple: 7 },
+  'communication services': { revenuePerEmployee: 700_000, revenueMultiple: 4.5 },
+  healthcare: { revenuePerEmployee: 500_000, revenueMultiple: 5 },
+  'financial services': { revenuePerEmployee: 850_000, revenueMultiple: 4 },
+  financials: { revenuePerEmployee: 850_000, revenueMultiple: 4 },
+  'consumer cyclical': { revenuePerEmployee: 350_000, revenueMultiple: 2.5 },
+  'consumer defensive': { revenuePerEmployee: 500_000, revenueMultiple: 2.2 },
+  industrials: { revenuePerEmployee: 300_000, revenueMultiple: 2 },
+  energy: { revenuePerEmployee: 1_200_000, revenueMultiple: 1.8 },
+  utilities: { revenuePerEmployee: 650_000, revenueMultiple: 2.5 },
+  'basic materials': { revenuePerEmployee: 450_000, revenueMultiple: 2 },
+  'real estate': { revenuePerEmployee: 500_000, revenueMultiple: 8 }
+};
 
 function sendJson(res, status, payload) {
   res.statusCode = status;
@@ -22,6 +57,11 @@ function sendJson(res, status, payload) {
 
 function cleanTicker(value) {
   return String(value || '').trim().toUpperCase().replace(/[^A-Z0-9.\-]/g, '').slice(0, 12);
+}
+
+function positiveNumber(value) {
+  const numeric = Number(String(value ?? '').replace(/,/g, ''));
+  return Number.isFinite(numeric) && numeric > 0 ? numeric : 0;
 }
 
 async function fetchJson(url) {
@@ -159,6 +199,18 @@ async function fetchLivePrice(ticker) {
   throw new Error(`No usable quote returned for ticker "${ticker}". Tried Stooq and Yahoo chart. ${attempts.join(' · ')}`);
 }
 
+async function fetchFmpProfile(ticker) {
+  if (!FMP_API_KEY) return null;
+  try {
+    const data = await fetchJson(FMP_PROFILE_URL(ticker, FMP_API_KEY));
+    if (Array.isArray(data)) return data[0] || null;
+    if (Array.isArray(data?.profile)) return data.profile[0] || null;
+    return data && typeof data === 'object' ? data : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 function flattenFacts(facts, taxonomy, conceptNames, preferredUnits) {
   const result = [];
   for (const conceptName of conceptNames) {
@@ -224,6 +276,25 @@ function getEmployeeCount(facts) {
   return Math.round(chooseLatest(possible, { min: 1, max: 5_000_000 }));
 }
 
+function getAnnualUsdFact(facts, conceptNames) {
+  const annual = chooseLatest(flattenFacts(facts, 'us-gaap', conceptNames, ['USD']), {
+    min: 0,
+    forms: ['10-K', '20-F', '40-F']
+  });
+  return annual || getUsdFact(facts, conceptNames);
+}
+
+function getRevenue(facts) {
+  return getAnnualUsdFact(facts, [
+    'RevenueFromContractWithCustomerExcludingAssessedTax',
+    'RevenueFromContractWithCustomerIncludingAssessedTax',
+    'Revenues',
+    'SalesRevenueNet',
+    'SalesRevenueGoodsNet',
+    'SalesRevenueServicesNet'
+  ]);
+}
+
 function getBookValue(facts) {
   const direct = getUsdFact(facts, [
     'StockholdersEquity',
@@ -258,11 +329,93 @@ function buildLogoCandidates(ticker) {
   };
 }
 
+function normalizeSector(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function getEmployeeAssumptions(sector) {
+  return SECTOR_EMPLOYEE_ASSUMPTIONS[normalizeSector(sector)] || DEFAULT_EMPLOYEE_ASSUMPTION;
+}
+
+function employeeRange(count) {
+  const rounded = Math.max(1, Math.round(positiveNumber(count)));
+  const match = EMPLOYEE_RANGES.find(([max]) => rounded <= max);
+  return match ? match[1] : '100,001+';
+}
+
+function roundEstimatedEmployees(value) {
+  const clamped = Math.max(1, Math.min(5_000_000, positiveNumber(value)));
+  if (clamped >= 100_000) return Math.round(clamped / 1000) * 1000;
+  if (clamped >= 10_000) return Math.round(clamped / 500) * 500;
+  if (clamped >= 1000) return Math.round(clamped / 100) * 100;
+  if (clamped >= 100) return Math.round(clamped / 10) * 10;
+  return Math.round(clamped);
+}
+
+function buildEmployeeEstimate(count, source, confidence, isEstimated) {
+  const employeeCount = Math.max(1, Math.round(positiveNumber(count)));
+  return {
+    employeeCount,
+    employeeCountRange: employeeRange(employeeCount),
+    employeeCountSource: source,
+    employeeCountConfidence: confidence,
+    employeeCountLastUpdated: new Date().toISOString().slice(0, 10),
+    employeeCountIsEstimated: Boolean(isEstimated)
+  };
+}
+
+function getFmpEmployeeCount(profile) {
+  if (!profile) return 0;
+  return positiveNumber(
+    profile.fullTimeEmployees ??
+    profile.fullTimeEmployee ??
+    profile.employeeCount ??
+    profile.numberOfEmployees ??
+    profile.employees
+  );
+}
+
+function estimateEmployeesFromFinancials(facts, marketCap, sector) {
+  const assumptions = getEmployeeAssumptions(sector);
+  const revenue = getRevenue(facts);
+  if (revenue) {
+    return buildEmployeeEstimate(
+      roundEstimatedEmployees(revenue / assumptions.revenuePerEmployee),
+      'financial_model_estimate',
+      'low',
+      true
+    );
+  }
+
+  const impliedRevenue = positiveNumber(marketCap) / assumptions.revenueMultiple;
+  return buildEmployeeEstimate(
+    roundEstimatedEmployees(impliedRevenue / assumptions.revenuePerEmployee),
+    'sector_fallback_estimate',
+    'low',
+    true
+  );
+}
+
+function getEmployeeEstimate(facts, marketCap, fmpProfile) {
+  const fmpEmployees = getFmpEmployeeCount(fmpProfile);
+  if (fmpEmployees) {
+    return buildEmployeeEstimate(fmpEmployees, 'fmp_profile', 'high', false);
+  }
+
+  const secEmployees = getEmployeeCount(facts);
+  if (secEmployees) {
+    return buildEmployeeEstimate(secEmployees, 'sec_filing', 'high', false);
+  }
+
+  return estimateEmployeesFromFinancials(facts, marketCap, fmpProfile?.sector || fmpProfile?.industry || '');
+}
+
 async function buildCompany(ticker) {
   const companyMeta = await findCompanyByTicker(ticker);
-  const [facts, quote] = await Promise.all([
+  const [facts, quote, fmpProfile] = await Promise.all([
     fetchJson(SEC_FACTS_URL(companyMeta.cik)),
-    fetchLivePrice(ticker)
+    fetchLivePrice(ticker),
+    fetchFmpProfile(ticker)
   ]);
 
   const sharesOutstanding = getSharesOutstanding(facts.facts);
@@ -270,20 +423,24 @@ async function buildCompany(ticker) {
   const marketCap = sharesOutstanding ? sharesOutstanding * quote.price : publicFloat;
   const cashPosition = getCashPosition(facts.facts);
   const bookValue = getBookValue(facts.facts);
-  const headcount = getEmployeeCount(facts.facts);
 
   if (!marketCap || !quote.price || !cashPosition || !bookValue) {
     throw new Error(`Insufficient company facts for ticker "${ticker}"`);
   }
+
+  const employeeEstimate = getEmployeeEstimate(facts.facts, marketCap, fmpProfile);
 
   return {
     name: companyMeta.name,
     ticker,
     marketCap,
     cashPosition,
-    headcount,
+    headcount: employeeEstimate.employeeCount,
+    ...employeeEstimate,
     currentStockPrice: quote.price,
     bookValue,
+    sector: fmpProfile?.sector || '',
+    industry: fmpProfile?.industry || '',
     ...buildLogoCandidates(ticker),
     live: true,
     source: `SEC EDGAR + ${quote.provider || 'live quote'}`,

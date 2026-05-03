@@ -27,6 +27,8 @@ api/company.js
 - Adds a server-side free data route:
   - SEC EDGAR company tickers + company facts for company inputs
   - Stooq CSV quote endpoint for price
+  - optional FMP company profile enrichment for employee count when `FMP_API_KEY` is configured
+  - deterministic SEC/financial-model employee fallbacks so the calculator never receives a blank employee count
   - no provider API key exposed to the browser
   - static fallbacks remain available client-side for AAPL, MSFT, TSLA, COIN, and MSTR
 
@@ -40,6 +42,12 @@ Set this environment variable for SEC politeness and rate-limit hygiene:
 SEC_USER_AGENT="Pando Research Treasury Impact Engine research@pandoresearch.io"
 ```
 
+Optionally set this environment variable for Financial Modeling Prep company profile enrichment:
+
+```bash
+FMP_API_KEY="..."
+```
+
 The API route returns:
 
 ```json
@@ -50,6 +58,12 @@ The API route returns:
     "marketCap": 123,
     "cashPosition": 123,
     "headcount": 123,
+    "employeeCount": 123,
+    "employeeCountRange": "51–200",
+    "employeeCountSource": "fmp_profile",
+    "employeeCountConfidence": "high",
+    "employeeCountLastUpdated": "2026-05-03",
+    "employeeCountIsEstimated": false,
     "currentStockPrice": 123,
     "bookValue": 123,
     "live": true,
@@ -60,6 +74,10 @@ The API route returns:
 ```
 
 If the site is deployed as pure GitHub Pages without serverless support, `/api/company` will not run. The calculator still works for the built-in fallback tickers, but arbitrary tickers require deploying the API route on Vercel, Netlify Functions, Cloudflare Workers, or equivalent.
+
+## Employee count enrichment
+
+`/api/company` keeps `headcount` for backwards compatibility and also returns employee metadata. The route tries `FMP_API_KEY` + FMP profile `fullTimeEmployees`, then SEC companyfacts employee concepts, then estimates from annual revenue and sector revenue-per-employee assumptions. If revenue is missing, it estimates revenue from market cap and sector revenue multiples. Successful company responses should always include a positive employee count and a source/confidence label.
 
 ## Ticker logos
 
