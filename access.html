@@ -219,7 +219,7 @@
     --cover-shadow-blur: 120px;
     --cover-shadow-deep: 0.44;
     --cover-shadow-soft: 0.34;
-    transform-style: preserve-3d;
+    transform-style: flat;
     transform-origin: center;
     transition: transform 0.7s cubic-bezier(0.22, 0.7, 0.18, 1),
                 opacity   0.7s cubic-bezier(0.22, 0.7, 0.18, 1);
@@ -241,7 +241,7 @@
     padding: 24px 22px 20px;
     display: flex;
     flex-direction: column;
-    transform: translateZ(7px);
+    backface-visibility: hidden;
     overflow: hidden;
   }
   .cf-card.tone-paper .face {
@@ -271,38 +271,6 @@
     border-right: 1px solid currentColor;
     opacity: 0.45;
   }
-  .cf-card .spine {
-    position: absolute;
-    top: 0; left: 0;
-    width: 14px;
-    height: 100%;
-    background:
-      linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.30) 100%),
-      var(--green-darker);
-    transform-origin: left center;
-    transform: translateZ(7px) rotateY(-90deg);
-    backface-visibility: hidden;
-  }
-  .cf-card.tone-paper .spine {
-    background:
-      linear-gradient(90deg, rgba(0,0,0,0.20), rgba(0,0,0,0)),
-      var(--bg-deep);
-  }
-  .cf-card.tone-sage .spine {
-    background:
-      linear-gradient(90deg, rgba(0,0,0,0.45), rgba(0,0,0,0.10)),
-      #1f4a3c;
-  }
-  .cf-card .back {
-    position: absolute;
-    inset: 0;
-    background: var(--green-darker);
-    transform: translateZ(-7px);
-    backface-visibility: hidden;
-  }
-  .cf-card.tone-paper .back { background: var(--bg-deep); }
-  .cf-card.tone-sage  .back { background: #163729; }
-
   /* card content */
   .cf-vol {
     font-family: 'JetBrains Mono', monospace;
@@ -1064,8 +1032,6 @@
     card.className = `cf-card ${c.tone || ''}`;
     card.dataset.idx = i;
     card.innerHTML = `
-      <div class="back"></div>
-      <div class="spine"></div>
       <div class="face">
         <div class="cf-vol">${c.vol}</div>
         <div class="cf-rule"></div>
