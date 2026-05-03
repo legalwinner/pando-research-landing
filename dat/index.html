@@ -1,0 +1,1967 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Pando Research — Treasury Impact Engine</title>
+<meta name="description" content="An interactive digital asset treasury calculator for modelling potential equity uplift from treasury allocation, employee participation, infrastructure efficiency, and asset tokenization." />
+<link rel="icon" href="../assets/pando-logo.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,300;1,8..60,400;1,8..60,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:        #F7F5EE;
+    --bg-soft:   #EFE9DA;
+    --bg-deep:   #E8E1CE;
+    --ink:       #14201B;
+    --ink-soft:  #4A5853;
+    --ink-mute:  #8C8B7E;
+    --green:     #1A4D3E;
+    --green-deep:#0F3A2C;
+    --sage:      #7A9B8A;
+    --rule:      #DCD5BF;
+    --rule-soft: #E1DAC4;
+    --paper:     #F8F4E8;
+    --white:     #FFFDF7;
+    --red:       #8E3D2F;
+    --amber:     #B7893C;
+    --shadow:    0 22px 70px rgba(20, 32, 27, 0.10);
+    --shadow-soft: 0 12px 42px rgba(20, 32, 27, 0.075);
+    --max:       1240px;
+    --nav-height: 84px;
+    --desktop-strip-height: 76px;
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 400;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "cv11";
+  }
+  body.has-mobile-impact { padding-bottom: 0; }
+  a, a:visited { color: inherit; text-decoration: none; }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  button:disabled, input:disabled { cursor: not-allowed; opacity: 0.62; }
+  img { display: block; max-width: 100%; height: auto; }
+  [hidden] { display: none !important; }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+  .display {
+    font-family: 'Source Serif 4', 'Times New Roman', serif;
+    font-weight: 350;
+    line-height: 1.02;
+    letter-spacing: -0.026em;
+    font-variation-settings: "opsz" 60;
+  }
+  .num {
+    font-family: 'Source Serif 4', 'Times New Roman', serif;
+    font-feature-settings: "lnum", "tnum";
+    font-variation-settings: "opsz" 60;
+    font-weight: 350;
+    letter-spacing: -0.02em;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--green);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  .site-header {
+    border-bottom: 1px solid var(--rule-soft);
+    background: rgba(247,245,238,0.88);
+    backdrop-filter: saturate(120%) blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 60;
+  }
+  .nav {
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-logo { height: 43px; width: auto; }
+  nav.primary { display: flex; align-items: center; gap: 36px; }
+  nav.primary ul {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  nav.primary a:not(.pill):hover { color: var(--green); }
+  .pill, .pill:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    border-radius: 999px;
+    padding: 11px 22px;
+    border: 1px solid var(--green);
+    background: var(--green);
+    color: var(--paper);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .pill:hover { background: #246851; border-color: #246851; box-shadow: 0 6px 18px rgba(26, 77, 62, 0.16); }
+  .pill.outline, .pill.outline:visited { background: transparent; color: var(--green); box-shadow: none; }
+  .pill.outline:hover { color: var(--green-deep); border-color: var(--green-deep); background: transparent; box-shadow: none; }
+  .mobile-menu-toggle, .mobile-menu { display: none; }
+
+
+
+  .desktop-price-strip {
+    position: sticky;
+    top: var(--nav-height);
+    z-index: 45;
+    border-bottom: 1px solid rgba(26,77,62,0.16);
+    background: rgba(248,244,232,0.94);
+    backdrop-filter: blur(14px) saturate(125%);
+    box-shadow: 0 14px 38px rgba(20,32,27,0.09);
+  }
+  .price-strip-inner {
+    min-height: var(--desktop-strip-height);
+    display: grid;
+    grid-template-columns: minmax(200px, 0.82fr) minmax(0, 1.68fr) auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .price-strip-id {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ticker-logo {
+    --logo-size: 38px;
+    flex: 0 0 auto;
+    width: var(--logo-size);
+    height: var(--logo-size);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(26,77,62,0.18);
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,253,247,0.95), rgba(232,225,206,0.78));
+    color: var(--green-deep);
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(20,32,27,0.08);
+  }
+  .ticker-logo img {
+    display: none;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+    background: var(--white);
+  }
+  .ticker-logo.has-logo img { display: block; }
+  .ticker-logo.has-logo .ticker-logo-fallback { display: none; }
+  .ticker-logo-fallback {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .price-strip-token {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 4px 12px 4px 4px;
+    border-radius: 999px;
+    border: 1px solid rgba(26,77,62,0.16);
+    background: rgba(255,253,247,0.70);
+  }
+  .price-strip-logo { --logo-size: 34px; }
+  .price-strip-ticker {
+    color: var(--green-deep);
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: 0.13em;
+  }
+  .price-strip-name { min-width: 0; }
+  .price-strip-name span {
+    display: block;
+    color: var(--ink-mute);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .price-strip-name strong {
+    display: block;
+    margin-top: 2px;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .price-strip-stats {
+    display: grid;
+    grid-template-columns: minmax(112px, 0.72fr) minmax(128px, 0.78fr) minmax(132px, 0.9fr) minmax(210px, 1.25fr);
+    align-items: center;
+    min-width: 0;
+    border-left: 1px solid var(--rule-soft);
+  }
+  .price-stat {
+    min-width: 0;
+    min-height: 46px;
+    padding: 2px 18px;
+    border-right: 1px solid var(--rule-soft);
+  }
+  .price-stat span,
+  .price-rail-copy span {
+    display: block;
+    color: var(--ink-mute);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .price-stat strong,
+  .price-rail-copy strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--ink);
+    font-size: 23px;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .price-stat.primary strong { color: var(--green); font-size: 28px; }
+  .price-stat.change strong { color: var(--green-deep); font-size: 20px; }
+  .price-rail-stat { display: grid; gap: 9px; padding-left: 18px; min-width: 0; }
+  .price-rail-copy strong {
+    color: var(--ink-soft);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .price-rail {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--bg-deep);
+    overflow: hidden;
+    border: 1px solid rgba(26,77,62,0.08);
+  }
+  .price-rail i {
+    display: block;
+    width: var(--bar, 0%);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--green);
+    transition: width .22s ease;
+  }
+  .price-strip-link,
+  .price-strip-link:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(26,77,62,0.22);
+    color: var(--green);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .price-strip-link:hover { border-color: rgba(26,77,62,0.42); background: rgba(26,77,62,0.06); }
+
+
+  .dat-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 74px 0 52px;
+    border-bottom: 1px solid var(--rule-soft);
+    background:
+      radial-gradient(900px 520px at 82% 14%, rgba(122, 155, 138, 0.20), transparent 64%),
+      linear-gradient(180deg, rgba(248,244,232,0.82), rgba(247,245,238,1));
+  }
+  .dat-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -10% -45% 50%;
+    height: 520px;
+    background:
+      linear-gradient(90deg, rgba(26,77,62,0.07) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(26,77,62,0.055) 1px, transparent 1px);
+    background-size: 36px 36px;
+    transform: rotate(-7deg);
+    mask-image: radial-gradient(ellipse at center, black, transparent 72%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(390px, 0.78fr);
+    gap: 56px;
+    align-items: center;
+  }
+  .hero-copy h1 {
+    margin: 22px 0 24px;
+    font-size: clamp(48px, 5.4vw, 84px);
+    max-width: 760px;
+  }
+  .hero-copy h1 em { color: var(--green); font-style: italic; }
+  .hero-copy .lede {
+    margin: 0;
+    max-width: 650px;
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(19px, 2.2vw, 25px);
+    line-height: 1.42;
+    color: var(--ink-soft);
+    font-weight: 350;
+  }
+  .hero-proof {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 34px;
+  }
+  .proof-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(26,77,62,0.18);
+    background: rgba(248,244,232,0.68);
+    color: var(--ink-soft);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .proof-chip::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sage);
+  }
+
+  .search-card {
+    background: rgba(248,244,232,0.94);
+    border: 1px solid var(--rule);
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+  }
+  .search-card h2 {
+    margin: 0 0 8px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 380;
+    letter-spacing: -0.012em;
+  }
+  .search-card p { margin: 0; color: var(--ink-soft); font-size: 14px; }
+  .search-form { margin-top: 24px; }
+  .ticker-row {
+    display: grid;
+    grid-template-columns: 1fr 58px;
+    gap: 10px;
+  }
+  .ticker-input {
+    width: 100%;
+    min-height: 58px;
+    padding: 0 18px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .ticker-input::placeholder { text-transform: none; color: var(--ink-mute); font-weight: 400; }
+  .ticker-input:focus {
+    border-color: rgba(26,77,62,0.52);
+    box-shadow: 0 0 0 4px rgba(26,77,62,0.10);
+    background: #fffdf8;
+  }
+  .search-button {
+    min-width: 58px;
+    min-height: 58px;
+    border: 1px solid var(--green);
+    border-radius: 999px;
+    background: var(--green);
+    color: var(--paper);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .search-button:hover:not(:disabled) { transform: translateY(-1px); background: #246851; border-color: #246851; box-shadow: 0 8px 22px rgba(26,77,62,0.22); }
+  .search-button svg { width: 21px; height: 21px; }
+  .helper-text {
+    margin-top: 12px;
+    min-height: 22px;
+    color: var(--ink-mute);
+    font-size: 13px;
+  }
+  .helper-text.error { color: var(--red); }
+  .quick-tickers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .quick-ticker {
+    border: 1px solid rgba(26,77,62,0.16);
+    background: rgba(255,253,247,0.78);
+    color: var(--green-deep);
+    border-radius: 999px;
+    padding: 8px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    transition: transform .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .quick-ticker:hover { transform: translateY(-1px); border-color: rgba(26,77,62,0.36); background: var(--white); }
+  .feed-note {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink-mute);
+  }
+
+  .dat-section { padding: 54px 0 92px; }
+  .empty-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 28px;
+    align-items: stretch;
+  }
+  .model-card, .preview-card, .panel-card, .assumption-card, .company-card, .summary-card, .chart-card {
+    border: 1px solid var(--rule);
+    background: rgba(248,244,232,0.82);
+    border-radius: 26px;
+    box-shadow: var(--shadow-soft);
+  }
+  .model-card { padding: 30px; }
+  .model-card h2, .preview-card h2 {
+    margin: 0 0 14px;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 380;
+    font-size: clamp(28px, 3vw, 38px);
+    letter-spacing: -0.018em;
+    line-height: 1.08;
+  }
+  .model-card p, .preview-card p { margin: 0; color: var(--ink-soft); }
+  .step-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(255,253,247,0.62);
+    border: 1px solid var(--rule-soft);
+  }
+  .step-number {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(26,77,62,0.08);
+    color: var(--green);
+    font-family: 'Source Serif 4', serif;
+    font-size: 21px;
+  }
+  .step strong { display: block; margin-bottom: 3px; color: var(--ink); }
+  .step span { color: var(--ink-soft); font-size: 14px; }
+  .preview-card {
+    padding: 30px;
+    overflow: hidden;
+    background:
+      radial-gradient(520px 360px at 92% 6%, rgba(26,77,62,0.14), transparent 60%),
+      rgba(248,244,232,0.82);
+  }
+  .mini-dashboard {
+    margin-top: 26px;
+    display: grid;
+    gap: 12px;
+  }
+  .mini-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .mini-row:last-child { border-bottom: none; }
+  .mini-label { color: var(--ink-soft); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .mini-value { color: var(--green); font-size: 30px; line-height: 1; }
+  .mini-bars {
+    display: grid;
+    gap: 9px;
+    margin-top: 22px;
+  }
+  .mini-bar { height: 9px; border-radius: 999px; background: var(--bg-deep); overflow: hidden; }
+  .mini-bar span { display: block; height: 100%; border-radius: inherit; background: var(--green); opacity: 0.82; }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(340px, 430px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+  .control-panel, .output-panel { min-width: 0; }
+  .control-panel { display: grid; gap: 18px; }
+  .sticky-output {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--desktop-strip-height) + 24px);
+    display: grid;
+    gap: 18px;
+  }
+  .company-card {
+    padding: 24px;
+    background: rgba(255,253,247,0.74);
+  }
+  .company-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+  .company-id { min-width: 0; }
+  .company-id h2 {
+    margin: 0 0 8px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 32px;
+    font-weight: 380;
+    line-height: 1.07;
+    letter-spacing: -0.016em;
+  }
+  .ticker-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .ticker-badge, .source-badge {
+    display: inline-flex;
+    min-height: 26px;
+    align-items: center;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .ticker-badge { gap: 6px; padding: 3px 9px 3px 4px; background: var(--green); color: var(--paper); }
+  .company-ticker-logo {
+    --logo-size: 22px;
+    border-color: rgba(248,244,232,0.34);
+    background: rgba(248,244,232,0.18);
+    color: var(--paper);
+    box-shadow: none;
+  }
+  .company-ticker-logo.has-logo { background: var(--white); border-color: rgba(248,244,232,0.72); }
+  .company-ticker-logo img { padding: 3px; }
+  .company-ticker-logo .ticker-logo-fallback { font-size: 8px; }
+  .source-badge { color: var(--green-deep); background: rgba(26,77,62,0.08); border: 1px solid rgba(26,77,62,0.12); }
+  .source-badge.fallback { color: var(--amber); background: rgba(183,137,60,0.10); border-color: rgba(183,137,60,0.22); }
+  .new-search {
+    flex: 0 0 auto;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--green);
+    border-radius: 999px;
+    min-height: 38px;
+    padding: 8px 13px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .new-search:hover { border-color: rgba(26,77,62,0.34); }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .metric-cell {
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(248,244,232,0.76);
+    border: 1px solid var(--rule-soft);
+    min-width: 0;
+  }
+  .metric-cell span { display: block; color: var(--ink-mute); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
+  .metric-cell strong { display: block; margin-top: 5px; color: var(--green); font-size: 25px; line-height: 1; white-space: nowrap; }
+
+  .assumption-card {
+    padding: 22px;
+    background: rgba(248,244,232,0.76);
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+  .card-head h3 {
+    margin: 0;
+    font-family: 'Source Serif 4', serif;
+    font-size: 24px;
+    line-height: 1.08;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .card-head p { margin: 5px 0 0; color: var(--ink-soft); font-size: 13px; }
+  .info-dot {
+    flex: 0 0 auto;
+    width: 31px;
+    height: 31px;
+    border-radius: 50%;
+    border: 1px solid rgba(26,77,62,0.18);
+    background: rgba(255,253,247,0.54);
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .slider-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .slider-top label { color: var(--ink-soft); font-size: 13px; letter-spacing: 0.11em; text-transform: uppercase; font-weight: 700; }
+  .slider-value { color: var(--green); font-size: 34px; line-height: 1; }
+  .range {
+    width: 100%;
+    height: 34px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    outline: none;
+    margin: 2px 0 0;
+  }
+  .range::-webkit-slider-runnable-track {
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green) 0 var(--progress, 50%), var(--bg-deep) var(--progress, 50%) 100%);
+    border: 1px solid rgba(26,77,62,0.08);
+  }
+  .range::-moz-range-track {
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green) 0 var(--progress, 50%), var(--bg-deep) var(--progress, 50%) 100%);
+    border: 1px solid rgba(26,77,62,0.08);
+  }
+  .range::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    margin-top: -10px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 6px solid var(--green);
+    box-shadow: 0 5px 16px rgba(20,32,27,0.18);
+  }
+  .range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 6px solid var(--green);
+    box-shadow: 0 5px 16px rgba(20,32,27,0.18);
+  }
+  .assumption-note {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule-soft);
+    color: var(--ink-mute);
+    font-size: 12px;
+  }
+  .assumption-note strong { color: var(--green); font-weight: 700; }
+  .toggle-grid { display: grid; gap: 10px; }
+  .check-tile { display: block; cursor: pointer; }
+  .check-tile input { position: absolute; opacity: 0; pointer-events: none; }
+  .check-content {
+    min-height: 54px;
+    border: 1px solid var(--rule-soft);
+    background: rgba(255,253,247,0.54);
+    border-radius: 17px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+  }
+  .check-content:hover { border-color: rgba(26,77,62,0.30); transform: translateY(-1px); }
+  .check-box {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid rgba(26,77,62,0.28);
+    background: var(--paper);
+    display: grid;
+    place-items: center;
+    color: var(--paper);
+    transition: background .18s ease, border-color .18s ease;
+  }
+  .check-box svg { width: 14px; height: 14px; opacity: 0; transform: scale(0.72); transition: opacity .18s ease, transform .18s ease; }
+  .check-label { color: var(--ink); font-weight: 600; font-size: 14px; }
+  .check-value { color: var(--green); font-weight: 700; font-size: 13px; }
+  .check-tile input:checked + .check-content {
+    border-color: rgba(26,77,62,0.40);
+    background: rgba(26,77,62,0.075);
+    box-shadow: inset 0 0 0 1px rgba(26,77,62,0.08);
+  }
+  .check-tile input:checked + .check-content .check-box { background: var(--green); border-color: var(--green); }
+  .check-tile input:checked + .check-content .check-box svg { opacity: 1; transform: scale(1); }
+  .preset-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .preset-button {
+    border: 1px solid rgba(26,77,62,0.18);
+    background: rgba(255,253,247,0.56);
+    color: var(--green-deep);
+    border-radius: 999px;
+    padding: 8px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .preset-button:hover { border-color: rgba(26,77,62,0.36); background: var(--white); }
+
+  .summary-card {
+    padding: 26px;
+    background:
+      linear-gradient(135deg, rgba(26,77,62,0.10), rgba(248,244,232,0.78) 46%),
+      rgba(248,244,232,0.86);
+    border-color: rgba(26,77,62,0.22);
+  }
+  .summary-kicker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 16px;
+  }
+  .summary-kicker span:first-child {
+    color: var(--green);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .summary-updated { color: var(--ink-mute); font-size: 12px; }
+  .summary-card p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(18px, 2.1vw, 23px);
+    line-height: 1.42;
+    font-weight: 350;
+  }
+  .impact-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .impact-metric {
+    border: 1px solid rgba(26,77,62,0.15);
+    border-radius: 20px;
+    background: rgba(255,253,247,0.62);
+    padding: 16px;
+    text-align: center;
+  }
+  .impact-metric span { display: block; color: var(--ink-mute); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; }
+  .impact-metric strong { display: block; margin-top: 8px; color: var(--green); font-size: clamp(28px, 3vw, 42px); line-height: 0.95; }
+
+  .chart-card { padding: 24px; background: rgba(255,253,247,0.72); }
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .chart-head h3 {
+    margin: 0;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 400;
+    font-size: 27px;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+  .chart-head p { margin: 5px 0 0; color: var(--ink-soft); font-size: 13px; }
+  .chart-mode {
+    flex: 0 0 auto;
+    border: 1px solid rgba(26,77,62,0.16);
+    background: rgba(26,77,62,0.06);
+    color: var(--green-deep);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .chart-wrap {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid var(--rule-soft);
+    background:
+      linear-gradient(180deg, rgba(248,244,232,0.55), rgba(239,233,218,0.45));
+  }
+  .scenario-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .chart-grid { stroke: rgba(20,32,27,0.12); stroke-width: 1; stroke-dasharray: 5 6; }
+  .chart-axis-label { fill: var(--ink-mute); font-size: 12px; font-weight: 600; }
+  .chart-value-label { fill: var(--green-deep); font-size: 12px; font-weight: 800; }
+  .chart-line { fill: none; stroke: #1A4D3E; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .chart-area { fill: url(#impactGradient); }
+  .chart-dot { fill: var(--paper); stroke: #1A4D3E; stroke-width: 3; }
+
+  .breakdown-card {
+    border: 1px solid var(--rule);
+    border-radius: 26px;
+    background: rgba(248,244,232,0.76);
+    padding: 22px;
+  }
+  .breakdown-card h3 {
+    margin: 0 0 15px;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 400;
+    font-size: 24px;
+  }
+  .breakdown-list { display: grid; gap: 13px; }
+  .breakdown-row {
+    display: grid;
+    grid-template-columns: 128px 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .breakdown-row span:first-child { color: var(--ink-soft); font-size: 13px; font-weight: 700; }
+  .breakdown-bar {
+    height: 10px;
+    background: var(--bg-deep);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(26,77,62,0.07);
+  }
+  .breakdown-bar i {
+    display: block;
+    height: 100%;
+    width: var(--bar, 0%);
+    background: var(--green);
+    border-radius: inherit;
+    opacity: 0.84;
+  }
+  .breakdown-value { color: var(--green); font-weight: 800; font-size: 13px; min-width: 66px; text-align: right; }
+
+  .mobile-impact-bar {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    z-index: 60;
+    border: 1px solid rgba(26,77,62,0.24);
+    border-radius: 24px;
+    background: rgba(248,244,232,0.94);
+    backdrop-filter: blur(12px) saturate(120%);
+    box-shadow: 0 18px 48px rgba(20,32,27,0.22);
+    padding: 12px;
+  }
+  .mobile-impact-grid {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+  }
+  .mobile-impact-grid > div:not(.mobile-jump) {
+    min-width: 0;
+    border-right: 1px solid var(--rule-soft);
+    padding-right: 8px;
+  }
+  .mobile-impact-grid > div:nth-child(4) { border-right: none; }
+  .mobile-symbol {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .mobile-ticker-logo { --logo-size: 34px; box-shadow: none; }
+  .mobile-symbol strong {
+    color: var(--green-deep);
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+  .mobile-impact-grid > div:not(.mobile-jump):not(.mobile-symbol) > span { display: block; font-size: 9px; color: var(--ink-mute); letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; }
+  .mobile-impact-grid > div:not(.mobile-jump):not(.mobile-symbol) > strong { display: block; color: var(--green); font-size: 20px; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mobile-jump a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--green);
+    color: var(--paper);
+    font-weight: 900;
+  }
+
+  footer {
+    padding: 52px 0;
+    border-top: 1px solid var(--rule-soft);
+    background: var(--bg);
+  }
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    color: var(--ink-mute);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  footer .brand-logo { height: 48px; }
+
+  @media (max-width: 1100px) {
+    .price-strip-inner { grid-template-columns: 1fr; gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+    .price-strip-stats { width: 100%; }
+    .price-strip-link { display: none; }
+    .hero-grid { grid-template-columns: 1fr; gap: 34px; }
+    .search-card { max-width: 620px; }
+    .workspace { grid-template-columns: 1fr; }
+    .sticky-output { position: static; }
+    .output-panel { order: -1; }
+    .chart-wrap { height: 280px; }
+  }
+
+  @media (max-width: 860px) {
+    .desktop-price-strip { display: none !important; }
+    nav.primary { display: none; }
+    .mobile-menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--rule);
+      background: rgba(248,244,232,0.72);
+      color: var(--green);
+    }
+    .mobile-menu-toggle svg { width: 22px; height: 22px; }
+    .mobile-menu {
+      display: block;
+      max-height: 0;
+      overflow: hidden;
+      border-top: 1px solid transparent;
+      transition: max-height .25s ease, border-color .25s ease;
+    }
+    body.menu-open .mobile-menu { max-height: 360px; border-color: var(--rule-soft); }
+    .mobile-menu .wrap { padding-top: 16px; padding-bottom: 22px; display: grid; gap: 12px; }
+    .mobile-menu a { min-height: 44px; display: flex; align-items: center; color: var(--ink-soft); }
+    .mobile-menu .pill { justify-self: start; }
+    .dat-hero { padding: 54px 0 38px; }
+    .wrap { padding: 0 22px; }
+    .empty-grid { grid-template-columns: 1fr; }
+    .metric-grid, .impact-metrics { grid-template-columns: 1fr; }
+    .company-top, .chart-head, .summary-kicker { flex-direction: column; align-items: flex-start; }
+    .output-panel { order: 0; }
+    .control-panel { order: 1; }
+    body.has-mobile-impact { padding-bottom: 110px; }
+  }
+
+  @media (min-width: 861px) {
+    .mobile-impact-bar { display: none !important; }
+  }
+
+  @media (max-width: 420px) {
+    .mobile-symbol strong { display: none; }
+    .mobile-impact-grid { gap: 6px; }
+    .mobile-impact-grid > div:not(.mobile-jump) { padding-right: 6px; }
+    .mobile-ticker-logo { --logo-size: 32px; }
+  }
+
+  @media (max-width: 620px) {
+    .nav { min-height: 74px; }
+    .brand-logo { height: 36px; max-width: 196px; object-fit: contain; object-position: left center; }
+    .hero-copy h1 { font-size: clamp(42px, 13vw, 58px); }
+    .hero-proof { gap: 8px; margin-top: 24px; }
+    .proof-chip { width: 100%; justify-content: flex-start; }
+    .search-card, .model-card, .preview-card, .company-card, .assumption-card, .summary-card, .chart-card, .breakdown-card { border-radius: 22px; }
+    .search-card { padding: 22px; }
+    .ticker-row { grid-template-columns: 1fr 54px; }
+    .ticker-input, .search-button { min-height: 54px; }
+    .dat-section { padding: 34px 0 64px; }
+    .card-head h3, .chart-head h3 { font-size: 22px; }
+    .slider-value { font-size: 30px; }
+    .check-content { min-height: 58px; }
+    .assumption-note { display: block; }
+    .assumption-note strong { display: block; margin-top: 4px; }
+    .chart-wrap { height: 242px; margin-left: -6px; margin-right: -6px; width: calc(100% + 12px); }
+    .breakdown-row { grid-template-columns: 1fr; gap: 6px; }
+    .breakdown-value { text-align: left; }
+    .footer-inner { display: grid; gap: 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="../" aria-label="Pando Research home">
+        <img class="brand-logo" src="../assets/pando-logo.svg" alt="Pando Research" />
+      </a>
+      <nav class="primary" aria-label="Primary navigation">
+        <ul>
+          <li><a href="../#research">Research</a></li>
+          <li><a href="../#themes">Coverage</a></li>
+          <li><a href="#calculator">DAT Engine</a></li>
+          <li><a href="../#report">Featured Report</a></li>
+        </ul>
+        <a class="pill" href="../#contact">Request brief <span aria-hidden="true">→</span></a>
+      </nav>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation" aria-controls="mobileMenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile navigation">
+      <div class="wrap">
+        <a href="../#research">Research</a>
+        <a href="../#themes">Coverage</a>
+        <a href="#calculator">DAT Engine</a>
+        <a href="../#report">Featured Report</a>
+        <a class="pill" href="../#contact">Request brief <span aria-hidden="true">→</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="desktop-price-strip" id="desktopPriceStrip" role="region" aria-label="Sticky price impact summary" hidden>
+    <div class="wrap price-strip-inner">
+      <div class="price-strip-id">
+        <div class="price-strip-token">
+          <span class="ticker-logo price-strip-logo" id="desktopTickerLogoShell" aria-hidden="true">
+            <img id="desktopTickerLogo" alt="" decoding="async" referrerpolicy="no-referrer" />
+            <span class="ticker-logo-fallback" id="desktopTickerLogoFallback">—</span>
+          </span>
+          <span class="price-strip-ticker" id="desktopStripTicker">—</span>
+        </div>
+        <div class="price-strip-name">
+          <span>Live share-price impact</span>
+          <strong id="desktopStripName">Select a ticker</strong>
+        </div>
+      </div>
+      <div class="price-strip-stats">
+        <div class="price-stat"><span>Current</span><strong class="num" id="desktopCurrentPrice">—</strong></div>
+        <div class="price-stat primary"><span>Model price</span><strong class="num" id="desktopModelPrice">—</strong></div>
+        <div class="price-stat change"><span>Move</span><strong class="num" id="desktopPriceMove">—</strong></div>
+        <div class="price-rail-stat">
+          <div class="price-rail-copy"><span>Levers</span><strong id="desktopLeverSummary">No levers active</strong></div>
+          <div class="price-rail" aria-hidden="true"><i id="desktopImpactRail"></i></div>
+        </div>
+      </div>
+      <a class="price-strip-link" href="#calculator">Edit levers</a>
+    </div>
+  </div>
+
+  <main>
+    <section class="dat-hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Treasury Impact Engine</p>
+          <h1 class="display">Model the equity impact of a <em>digital asset treasury</em>.</h1>
+          <p class="lede">Enter a public ticker, tune four practical levers, and see the implied valuation case without fighting a spreadsheet.</p>
+          <div class="hero-proof" aria-label="Calculator features">
+            <span class="proof-chip">SEC-side company inputs</span>
+            <span class="proof-chip">Sticky price feedback</span>
+            <span class="proof-chip">Mobile-first control flow</span>
+          </div>
+        </div>
+        <aside class="search-card" aria-labelledby="searchTitle">
+          <h2 id="searchTitle">Enter company ticker</h2>
+          <p>Start with a ticker, then play with the assumptions. The model keeps controls and outputs side by side on desktop, adds a sticky quote strip while you tune assumptions, and uses a bottom impact bar on mobile.</p>
+          <form class="search-form" id="tickerForm" autocomplete="off">
+            <div class="ticker-row">
+              <input class="ticker-input" id="tickerInput" name="ticker" type="text" inputmode="latin" placeholder="Any public ticker (e.g. AAPL, GDDY, MSFT)" aria-describedby="helperText" maxlength="12" />
+              <button class="search-button" id="searchButton" type="submit" aria-label="Run company analysis">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.8 18.1a7.1 7.1 0 1 1 0-14.2 7.1 7.1 0 0 1 0 14.2Zm5.3-2.1 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <div class="helper-text" id="helperText">Enter any public ticker to begin analysis.</div>
+          </form>
+          <div class="quick-tickers" aria-label="Example tickers">
+            <button class="quick-ticker" type="button" data-ticker="AAPL">AAPL</button>
+            <button class="quick-ticker" type="button" data-ticker="MSFT">MSFT</button>
+            <button class="quick-ticker" type="button" data-ticker="TSLA">TSLA</button>
+            <button class="quick-ticker" type="button" data-ticker="COIN">COIN</button>
+            <button class="quick-ticker" type="button" data-ticker="MSTR">MSTR</button>
+          </div>
+          <div class="feed-note">Live mode calls <code>/api/company?ticker=</code> from the server. No provider key belongs in the browser. If the endpoint is unavailable, this page still runs from curated fallback records.</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="dat-section" id="calculator">
+      <div class="wrap">
+        <div class="empty-grid" id="emptyState">
+          <article class="model-card">
+            <p class="eyebrow">Simple model, sharper UX</p>
+            <h2>Less scrolling. More signal.</h2>
+            <p>The old calculator stacked every input above every output. This version moves the experience into a control panel plus live output panel, so the user can see cause and effect immediately.</p>
+            <div class="step-list">
+              <div class="step"><span class="step-number num">1</span><div><strong>Load company baseline</strong><span>Price, market cap, cash, book value, and headcount are pulled server-side or from fallback records.</span></div></div>
+              <div class="step"><span class="step-number num">2</span><div><strong>Adjust four levers</strong><span>Cash allocation, employee adoption, infrastructure modules, and tokenized assets update instantly.</span></div></div>
+              <div class="step"><span class="step-number num">3</span><div><strong>Read the valuation case</strong><span>Executive summary, price scenarios, and contribution bars stay visible while users explore.</span></div></div>
+            </div>
+          </article>
+          <article class="preview-card" aria-label="Output preview">
+            <p class="eyebrow">Output preview</p>
+            <h2>Built to invite tinkering.</h2>
+            <p>People should understand the model in ten seconds and keep exploring for ten minutes. Big sliders, thumb-safe toggles, compact metrics, and a chart that does not vanish below the fold.</p>
+            <div class="mini-dashboard" aria-hidden="true">
+              <div class="mini-row"><span class="mini-label">Optimized price</span><strong class="mini-value num">$280.99</strong></div>
+              <div class="mini-row"><span class="mini-label">Equity uplift</span><strong class="mini-value num">+0.3%</strong></div>
+              <div class="mini-bars"><div class="mini-bar"><span style="width: 44%"></span></div><div class="mini-bar"><span style="width: 67%"></span></div><div class="mini-bar"><span style="width: 82%"></span></div></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="workspace" id="workspace" hidden>
+          <aside class="control-panel" aria-label="Calculator controls">
+            <section class="company-card" aria-labelledby="companyName">
+              <div class="company-top">
+                <div class="company-id">
+                  <h2 id="companyName">Company</h2>
+                  <div class="ticker-badges">
+                    <span class="ticker-badge">
+                      <span class="ticker-logo company-ticker-logo" id="companyTickerLogoShell" aria-hidden="true">
+                        <img id="companyTickerLogo" alt="" decoding="async" referrerpolicy="no-referrer" />
+                        <span class="ticker-logo-fallback" id="companyTickerLogoFallback">—</span>
+                      </span>
+                      <span id="companyTicker">TICKER</span>
+                    </span>
+                    <span class="source-badge" id="sourceBadge">LIVE</span>
+                  </div>
+                </div>
+                <button class="new-search" id="newSearch" type="button">New search</button>
+              </div>
+              <div class="metric-grid">
+                <div class="metric-cell"><span>Market cap</span><strong class="num" id="metricMarketCap">—</strong></div>
+                <div class="metric-cell"><span>Cash</span><strong class="num" id="metricCash">—</strong></div>
+                <div class="metric-cell"><span>Headcount</span><strong class="num" id="metricHeadcount">—</strong></div>
+              </div>
+            </section>
+
+            <section class="assumption-card" aria-labelledby="presetsTitle">
+              <div class="card-head">
+                <div>
+                  <h3 id="presetsTitle">Fast presets</h3>
+                  <p>One-tap starting points. You can still adjust every lever afterwards.</p>
+                </div>
+                <span class="info-dot" aria-hidden="true">i</span>
+              </div>
+              <div class="preset-row">
+                <button class="preset-button" type="button" data-preset="conservative">Conservative</button>
+                <button class="preset-button" type="button" data-preset="balanced">Balanced</button>
+                <button class="preset-button" type="button" data-preset="transform">Transformation</button>
+                <button class="preset-button" type="button" data-preset="zero">Reset</button>
+              </div>
+            </section>
+
+            <section class="assumption-card" aria-labelledby="datTitle">
+              <div class="card-head">
+                <div><h3 id="datTitle">Treasury optimization</h3><p>Model a cash allocation into a digital asset treasury strategy.</p></div>
+                <span class="info-dot" aria-hidden="true">i</span>
+              </div>
+              <div class="slider-top"><label for="cashAllocation">Cash allocation</label><strong class="slider-value num" id="cashAllocationValue">15%</strong></div>
+              <input class="range" id="cashAllocation" type="range" min="0" max="30" step="1" value="15" />
+              <div class="assumption-note"><span>mNAV premium multiplier</span><strong>2.0×</strong></div>
+            </section>
+
+            <section class="assumption-card" aria-labelledby="dappTitle">
+              <div class="card-head">
+                <div><h3 id="dappTitle">Employee retention</h3><p>Estimate value created by on-chain retention and participation programs.</p></div>
+                <span class="info-dot" aria-hidden="true">i</span>
+              </div>
+              <div class="slider-top"><label for="employeeOptIn">Opt-in rate</label><strong class="slider-value num" id="employeeOptInValue">60%</strong></div>
+              <input class="range" id="employeeOptIn" type="range" min="0" max="100" step="5" value="60" />
+              <div class="assumption-note"><span>Retention value created</span><strong>+$18K per participant</strong></div>
+            </section>
+
+            <section class="assumption-card" aria-labelledby="infraTitle">
+              <div class="card-head">
+                <div><h3 id="infraTitle">Infrastructure efficiency</h3><p>Add modules that reduce operating friction.</p></div>
+                <span class="info-dot" aria-hidden="true">i</span>
+              </div>
+              <div class="toggle-grid">
+                <label class="check-tile"><input type="checkbox" id="supplyChainProvenance" data-toggle="infra" /><span class="check-content"><span class="check-box"><svg viewBox="0 0 16 16" fill="none"><path d="m3.3 8 3 3 6.4-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="check-label">Supply chain provenance</span><span class="check-value">0.75%</span></span></label>
+                <label class="check-tile"><input type="checkbox" id="onChainReporting" data-toggle="infra" /><span class="check-content"><span class="check-box"><svg viewBox="0 0 16 16" fill="none"><path d="m3.3 8 3 3 6.4-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="check-label">On-chain reporting</span><span class="check-value">0.75%</span></span></label>
+                <label class="check-tile"><input type="checkbox" id="tokenizedCommunications" data-toggle="infra" /><span class="check-content"><span class="check-box"><svg viewBox="0 0 16 16" fill="none"><path d="m3.3 8 3 3 6.4-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="check-label">Tokenized communications</span><span class="check-value">0.75%</span></span></label>
+              </div>
+              <div class="assumption-note"><span>OpEx reduction</span><strong id="opexReductionLabel">0.00%</strong></div>
+            </section>
+
+            <section class="assumption-card" aria-labelledby="foundryTitle">
+              <div class="card-head">
+                <div><h3 id="foundryTitle">Asset tokenization</h3><p>Unlock liquidity from balance-sheet assets.</p></div>
+                <span class="info-dot" aria-hidden="true">i</span>
+              </div>
+              <div class="toggle-grid">
+                <label class="check-tile"><input type="checkbox" id="intellectualProperty" data-toggle="asset" /><span class="check-content"><span class="check-box"><svg viewBox="0 0 16 16" fill="none"><path d="m3.3 8 3 3 6.4-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="check-label">Intellectual property</span><span class="check-value">12%</span></span></label>
+                <label class="check-tile"><input type="checkbox" id="energyAssets" data-toggle="asset" /><span class="check-content"><span class="check-box"><svg viewBox="0 0 16 16" fill="none"><path d="m3.3 8 3 3 6.4-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="check-label">Energy assets</span><span class="check-value">8%</span></span></label>
+                <label class="check-tile"><input type="checkbox" id="realEstate" data-toggle="asset" /><span class="check-content"><span class="check-box"><svg viewBox="0 0 16 16" fill="none"><path d="m3.3 8 3 3 6.4-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="check-label">Real estate</span><span class="check-value">15%</span></span></label>
+              </div>
+              <div class="assumption-note"><span>Liquidity unlock</span><strong id="liquidityUnlockLabel">0% of book value</strong></div>
+            </section>
+          </aside>
+
+          <section class="output-panel" aria-label="Calculator output">
+            <div class="sticky-output">
+              <article class="summary-card" aria-labelledby="summaryTitle" aria-live="polite">
+                <div class="summary-kicker"><span id="summaryTitle">Executive summary</span><span class="summary-updated" id="summarySource">—</span></div>
+                <p id="summaryText">Adjust the parameters below to model the pro-forma valuation impact.</p>
+                <div class="impact-metrics" id="summaryMetrics" hidden>
+                  <div class="impact-metric"><span>Current price</span><strong class="num" id="currentPriceMetric">—</strong></div>
+                  <div class="impact-metric"><span>Optimized price</span><strong class="num" id="optimizedPriceMetric">—</strong></div>
+                  <div class="impact-metric"><span>Uplift</span><strong class="num" id="upliftMetric">—</strong></div>
+                </div>
+              </article>
+
+              <article class="chart-card" id="chartPanel" aria-labelledby="chartTitle">
+                <div class="chart-head">
+                  <div><h3 id="chartTitle">Price scenario envelope</h3><p>Base case reflects the calculator model. Bull case adds a macro overlay so the chart and copy tell the same story.</p></div>
+                  <span class="chart-mode">Live output</span>
+                </div>
+                <div class="chart-wrap">
+                  <svg class="scenario-chart" id="scenarioChart" viewBox="0 0 720 300" role="img" aria-label="Price scenarios chart"></svg>
+                </div>
+              </article>
+
+              <article class="breakdown-card" aria-labelledby="breakdownTitle">
+                <h3 id="breakdownTitle">Value creation breakdown</h3>
+                <div class="breakdown-list">
+                  <div class="breakdown-row"><span>Treasury</span><span class="breakdown-bar"><i id="barTreasury"></i></span><strong class="breakdown-value" id="valueTreasury">—</strong></div>
+                  <div class="breakdown-row"><span>Retention</span><span class="breakdown-bar"><i id="barRetention"></i></span><strong class="breakdown-value" id="valueRetention">—</strong></div>
+                  <div class="breakdown-row"><span>Efficiency</span><span class="breakdown-bar"><i id="barInfrastructure"></i></span><strong class="breakdown-value" id="valueInfrastructure">—</strong></div>
+                  <div class="breakdown-row"><span>Tokenization</span><span class="breakdown-bar"><i id="barLiquidity"></i></span><strong class="breakdown-value" id="valueLiquidity">—</strong></div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="mobile-impact-bar" id="mobileImpactBar" hidden>
+    <div class="mobile-impact-grid">
+      <div class="mobile-symbol">
+        <span class="ticker-logo mobile-ticker-logo" id="mobileTickerLogoShell" aria-hidden="true">
+          <img id="mobileTickerLogo" alt="" decoding="async" referrerpolicy="no-referrer" />
+          <span class="ticker-logo-fallback" id="mobileTickerLogoFallback">—</span>
+        </span>
+        <strong id="mobileTickerSymbol">—</strong>
+      </div>
+      <div><span>Current</span><strong class="num" id="mobileCurrent">—</strong></div>
+      <div><span>Optimized</span><strong class="num" id="mobileOptimized">—</strong></div>
+      <div><span>Uplift</span><strong class="num" id="mobileUplift">—</strong></div>
+      <div class="mobile-jump"><a href="#chartPanel" aria-label="Jump to price chart">↗</a></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="brand" href="../" aria-label="Pando Research home"><img class="brand-logo" src="../assets/pando-logo.svg" alt="Pando Research" /></a>
+      <span>Institutional research for digital assets</span>
+    </div>
+  </footer>
+
+<script>
+(() => {
+  const FALLBACK_COMPANIES = {
+    AAPL: { name: 'Apple Inc.', ticker: 'AAPL', marketCap: 3450000000000, cashPosition: 166000000000, headcount: 164000, currentStockPrice: 189.50, bookValue: 62000000000 },
+    MSFT: { name: 'Microsoft Corporation', ticker: 'MSFT', marketCap: 3100000000000, cashPosition: 144000000000, headcount: 221000, currentStockPrice: 425.50, bookValue: 125000000000 },
+    TSLA: { name: 'Tesla, Inc.', ticker: 'TSLA', marketCap: 840000000000, cashPosition: 22500000000, headcount: 127855, currentStockPrice: 260.00, bookValue: 62800000000 },
+    COIN: { name: 'Coinbase Global, Inc.', ticker: 'COIN', marketCap: 62000000000, cashPosition: 7200000000, headcount: 4900, currentStockPrice: 245.00, bookValue: 15000000000 },
+    MSTR: { name: 'MicroStrategy Incorporated', ticker: 'MSTR', marketCap: 85000000000, cashPosition: 500000000, headcount: 2400, currentStockPrice: 445.00, bookValue: 3500000000 }
+  };
+
+  const ASSET_UNLOCK = {
+    intellectualProperty: 12,
+    energyAssets: 8,
+    realEstate: 15
+  };
+
+  const state = {
+    company: null,
+    live: false,
+    source: '',
+    asOf: '',
+    loading: false,
+    error: '',
+    cashAllocationPercent: 15,
+    employeeOptInPercent: 60,
+    infrastructureModules: {
+      supplyChainProvenance: false,
+      onChainReporting: false,
+      tokenizedCommunications: false
+    },
+    foundryAssets: {
+      intellectualProperty: false,
+      energyAssets: false,
+      realEstate: false
+    }
+  };
+
+  const el = {
+    form: document.getElementById('tickerForm'),
+    input: document.getElementById('tickerInput'),
+    searchButton: document.getElementById('searchButton'),
+    helper: document.getElementById('helperText'),
+    emptyState: document.getElementById('emptyState'),
+    workspace: document.getElementById('workspace'),
+    desktopPriceStrip: document.getElementById('desktopPriceStrip'),
+    desktopStripTicker: document.getElementById('desktopStripTicker'),
+    desktopStripName: document.getElementById('desktopStripName'),
+    desktopCurrentPrice: document.getElementById('desktopCurrentPrice'),
+    desktopModelPrice: document.getElementById('desktopModelPrice'),
+    desktopPriceMove: document.getElementById('desktopPriceMove'),
+    desktopLeverSummary: document.getElementById('desktopLeverSummary'),
+    desktopImpactRail: document.getElementById('desktopImpactRail'),
+    desktopTickerLogoShell: document.getElementById('desktopTickerLogoShell'),
+    desktopTickerLogo: document.getElementById('desktopTickerLogo'),
+    desktopTickerLogoFallback: document.getElementById('desktopTickerLogoFallback'),
+    companyName: document.getElementById('companyName'),
+    companyTicker: document.getElementById('companyTicker'),
+    companyTickerLogoShell: document.getElementById('companyTickerLogoShell'),
+    companyTickerLogo: document.getElementById('companyTickerLogo'),
+    companyTickerLogoFallback: document.getElementById('companyTickerLogoFallback'),
+    sourceBadge: document.getElementById('sourceBadge'),
+    summarySource: document.getElementById('summarySource'),
+    newSearch: document.getElementById('newSearch'),
+    metricMarketCap: document.getElementById('metricMarketCap'),
+    metricCash: document.getElementById('metricCash'),
+    metricHeadcount: document.getElementById('metricHeadcount'),
+    cashAllocation: document.getElementById('cashAllocation'),
+    cashAllocationValue: document.getElementById('cashAllocationValue'),
+    employeeOptIn: document.getElementById('employeeOptIn'),
+    employeeOptInValue: document.getElementById('employeeOptInValue'),
+    opexReductionLabel: document.getElementById('opexReductionLabel'),
+    liquidityUnlockLabel: document.getElementById('liquidityUnlockLabel'),
+    summaryText: document.getElementById('summaryText'),
+    summaryMetrics: document.getElementById('summaryMetrics'),
+    currentPriceMetric: document.getElementById('currentPriceMetric'),
+    optimizedPriceMetric: document.getElementById('optimizedPriceMetric'),
+    upliftMetric: document.getElementById('upliftMetric'),
+    chart: document.getElementById('scenarioChart'),
+    mobileImpactBar: document.getElementById('mobileImpactBar'),
+    mobileTickerLogoShell: document.getElementById('mobileTickerLogoShell'),
+    mobileTickerLogo: document.getElementById('mobileTickerLogo'),
+    mobileTickerLogoFallback: document.getElementById('mobileTickerLogoFallback'),
+    mobileTickerSymbol: document.getElementById('mobileTickerSymbol'),
+    mobileCurrent: document.getElementById('mobileCurrent'),
+    mobileOptimized: document.getElementById('mobileOptimized'),
+    mobileUplift: document.getElementById('mobileUplift'),
+    bars: {
+      treasury: document.getElementById('barTreasury'),
+      retention: document.getElementById('barRetention'),
+      infrastructure: document.getElementById('barInfrastructure'),
+      liquidity: document.getElementById('barLiquidity')
+    },
+    values: {
+      treasury: document.getElementById('valueTreasury'),
+      retention: document.getElementById('valueRetention'),
+      infrastructure: document.getElementById('valueInfrastructure'),
+      liquidity: document.getElementById('valueLiquidity')
+    }
+  };
+
+  function cleanTicker(value) {
+    return String(value || '').trim().toUpperCase().replace(/[^A-Z0-9.\-]/g, '').slice(0, 12);
+  }
+
+  function companyLogoUrl(ticker) {
+    return `https://financialmodelingprep.com/image-stock/${encodeURIComponent(String(ticker).toUpperCase())}.png`;
+  }
+
+  function setLogoTarget(shell, img, fallback, company) {
+    if (!shell || !img || !fallback || !company) return;
+    const ticker = cleanTicker(company.ticker);
+    const fallbackText = ticker.length > 4 ? ticker.slice(0, 4) : ticker || '—';
+    if (shell.dataset.ticker === ticker) return;
+    shell.dataset.ticker = ticker;
+    shell.classList.remove('has-logo');
+    fallback.textContent = fallbackText;
+    img.alt = `${company.name} logo`;
+    img.onload = () => shell.classList.add('has-logo');
+    img.onerror = () => shell.classList.remove('has-logo');
+    img.src = company.logoUrl || companyLogoUrl(ticker);
+  }
+
+  function renderTickerLogos(company) {
+    setLogoTarget(el.desktopTickerLogoShell, el.desktopTickerLogo, el.desktopTickerLogoFallback, company);
+    setLogoTarget(el.companyTickerLogoShell, el.companyTickerLogo, el.companyTickerLogoFallback, company);
+    setLogoTarget(el.mobileTickerLogoShell, el.mobileTickerLogo, el.mobileTickerLogoFallback, company);
+  }
+
+  function numberOrZero(value) {
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : 0;
+  }
+
+  function normalizeCompany(company, ticker) {
+    const normalized = {
+      name: String(company.name || ticker),
+      ticker: String(company.ticker || ticker).toUpperCase(),
+      marketCap: numberOrZero(company.marketCap),
+      cashPosition: numberOrZero(company.cashPosition),
+      headcount: numberOrZero(company.headcount),
+      currentStockPrice: numberOrZero(company.currentStockPrice),
+      bookValue: numberOrZero(company.bookValue),
+      ceo: company.ceo || '',
+      ceoTitle: company.ceoTitle || ''
+    };
+    if (!normalized.marketCap || !normalized.currentStockPrice) {
+      throw new Error(`No usable market data found for ticker "${ticker}"`);
+    }
+    return normalized;
+  }
+
+  function formatMoney(value, decimals = 2) {
+    return `$${numberOrZero(value).toFixed(decimals)}`;
+  }
+
+
+  function formatSignedMoney(value) {
+    const amount = numberOrZero(value);
+    const sign = amount >= 0 ? '+' : '−';
+    return `${sign}$${Math.abs(amount).toFixed(2)}`;
+  }
+
+  function formatSignedPercent(value) {
+    const amount = numberOrZero(value);
+    const sign = amount >= 0 ? '+' : '−';
+    return `${sign}${Math.abs(amount).toFixed(1)}%`;
+  }
+
+  function formatCompactMoney(value) {
+    const amount = numberOrZero(value);
+    const abs = Math.abs(amount);
+    if (abs >= 1_000_000_000_000) return `$${(amount / 1_000_000_000_000).toFixed(abs >= 10_000_000_000_000 ? 1 : 2)}T`;
+    if (abs >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(abs >= 100_000_000_000 ? 0 : 1)}B`;
+    if (abs >= 1_000_000) return `$${(amount / 1_000_000).toFixed(abs >= 100_000_000 ? 0 : 1)}M`;
+    if (abs >= 1_000) return `$${(amount / 1_000).toFixed(abs >= 100_000 ? 0 : 1)}K`;
+    return `$${amount.toFixed(0)}`;
+  }
+
+  function formatHeadcount(value) {
+    const count = numberOrZero(value);
+    if (!count) return '—';
+    if (count >= 1000) return `${(count / 1000).toFixed(0)}K`;
+    return count.toLocaleString('en-US');
+  }
+
+  function metricMoneyB(value) {
+    return `$${(numberOrZero(value) / 1_000_000_000).toFixed(0)}B`;
+  }
+
+  function setRangeProgress(input) {
+    const min = Number(input.min || 0);
+    const max = Number(input.max || 100);
+    const value = Number(input.value || 0);
+    const pct = ((value - min) / (max - min)) * 100;
+    input.style.setProperty('--progress', `${Math.max(0, Math.min(100, pct))}%`);
+  }
+
+  function calculate(company) {
+    const allocatedCash = company.cashPosition * (state.cashAllocationPercent / 100);
+    const treasuryValue = 2 * allocatedCash;
+    const retentionValue = company.headcount * (state.employeeOptInPercent / 100) * 18_000;
+
+    let opexReductionRate = 0;
+    if (state.infrastructureModules.supplyChainProvenance) opexReductionRate += 0.0075;
+    if (state.infrastructureModules.onChainReporting) opexReductionRate += 0.0075;
+    if (state.infrastructureModules.tokenizedCommunications) opexReductionRate += 0.0075;
+    const infrastructureValue = 4 * company.cashPosition * opexReductionRate;
+
+    let liquidityUnlockPercent = 0;
+    if (state.foundryAssets.intellectualProperty) liquidityUnlockPercent += ASSET_UNLOCK.intellectualProperty;
+    if (state.foundryAssets.energyAssets) liquidityUnlockPercent += ASSET_UNLOCK.energyAssets;
+    if (state.foundryAssets.realEstate) liquidityUnlockPercent += ASSET_UNLOCK.realEstate;
+    const liquidityUnlock = (liquidityUnlockPercent / 100) * company.bookValue;
+
+    const totalValueCreated = treasuryValue + retentionValue + infrastructureValue + liquidityUnlock;
+    const upliftPercent = company.marketCap > 0 ? (totalValueCreated / company.marketCap) * 100 : 0;
+    const optimizedPrice = company.currentStockPrice * (1 + upliftPercent / 100);
+    const conservativePrice = company.currentStockPrice * (1 + (0.5 * upliftPercent) / 100);
+    const bullUpliftPercent = upliftPercent * 1.15;
+    const bullPrice = optimizedPrice * 1.15;
+
+    return {
+      allocatedCash,
+      treasuryValue,
+      retentionValue,
+      opexReductionRate,
+      infrastructureValue,
+      liquidityUnlockPercent,
+      liquidityUnlock,
+      totalValueCreated,
+      upliftPercent,
+      optimizedPrice,
+      conservativePrice,
+      bullUpliftPercent,
+      bullPrice,
+      scenarios: [
+        { scenario: 'Current', value: company.currentStockPrice },
+        { scenario: 'Conservative', value: conservativePrice },
+        { scenario: 'Base Case', value: optimizedPrice },
+        { scenario: 'Bull Macro', value: bullPrice }
+      ]
+    };
+  }
+
+  function activeAssumptions() {
+    const assumptions = [];
+    if (state.cashAllocationPercent > 0) {
+      assumptions.push(`a ${state.cashAllocationPercent}% digital asset treasury allocation capturing a 2.0x mNAV premium`);
+    }
+    if (state.employeeOptInPercent > 0) {
+      assumptions.push(`${state.employeeOptInPercent}% employee participation in on-chain retention programs`);
+    }
+    const infra = [];
+    if (state.infrastructureModules.supplyChainProvenance) infra.push('supply chain provenance');
+    if (state.infrastructureModules.onChainReporting) infra.push('on-chain reporting');
+    if (state.infrastructureModules.tokenizedCommunications) infra.push('tokenized communications');
+    if (infra.length) assumptions.push(`distributed ledger integration across ${infra.join(', ')}`);
+
+    const assets = [];
+    if (state.foundryAssets.intellectualProperty) assets.push('intellectual property');
+    if (state.foundryAssets.energyAssets) assets.push('energy assets');
+    if (state.foundryAssets.realEstate) assets.push('real estate');
+    if (assets.length) assumptions.push(`tokenization of ${assets.join(', ')} to unlock latent balance sheet liquidity`);
+    return assumptions;
+  }
+
+
+  function activeLeverCount() {
+    let count = 0;
+    if (state.cashAllocationPercent > 0) count += 1;
+    if (state.employeeOptInPercent > 0) count += 1;
+    count += Object.values(state.infrastructureModules).filter(Boolean).length;
+    count += Object.values(state.foundryAssets).filter(Boolean).length;
+    return count;
+  }
+
+  async function fetchCompany(ticker) {
+    let response = null;
+    try {
+      response = await fetch(`/api/company?ticker=${encodeURIComponent(ticker)}`, {
+        headers: { Accept: 'application/json' }
+      });
+    } catch (error) {
+      throw new Error(`Live data endpoint is unreachable. In local preview, run the site through the serverless API route, not a static-only server. ${error.message || ''}`.trim());
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    let payload = null;
+
+    if (contentType.includes('application/json')) {
+      try { payload = await response.json(); } catch (error) { /* malformed JSON handled below */ }
+    } else {
+      await response.text().catch(() => '');
+      throw new Error(`Live data endpoint is not active for "${ticker}". This usually means /api/company is not running in the preview container. Use a serverless dev server such as vercel dev, or deploy the api folder.`);
+    }
+
+    if (!response.ok) {
+      throw new Error(payload?.error || `Live data endpoint returned HTTP ${response.status} for ticker "${ticker}".`);
+    }
+    if (!payload || !payload.company) {
+      throw new Error(payload?.error || `Live data endpoint returned no company record for ticker "${ticker}".`);
+    }
+    return payload;
+  }
+
+  async function runSearch(rawTicker) {
+    const ticker = cleanTicker(rawTicker || el.input.value);
+    if (!ticker) {
+      state.error = 'Enter a ticker first.';
+      renderStatus();
+      return;
+    }
+
+    state.loading = true;
+    state.error = '';
+    renderStatus();
+
+    try {
+      const payload = await fetchCompany(ticker);
+      state.company = normalizeCompany(payload.company, ticker);
+      state.live = payload.company.live !== false;
+      state.source = payload.company.source || payload.source || 'Live company data';
+      state.asOf = payload.company.asOf || payload.asOf || '';
+    } catch (error) {
+      if (FALLBACK_COMPANIES[ticker]) {
+        state.company = normalizeCompany(FALLBACK_COMPANIES[ticker], ticker);
+        state.live = false;
+        state.source = 'Static fallback';
+        state.asOf = '';
+      } else {
+        state.company = null;
+        state.live = false;
+        state.source = '';
+        state.asOf = '';
+        state.error = error.message || `No data found for ticker "${ticker}"`;
+      }
+    } finally {
+      state.loading = false;
+      render();
+      if (state.company) {
+        requestAnimationFrame(() => document.getElementById('calculator').scrollIntoView({ block: 'start', behavior: 'smooth' }));
+      }
+    }
+  }
+
+  function renderStatus() {
+    el.input.disabled = state.loading;
+    el.searchButton.disabled = state.loading;
+    el.helper.classList.toggle('error', Boolean(state.error));
+    if (state.loading) {
+      el.helper.textContent = 'Querying live filings and price feed...';
+    } else if (state.error) {
+      el.helper.textContent = state.error;
+    } else {
+      el.helper.textContent = 'Enter any public ticker to begin analysis.';
+    }
+  }
+
+  function render() {
+    renderStatus();
+    syncControls();
+    const hasCompany = Boolean(state.company);
+    el.emptyState.hidden = hasCompany;
+    el.workspace.hidden = !hasCompany;
+    el.desktopPriceStrip.hidden = !hasCompany;
+    el.mobileImpactBar.hidden = !hasCompany;
+    document.body.classList.toggle('has-mobile-impact', hasCompany);
+    if (!hasCompany) return;
+
+    const company = state.company;
+    const calc = calculate(company);
+    const assumptions = activeAssumptions();
+    const hasActiveAssumption = assumptions.length > 0;
+    const sourceCopy = state.live ? (state.source || 'Live company data') : 'Static fallback';
+
+    el.companyName.textContent = company.name;
+    el.companyTicker.textContent = company.ticker;
+    el.sourceBadge.textContent = state.live ? 'LIVE' : 'FALLBACK';
+    el.sourceBadge.classList.toggle('fallback', !state.live);
+    el.summarySource.textContent = state.asOf ? `${sourceCopy} · ${state.asOf}` : sourceCopy;
+    el.desktopStripTicker.textContent = company.ticker;
+    el.desktopStripName.textContent = company.name;
+    el.mobileTickerSymbol.textContent = company.ticker;
+    renderTickerLogos(company);
+    el.metricMarketCap.textContent = metricMoneyB(company.marketCap);
+    el.metricCash.textContent = metricMoneyB(company.cashPosition);
+    el.metricHeadcount.textContent = formatHeadcount(company.headcount);
+
+    if (hasActiveAssumption) {
+      el.summaryText.textContent = `Based on the current configuration, ${company.name} (${company.ticker}) could realize a pro-forma equity uplift of approximately +${calc.upliftPercent.toFixed(1)}%, moving the implied share price from ${formatMoney(company.currentStockPrice)} to ${formatMoney(calc.optimizedPrice)}. This scenario assumes ${assumptions.join('; ')}. Under a conservative case, the uplift narrows to approximately +${(0.5 * calc.upliftPercent).toFixed(1)}%; with a favorable macro overlay, the bull scenario reaches approximately ${formatMoney(calc.bullPrice)}.`;
+      el.summaryMetrics.hidden = false;
+    } else {
+      el.summaryText.textContent = `Adjust the parameters below to model the pro-forma valuation impact of digital asset integration on ${company.name}'s equity value.`;
+      el.summaryMetrics.hidden = true;
+    }
+
+    el.currentPriceMetric.textContent = formatMoney(company.currentStockPrice);
+    el.optimizedPriceMetric.textContent = formatMoney(calc.optimizedPrice);
+    el.upliftMetric.textContent = `+${calc.upliftPercent.toFixed(1)}%`;
+
+    const priceMove = hasActiveAssumption ? calc.optimizedPrice - company.currentStockPrice : 0;
+    const railPercent = hasActiveAssumption ? Math.max(0, Math.min(100, calc.upliftPercent * 4)) : 0;
+    const leverCount = activeLeverCount();
+    el.desktopCurrentPrice.textContent = formatMoney(company.currentStockPrice);
+    el.desktopModelPrice.textContent = hasActiveAssumption ? formatMoney(calc.optimizedPrice) : formatMoney(company.currentStockPrice);
+    el.desktopPriceMove.textContent = `${formatSignedMoney(priceMove)} · ${formatSignedPercent(hasActiveAssumption ? calc.upliftPercent : 0)}`;
+    el.desktopLeverSummary.textContent = hasActiveAssumption
+      ? `${leverCount} lever${leverCount === 1 ? '' : 's'} active · ${formatCompactMoney(calc.totalValueCreated)} created`
+      : 'No levers active';
+    el.desktopImpactRail.style.setProperty('--bar', `${railPercent}%`);
+
+    el.mobileCurrent.textContent = formatMoney(company.currentStockPrice);
+    el.mobileOptimized.textContent = hasActiveAssumption ? formatMoney(calc.optimizedPrice) : 'Set levers';
+    el.mobileUplift.textContent = hasActiveAssumption ? `+${calc.upliftPercent.toFixed(1)}%` : '—';
+
+    el.opexReductionLabel.textContent = `${(calc.opexReductionRate * 100).toFixed(2)}%`;
+    el.liquidityUnlockLabel.textContent = calc.liquidityUnlockPercent
+      ? `${calc.liquidityUnlockPercent}% of book value · ${formatCompactMoney(calc.liquidityUnlock)}`
+      : '0% of book value';
+
+    renderChart(calc.scenarios);
+    renderBreakdown(calc);
+  }
+
+  function renderBreakdown(calc) {
+    const entries = [
+      ['treasury', calc.treasuryValue],
+      ['retention', calc.retentionValue],
+      ['infrastructure', calc.infrastructureValue],
+      ['liquidity', calc.liquidityUnlock]
+    ];
+    const max = Math.max(...entries.map(([, value]) => value), 1);
+    entries.forEach(([key, value]) => {
+      const width = value > 0 ? Math.max(5, (value / max) * 100) : 0;
+      el.bars[key].style.setProperty('--bar', `${width}%`);
+      el.values[key].textContent = formatCompactMoney(value);
+    });
+  }
+
+  function renderChart(scenarios) {
+    const width = 720;
+    const height = 300;
+    const pad = { top: 24, right: 30, bottom: 58, left: 62 };
+    const innerW = width - pad.left - pad.right;
+    const innerH = height - pad.top - pad.bottom;
+    const values = scenarios.map(item => item.value);
+    let min = Math.min(...values);
+    let max = Math.max(...values);
+    const delta = Math.max(max - min, max * 0.02, 1);
+    min = Math.max(0, min - delta * 0.20);
+    max = max + delta * 0.20;
+
+    const x = index => pad.left + (innerW / (scenarios.length - 1)) * index;
+    const y = value => pad.top + ((max - value) / (max - min)) * innerH;
+    const points = scenarios.map((item, index) => ({ x: x(index), y: y(item.value), ...item }));
+    const line = smoothPath(points);
+    const area = `${line} L ${points[points.length - 1].x.toFixed(2)} ${pad.top + innerH} L ${points[0].x.toFixed(2)} ${pad.top + innerH} Z`;
+
+    const gridTicks = Array.from({ length: 4 }, (_, index) => min + ((max - min) / 3) * index).reverse();
+    const grid = gridTicks.map(value => {
+      const yy = y(value);
+      return `<line class="chart-grid" x1="${pad.left}" y1="${yy.toFixed(2)}" x2="${width - pad.right}" y2="${yy.toFixed(2)}"></line><text class="chart-axis-label" x="${pad.left - 12}" y="${(yy + 4).toFixed(2)}" text-anchor="end">$${value.toFixed(0)}</text>`;
+    }).join('');
+
+    const labels = points.map(point => `<text class="chart-axis-label" x="${point.x.toFixed(2)}" y="${height - 18}" text-anchor="middle">${escapeHtml(point.scenario)}</text>`).join('');
+    const dots = points.map(point => `<circle class="chart-dot" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="5"></circle><text class="chart-value-label" x="${point.x.toFixed(2)}" y="${(point.y - 12).toFixed(2)}" text-anchor="middle">$${point.value.toFixed(0)}</text>`).join('');
+
+    el.chart.innerHTML = `
+      <defs>
+        <linearGradient id="impactGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1A4D3E" stop-opacity="0.25"></stop>
+          <stop offset="100%" stop-color="#1A4D3E" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      ${grid}
+      <path class="chart-area" d="${area}"></path>
+      <path class="chart-line" d="${line}"></path>
+      ${dots}
+      ${labels}`;
+  }
+
+  function smoothPath(points) {
+    if (!points.length) return '';
+    let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+    for (let index = 0; index < points.length - 1; index += 1) {
+      const current = points[index];
+      const next = points[index + 1];
+      const midX = (current.x + next.x) / 2;
+      d += ` C ${midX.toFixed(2)} ${current.y.toFixed(2)}, ${midX.toFixed(2)} ${next.y.toFixed(2)}, ${next.x.toFixed(2)} ${next.y.toFixed(2)}`;
+    }
+    return d;
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' }[char]));
+  }
+
+  function syncControls() {
+    el.cashAllocation.value = state.cashAllocationPercent;
+    el.cashAllocationValue.textContent = `${state.cashAllocationPercent}%`;
+    el.employeeOptIn.value = state.employeeOptInPercent;
+    el.employeeOptInValue.textContent = `${state.employeeOptInPercent}%`;
+    setRangeProgress(el.cashAllocation);
+    setRangeProgress(el.employeeOptIn);
+
+    Object.entries(state.infrastructureModules).forEach(([id, checked]) => {
+      const input = document.getElementById(id);
+      if (input) input.checked = checked;
+    });
+    Object.entries(state.foundryAssets).forEach(([id, checked]) => {
+      const input = document.getElementById(id);
+      if (input) input.checked = checked;
+    });
+  }
+
+  function applyPreset(preset) {
+    if (preset === 'conservative') {
+      state.cashAllocationPercent = 5;
+      state.employeeOptInPercent = 25;
+      state.infrastructureModules = { supplyChainProvenance: false, onChainReporting: true, tokenizedCommunications: false };
+      state.foundryAssets = { intellectualProperty: false, energyAssets: false, realEstate: false };
+    }
+    if (preset === 'balanced') {
+      state.cashAllocationPercent = 15;
+      state.employeeOptInPercent = 60;
+      state.infrastructureModules = { supplyChainProvenance: false, onChainReporting: false, tokenizedCommunications: false };
+      state.foundryAssets = { intellectualProperty: false, energyAssets: false, realEstate: false };
+    }
+    if (preset === 'transform') {
+      state.cashAllocationPercent = 30;
+      state.employeeOptInPercent = 100;
+      state.infrastructureModules = { supplyChainProvenance: true, onChainReporting: true, tokenizedCommunications: true };
+      state.foundryAssets = { intellectualProperty: true, energyAssets: true, realEstate: true };
+    }
+    if (preset === 'zero') {
+      state.cashAllocationPercent = 0;
+      state.employeeOptInPercent = 0;
+      state.infrastructureModules = { supplyChainProvenance: false, onChainReporting: false, tokenizedCommunications: false };
+      state.foundryAssets = { intellectualProperty: false, energyAssets: false, realEstate: false };
+    }
+    render();
+  }
+
+  el.form.addEventListener('submit', event => {
+    event.preventDefault();
+    runSearch(el.input.value);
+  });
+
+  document.querySelectorAll('[data-ticker]').forEach(button => {
+    button.addEventListener('click', () => {
+      el.input.value = button.dataset.ticker;
+      runSearch(button.dataset.ticker);
+    });
+  });
+
+  el.newSearch.addEventListener('click', () => {
+    state.company = null;
+    state.live = false;
+    state.source = '';
+    state.asOf = '';
+    state.error = '';
+    el.input.value = '';
+    render();
+    el.input.focus({ preventScroll: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  el.cashAllocation.addEventListener('input', event => {
+    state.cashAllocationPercent = Number(event.target.value);
+    render();
+  });
+  el.employeeOptIn.addEventListener('input', event => {
+    state.employeeOptInPercent = Number(event.target.value);
+    render();
+  });
+
+  document.querySelectorAll('[data-toggle="infra"]').forEach(input => {
+    input.addEventListener('change', event => {
+      state.infrastructureModules[event.target.id] = event.target.checked;
+      render();
+    });
+  });
+  document.querySelectorAll('[data-toggle="asset"]').forEach(input => {
+    input.addEventListener('change', event => {
+      state.foundryAssets[event.target.id] = event.target.checked;
+      render();
+    });
+  });
+  document.querySelectorAll('[data-preset]').forEach(button => {
+    button.addEventListener('click', () => applyPreset(button.dataset.preset));
+  });
+
+  const menuToggle = document.getElementById('mobileMenuToggle');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = document.body.classList.toggle('menu-open');
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+  document.getElementById('mobileMenu').addEventListener('click', event => {
+    if (event.target.closest('a')) {
+      document.body.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  const urlTicker = cleanTicker(new URLSearchParams(window.location.search).get('ticker'));
+  syncControls();
+  renderStatus();
+  if (urlTicker) {
+    el.input.value = urlTicker;
+    runSearch(urlTicker);
+  }
+})();
+</script>
+</body>
+</html>
