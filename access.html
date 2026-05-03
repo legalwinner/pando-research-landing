@@ -809,12 +809,12 @@
 
     <div class="panels">
       <div class="tabs">
-        <button class="tab active" data-tab="signin">Sign in <span class="small">existing</span></button>
-        <button class="tab" data-tab="signup">Request access <span class="small">new</span></button>
+        <button class="tab" data-tab="signin">Sign in <span class="small">existing</span></button>
+        <button class="tab active" data-tab="signup">Request access <span class="small">new</span></button>
       </div>
 
       <!-- SIGN IN -->
-      <form class="panel active" data-panel="signin" autocomplete="on" onsubmit="event.preventDefault();">
+      <form class="panel" data-panel="signin" autocomplete="on" onsubmit="event.preventDefault();">
         <div class="field">
           <label for="si-email">Institutional email</label>
           <input class="input" type="email" id="si-email" name="email" placeholder="you@yourfirm.com" required />
@@ -837,7 +837,7 @@
       </form>
 
       <!-- SIGN UP -->
-      <form class="panel" data-panel="signup" autocomplete="on" onsubmit="event.preventDefault();">
+      <form class="panel active" data-panel="signup" autocomplete="on" onsubmit="event.preventDefault();">
         <div class="field">
           <label for="su-email">Institutional email</label>
           <input class="input" type="email" id="su-email" name="email" placeholder="you@yourfirm.com" required />
@@ -1064,18 +1064,20 @@
   let active = 0;
   const cards = [...track.querySelectorAll('.cf-card')];
   const dots = [...dotsEl.querySelectorAll('.cf-dot')];
+  const VISIBLE_SIDE_COVERS = 2;
 
   // Geometry: fan (editorial arc)
   function layout() {
     cards.forEach((card, i) => {
       const offset = i - active;
       const abs = Math.abs(offset);
+      const isVisible = abs <= VISIBLE_SIDE_COVERS;
 
       const x = offset * 145;
       const z = -abs * 90;
       const ry = -offset * 28;
       const scale = abs === 0 ? 1.05 : (1 - Math.min(abs, 4) * 0.07);
-      const opacity = abs > 3 ? 0 : 1;
+      const opacity = isVisible ? 1 : 0;
       const zIndex = 100 - abs;
       const shadowY = 62 + abs * 10;
       const shadowBlur = 120 + abs * 16;
@@ -1084,9 +1086,11 @@
 
       card.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${abs * 4}px, ${z}px) rotateY(${ry}deg) scale(${scale})`;
       card.style.opacity = opacity;
+      card.style.visibility = isVisible ? 'visible' : 'hidden';
       card.style.filter = 'none';
       card.style.zIndex = zIndex;
-      card.style.pointerEvents = abs > 3 ? 'none' : 'auto';
+      card.style.pointerEvents = isVisible ? 'auto' : 'none';
+      card.toggleAttribute('aria-hidden', !isVisible);
       card.style.setProperty('--cover-shadow-y', `${shadowY}px`);
       card.style.setProperty('--cover-shadow-blur', `${shadowBlur}px`);
       card.style.setProperty('--cover-shadow-deep', shadowDeep.toFixed(2));
