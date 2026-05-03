@@ -292,8 +292,18 @@
     text-transform: uppercase;
     opacity: 0.5;
   }
+  .cf-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 42px;
+    padding: 0 0 32px;
+  }
   .cf-title {
-    margin: auto 0;
+    margin: 0;
     font-family: 'Source Serif 4', serif;
     font-weight: 350;
     font-size: 22px;
@@ -335,7 +345,7 @@
   }
   /* tiny diagram in middle of card to differentiate */
   .cf-glyph {
-    margin: 14px auto;
+    margin: 0 auto;
     width: 56px; height: 56px;
     display: flex;
     align-items: center;
@@ -1229,9 +1239,10 @@
         <div class="cf-rule"></div>
         <div class="cf-cat">${c.cat}</div>
 
-        <div class="cf-glyph">${c.glyph}</div>
-
-        <div class="cf-title">${c.title}</div>
+        <div class="cf-body">
+          <div class="cf-glyph">${c.glyph}</div>
+          <div class="cf-title">${c.title}</div>
+        </div>
 
         <div class="cf-foot">
           <div class="pages"><strong>${c.pages}pp</strong>institutional</div>
