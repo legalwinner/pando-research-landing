@@ -1345,6 +1345,9 @@
     :root {
       --mobile-header-height: 66px;
     }
+    body {
+      padding-top: var(--mobile-header-height, 66px);
+    }
     body::before {
       content: "";
       position: fixed;
@@ -1370,13 +1373,29 @@
     }
     .wrap { padding: 0 28px; }
     .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
       background: var(--bg);
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
       z-index: 1100;
+      transform: translate3d(0, 0, 0);
+      transition:
+        transform 260ms var(--ease-out-expo),
+        background-color 180ms ease;
+      will-change: transform;
+    }
+    body.mobile-header-hidden:not(.menu-open) .site-header {
+      transform: translate3d(0, calc(-100% - 2px), 0);
+    }
+    body.mobile-header-visible .site-header,
+    body.mobile-header-at-top .site-header,
+    body.menu-open .site-header {
+      transform: translate3d(0, 0, 0);
     }
     body.menu-open .site-header {
-      position: fixed;
       top: 0;
       left: 0;
       right: 0;
@@ -1525,6 +1544,7 @@
     @media (prefers-reduced-motion: reduce) {
       body::before,
       .mobile-menu,
+      .site-header,
       .mobile-menu li,
       .mobile-menu .pill,
       .mobile-menu-toggle,
@@ -3031,6 +3051,7 @@
       const headerHeight = header ? Math.ceil(header.offsetHeight) : 66;
       document.documentElement.style.setProperty('--mobile-header-height', `${headerHeight}px`);
     };
+    window.pandoSetMobileHeaderHeight = setHeaderHeight;
 
     const lockPageScroll = () => {
       if (scrollLocked) return;
@@ -3071,6 +3092,7 @@
       toggle.setAttribute('aria-expanded', 'false');
       toggle.setAttribute('aria-label', 'Open menu');
       if (wasOpen) unlockPageScroll();
+      if (wasOpen) document.dispatchEvent(new Event('pando:mobile-menu-close'));
     };
 
     const openMenu = () => {
@@ -3080,6 +3102,7 @@
       document.body.classList.add('menu-open');
       toggle.setAttribute('aria-expanded', 'true');
       toggle.setAttribute('aria-label', 'Close menu');
+      document.dispatchEvent(new Event('pando:mobile-menu-open'));
     };
 
     toggle.addEventListener('click', () => {
@@ -3111,6 +3134,197 @@
       window.visualViewport.addEventListener('resize', setHeaderHeight);
     }
     window.matchMedia('(min-width: 961px)').addEventListener('change', closeMenu);
+  })();
+
+  (function setupMobileAutoHideHeader() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+
+    const mobileQuery = window.matchMedia('(max-width: 960px)');
+    let lastY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+    let ticking = false;
+    let enabled = false;
+    let hidden = false;
+    let accumulated = 0;
+    let lastDirection = null;
+    let orientationTimer = 0;
+
+    const HIDE_THRESHOLD = 14;
+    const SHOW_THRESHOLD = 10;
+    const TOP_THRESHOLD = 8;
+
+    const getY = () => Math.max(0, window.scrollY || window.pageYOffset || 0);
+
+    const setHeaderHeightVar = () => {
+      if (typeof window.pandoSetMobileHeaderHeight === 'function') {
+        window.pandoSetMobileHeaderHeight();
+      } else {
+        document.documentElement.style.setProperty('--mobile-header-height', `${Math.ceil(header.offsetHeight)}px`);
+      }
+    };
+
+    const showHeader = () => {
+      hidden = false;
+      document.body.classList.remove('mobile-header-hidden');
+      document.body.classList.add('mobile-header-visible');
+    };
+
+    const hideHeader = () => {
+      if (document.body.classList.contains('menu-open')) return;
+      hidden = true;
+      document.body.classList.add('mobile-header-hidden');
+      document.body.classList.remove('mobile-header-visible');
+    };
+
+    const resetHeaderState = () => {
+      accumulated = 0;
+      lastDirection = null;
+      lastY = getY();
+      showHeader();
+      if (lastY <= TOP_THRESHOLD) {
+        document.body.classList.add('mobile-header-at-top');
+      } else {
+        document.body.classList.remove('mobile-header-at-top');
+      }
+    };
+
+    const shouldIgnoreAutoHide = () => {
+      const active = document.activeElement;
+      const focusedFormControl = active && (
+        active.matches?.('input, textarea, select, [contenteditable="true"]') ||
+        active.closest?.('[contenteditable="true"]')
+      );
+      return document.body.classList.contains('menu-open') || focusedFormControl;
+    };
+
+    const update = () => {
+      ticking = false;
+      if (!enabled) return;
+
+      const currentY = getY();
+      const delta = currentY - lastY;
+
+      if (currentY <= TOP_THRESHOLD) {
+        document.body.classList.add('mobile-header-at-top');
+        resetHeaderState();
+        return;
+      }
+
+      document.body.classList.remove('mobile-header-at-top');
+
+      if (shouldIgnoreAutoHide()) {
+        showHeader();
+        lastY = currentY;
+        accumulated = 0;
+        lastDirection = null;
+        return;
+      }
+
+      if (Math.abs(delta) < 2) {
+        lastY = currentY;
+        return;
+      }
+
+      const direction = delta > 0 ? 'down' : 'up';
+
+      if (direction !== lastDirection) {
+        accumulated = 0;
+        lastDirection = direction;
+      }
+
+      accumulated += Math.abs(delta);
+
+      const minHideY = Math.max(header.offsetHeight || 66, 80);
+
+      if (direction === 'down' && currentY > minHideY && accumulated >= HIDE_THRESHOLD) {
+        hideHeader();
+        accumulated = 0;
+      }
+
+      if (direction === 'up' && accumulated >= SHOW_THRESHOLD) {
+        showHeader();
+        accumulated = 0;
+      }
+
+      lastY = currentY;
+    };
+
+    const onScroll = () => {
+      if (!enabled || ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    const onResize = () => {
+      if (!enabled) return;
+      setHeaderHeightVar();
+      resetHeaderState();
+    };
+
+    const onOrientationChange = () => {
+      window.clearTimeout(orientationTimer);
+      orientationTimer = window.setTimeout(() => {
+        if (!enabled) return;
+        setHeaderHeightVar();
+        resetHeaderState();
+      }, 250);
+    };
+
+    const onMenuOpen = () => {
+      if (!enabled) return;
+      setHeaderHeightVar();
+      showHeader();
+      accumulated = 0;
+      lastDirection = null;
+    };
+
+    const onMenuClose = () => {
+      if (!enabled) return;
+      setHeaderHeightVar();
+      resetHeaderState();
+    };
+
+    const enable = () => {
+      if (enabled) return;
+      enabled = true;
+      setHeaderHeightVar();
+      resetHeaderState();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onResize);
+      window.addEventListener('orientationchange', onOrientationChange);
+      document.addEventListener('pando:mobile-menu-open', onMenuOpen);
+      document.addEventListener('pando:mobile-menu-close', onMenuClose);
+    };
+
+    const disable = () => {
+      if (!enabled) return;
+      enabled = false;
+      ticking = false;
+      window.clearTimeout(orientationTimer);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onOrientationChange);
+      document.removeEventListener('pando:mobile-menu-open', onMenuOpen);
+      document.removeEventListener('pando:mobile-menu-close', onMenuClose);
+      document.body.classList.remove('mobile-header-hidden', 'mobile-header-visible', 'mobile-header-at-top');
+      header.style.transform = '';
+    };
+
+    const sync = () => {
+      if (mobileQuery.matches) {
+        enable();
+      } else {
+        disable();
+      }
+    };
+
+    sync();
+
+    if (mobileQuery.addEventListener) {
+      mobileQuery.addEventListener('change', sync);
+    } else {
+      mobileQuery.addListener(sync);
+    }
   })();
 
   (function setupSectionReveals() {
