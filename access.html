@@ -209,6 +209,11 @@
     position: absolute;
     left: 50%; top: 50%;
     width: 240px; height: 336px;
+    --cover-shadow-y: 62px;
+    --cover-shadow-blur: 120px;
+    --cover-shadow-deep: 0.44;
+    --cover-shadow-soft: 0.34;
+    --floor-shadow-opacity: 0.48;
     transform-style: preserve-3d;
     transform-origin: center;
     transition: transform 0.7s cubic-bezier(0.22, 0.7, 0.18, 1),
@@ -218,6 +223,18 @@
     pointer-events: auto;
     cursor: pointer;
   }
+  .cf-card::after {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: -24px;
+    height: 42px;
+    background: radial-gradient(ellipse at center, rgba(6,29,22,var(--floor-shadow-opacity)) 0%, rgba(6,29,22,0) 72%);
+    filter: blur(10px);
+    transform: translateZ(-22px) rotateX(74deg);
+    pointer-events: none;
+  }
   .cf-card .face {
     position: absolute;
     inset: 0;
@@ -225,8 +242,9 @@
     color: var(--paper);
     border: 1px solid #061d16;
     box-shadow:
-      0 60px 100px -36px rgba(15,58,44,0.45),
-      0 24px 50px -18px rgba(15,58,44,0.32),
+      0 var(--cover-shadow-y) var(--cover-shadow-blur) -42px rgba(6,29,22,var(--cover-shadow-deep)),
+      0 24px 48px -20px rgba(6,29,22,var(--cover-shadow-soft)),
+      0 2px 8px rgba(6,29,22,0.16),
       inset 0 0 0 1px rgba(248,244,232,0.05);
     padding: 24px 22px 20px;
     display: flex;
@@ -1064,15 +1082,25 @@
       const z = -abs * 90;
       const ry = -offset * 28;
       const scale = abs === 0 ? 1.05 : (1 - Math.min(abs, 4) * 0.07);
-      const opacity = abs > 3 ? 0 : (1 - abs * 0.12);
-      const blur = abs === 0 ? 0 : Math.min(abs * 0.6, 2.2);
+      const opacity = abs > 3 ? 0 : 1;
+      const blur = abs === 0 ? 0 : Math.min(abs * 0.35, 1.1);
       const zIndex = 100 - abs;
+      const shadowY = 62 + abs * 10;
+      const shadowBlur = 120 + abs * 16;
+      const shadowDeep = Math.max(0.24, 0.44 - abs * 0.04);
+      const shadowSoft = Math.max(0.18, 0.34 - abs * 0.035);
+      const floorShadow = Math.max(0.18, 0.48 - abs * 0.05);
 
       card.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${abs * 4}px, ${z}px) rotateY(${ry}deg) scale(${scale})`;
       card.style.opacity = opacity;
       card.style.filter = `blur(${blur}px)`;
       card.style.zIndex = zIndex;
       card.style.pointerEvents = abs > 3 ? 'none' : 'auto';
+      card.style.setProperty('--cover-shadow-y', `${shadowY}px`);
+      card.style.setProperty('--cover-shadow-blur', `${shadowBlur}px`);
+      card.style.setProperty('--cover-shadow-deep', shadowDeep.toFixed(2));
+      card.style.setProperty('--cover-shadow-soft', shadowSoft.toFixed(2));
+      card.style.setProperty('--floor-shadow-opacity', floorShadow.toFixed(2));
     });
     dots.forEach((d, i) => d.classList.toggle('active', i === active));
     document.getElementById('cfIdx').textContent = String(active + 1).padStart(2, '0');
