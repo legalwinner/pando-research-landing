@@ -26,6 +26,9 @@
     --rule-soft: #DCD5BF;
     --paper:     #F8F4E8;
     --max:       1240px;
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -48,6 +51,103 @@
   img { display: block; max-width: 100%; height: auto; }
 
   .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Scroll reveal system ---------- */
+  body.motion-ready [data-reveal] {
+    --reveal-x: 0px;
+    --reveal-y: 26px;
+    --reveal-scale: 1;
+    opacity: 0;
+    transform:
+      translate3d(var(--reveal-x), var(--reveal-y), 0)
+      scale(var(--reveal-scale));
+    transition:
+      opacity 720ms var(--ease-out-quint),
+      transform 980ms var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  body.motion-ready [data-reveal="clip"] {
+    --reveal-y: 0px;
+    clip-path: inset(0 0 100% 0);
+    transition:
+      opacity 560ms var(--ease-out-quint),
+      clip-path 900ms var(--ease-out-expo);
+  }
+  body.motion-ready [data-reveal="from-left"] {
+    --reveal-x: -36px;
+    --reveal-y: 0px;
+  }
+  body.motion-ready [data-reveal="from-right"] {
+    --reveal-x: 36px;
+    --reveal-y: 0px;
+  }
+  body.motion-ready [data-reveal="stat"] {
+    --reveal-y: 34px;
+  }
+  body.motion-ready [data-reveal="theme"] {
+    --reveal-y: 30px;
+  }
+  body.motion-ready .reveal-scope.is-visible [data-reveal],
+  body.motion-ready [data-reveal].is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    clip-path: inset(0);
+  }
+  body.motion-ready .reveal-scope.is-visible [data-reveal] {
+    will-change: auto;
+  }
+  body.motion-ready .theme .idx::after {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 840ms var(--ease-out-expo);
+    transition-delay: calc(var(--reveal-delay, 0ms) + 220ms);
+  }
+  body.motion-ready .themes.is-visible .theme .idx::after {
+    transform: scaleX(1);
+  }
+  body.motion-ready .cap .num-mark {
+    transform: translateY(8px);
+    opacity: 0.45;
+    transition:
+      opacity 620ms var(--ease-out-quint),
+      transform 840ms var(--ease-out-expo);
+    transition-delay: calc(var(--reveal-delay, 0ms) + 120ms);
+  }
+  body.motion-ready .capabilities.is-visible .cap .num-mark {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  body.motion-ready .stat .stat-icon {
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out-quint);
+    transition-delay: calc(var(--reveal-delay, 0ms) + 260ms);
+  }
+  body.motion-ready .coverage.is-visible .stat .stat-icon {
+    opacity: 0.16;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body.motion-ready [data-reveal] {
+      opacity: 1;
+      transform: none;
+      clip-path: inset(0);
+      transition: none;
+      will-change: auto;
+    }
+    body.motion-ready .theme .idx::after {
+      transform: scaleX(1);
+      transition: none;
+    }
+    body.motion-ready .cap .num-mark {
+      transform: none;
+      opacity: 1;
+      transition: none;
+    }
+    body.motion-ready .stat .stat-icon {
+      opacity: 0.16;
+      transition: none;
+    }
+  }
 
   /* ---------- Type ---------- */
   .display {
@@ -2231,6 +2331,116 @@
 </footer>
 
 <script>
+  (function setupSectionReveals() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const mark = (scope, selector, kind, baseDelay = 0, stagger = 90) => {
+      scope.querySelectorAll(selector).forEach((el, index) => {
+        el.dataset.reveal = kind;
+        el.style.setProperty('--reveal-delay', `${baseDelay + (index * stagger)}ms`);
+      });
+    };
+
+    const hero = document.querySelector('.hero');
+    if (hero) {
+      mark(hero, '.hero-eyebrow', 'clip', 40);
+      mark(hero, 'h1', 'fade-up', 140);
+      mark(hero, 'p.lede', 'fade-up', 250);
+      mark(hero, '.hero-ctas', 'fade-up', 360);
+      mark(hero, '.hero-meta', 'fade-up', 470);
+    }
+
+    const coverage = document.querySelector('.coverage');
+    if (coverage) {
+      mark(coverage, '.coverage-head', 'fade-up', 0);
+      mark(coverage, '.stat', 'stat', 120, 95);
+    }
+
+    const capabilities = document.querySelector('.capabilities');
+    if (capabilities) {
+      mark(capabilities, '.section-head', 'fade-up', 0);
+      mark(capabilities, '.cap', 'fade-up', 120, 85);
+    }
+
+    document.querySelectorAll('.editorial').forEach((section, index) => {
+      const artDirection = index % 2 === 0 ? 'from-left' : 'from-right';
+      const copyDirection = index % 2 === 0 ? 'from-right' : 'from-left';
+      mark(section, '.editorial-art', artDirection, 80);
+      mark(section, '.eyebrow', 'clip', 0);
+      mark(section, 'blockquote', copyDirection, 130);
+      mark(section, '.attribution', 'fade-up', 280);
+    });
+
+    const themes = document.querySelector('.themes');
+    if (themes) {
+      mark(themes, '.section-head', 'fade-up', 0);
+      mark(themes, '.theme', 'theme', 120, 80);
+    }
+
+    const engine = document.querySelector('.engine');
+    if (engine) {
+      mark(engine, '.engine-copy > .eyebrow', 'clip', 0);
+      mark(engine, '.engine-copy h2', 'from-left', 100);
+      mark(engine, '.engine-copy p', 'from-left', 210);
+      mark(engine, '.engine-copy .pill', 'fade-up', 320);
+      mark(engine, '.engine-stats > div', 'fade-up', 430, 80);
+      mark(engine, '.engine-art', 'from-right', 160);
+    }
+
+    const report = document.querySelector('.report');
+    if (report) {
+      mark(report, '.report-copy > .eyebrow', 'clip', 0);
+      mark(report, '.report-copy h2', 'from-right', 90);
+      mark(report, '.report-copy .lede', 'from-right', 210);
+      mark(report, '.report-meta', 'fade-up', 330);
+      mark(report, '.report-stats', 'fade-up', 440);
+      mark(report, '.report-cta', 'fade-up', 540);
+      mark(report, '.report-foot-meta', 'fade-up', 620);
+    }
+
+    const footer = document.querySelector('footer');
+    if (footer) {
+      mark(footer, '.foot-brand', 'fade-up', 0);
+      mark(footer, '.foot-col', 'fade-up', 100, 80);
+      mark(footer, '.meta-row', 'fade-up', 380);
+    }
+
+    const scopes = document.querySelectorAll('.hero, .coverage, .capabilities, .editorial, .themes, .engine, .report, footer');
+    scopes.forEach((scope) => scope.classList.add('reveal-scope'));
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      scopes.forEach((scope) => scope.classList.add('is-visible'));
+      return;
+    }
+
+    document.body.classList.add('motion-ready');
+
+    const reveal = (scope) => {
+      scope.classList.add('is-visible');
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          requestAnimationFrame(() => reveal(entry.target));
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.18,
+      rootMargin: '0px 0px -12% 0px'
+    });
+
+    scopes.forEach((scope) => {
+      const rect = scope.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.86) {
+        requestAnimationFrame(() => reveal(scope));
+      } else {
+        observer.observe(scope);
+      }
+    });
+  })();
+
   (function revealReportCover() {
     const stage = document.querySelector('.report-stage');
     if (!stage) return;
