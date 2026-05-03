@@ -31,7 +31,7 @@
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body {
     background: var(--bg);
     color: var(--ink);
@@ -148,7 +148,7 @@
     padding: 56px 48px 48px;
     min-height: calc(100vh - 88px);
     z-index: 2;
-    overflow: hidden;
+    overflow: visible;
   }
   .stage-eyebrow {
     font-family: 'JetBrains Mono', monospace;
@@ -500,7 +500,7 @@
     position: absolute;
     left: 50%; bottom: 14%;
     transform: translateX(-50%);
-    width: 360px; height: 30px;
+    width: min(360px, calc(100vw - 32px)); height: 30px;
     background: radial-gradient(ellipse at center, rgba(15,58,44,0.32), transparent 70%);
     filter: blur(6px);
     pointer-events: none;
@@ -1267,7 +1267,7 @@
   let active = 0;
   const cards = [...track.querySelectorAll('.cf-card')];
   const dots = [...dotsEl.querySelectorAll('.cf-dot')];
-  const VISIBLE_SIDE_COVERS = 2;
+  const cf = document.getElementById('coverflow');
   const metaPrimary = document.getElementById('cfMetaPrimary');
   const metaSecondary = document.getElementById('cfMetaSecondary');
   const metaSep = document.getElementById('cfMetaSep');
@@ -1283,15 +1283,22 @@
 
   // Geometry: fan (editorial arc)
   function layout() {
+    const compact = window.innerWidth <= 640;
+    const visibleSideCovers = compact ? 1 : 2;
+    const compactSpread = Math.max(72, Math.min(96, cf.clientWidth * 0.24));
+
     cards.forEach((card, i) => {
       const offset = i - active;
       const abs = Math.abs(offset);
-      const isVisible = abs <= VISIBLE_SIDE_COVERS;
+      const isVisible = abs <= visibleSideCovers;
 
-      const x = offset * 145;
-      const z = -abs * 90;
-      const ry = -offset * 28;
-      const scale = abs === 0 ? 1.05 : (1 - Math.min(abs, 4) * 0.07);
+      const spread = abs === 0
+        ? 0
+        : (compact ? compactSpread + Math.max(0, abs - 1) * 70 : (abs === 1 ? 132 : 216 + (abs - 2) * 90));
+      const x = Math.sign(offset) * spread;
+      const z = -abs * (compact ? 75 : 90);
+      const ry = -offset * (compact ? 24 : 28);
+      const scale = abs === 0 ? (compact ? 1.02 : 1.05) : (compact ? 0.82 : (1 - Math.min(abs, 4) * 0.07));
       const opacity = isVisible ? 1 : 0;
       const zIndex = 100 - abs;
       const shadowY = 62 + abs * 10;
@@ -1299,7 +1306,13 @@
       const shadowDeep = Math.max(0.24, 0.44 - abs * 0.04);
       const shadowSoft = Math.max(0.18, 0.34 - abs * 0.035);
 
-      card.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${abs * 4}px, ${z}px) rotateY(${ry}deg) scale(${scale})`;
+      const drawX = isVisible ? x : 0;
+      const drawY = isVisible ? abs * 4 : 0;
+      const drawZ = isVisible ? z : -360;
+      const drawRy = isVisible ? ry : 0;
+      const drawScale = isVisible ? scale : 0.76;
+
+      card.style.transform = `translate(-50%, -50%) translate3d(${drawX}px, ${drawY}px, ${drawZ}px) rotateY(${drawRy}deg) scale(${drawScale})`;
       card.style.opacity = opacity;
       card.style.visibility = isVisible ? 'visible' : 'hidden';
       card.style.filter = 'none';
@@ -1325,6 +1338,7 @@
 
   document.getElementById('cfNext').addEventListener('click', next);
   document.getElementById('cfPrev').addEventListener('click', prev);
+  window.addEventListener('resize', layout);
 
   // Keyboard
   window.addEventListener('keydown', (e) => {
@@ -1335,7 +1349,6 @@
 
   // Drag / swipe
   let dragX = null, dragStart = 0;
-  const cf = document.getElementById('coverflow');
   cf.addEventListener('pointerdown', (e) => {
     dragX = e.clientX; dragStart = active;
     cf.setPointerCapture(e.pointerId);
