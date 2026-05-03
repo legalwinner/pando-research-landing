@@ -655,8 +655,8 @@
   .checkbox {
     display: inline-flex;
     align-items: center;
-    gap: 11px;
-    min-height: 34px;
+    gap: 10px;
+    min-height: 32px;
     font-size: 13px;
     line-height: 1.35;
     color: var(--ink-soft);
@@ -665,72 +665,15 @@
     -webkit-tap-highlight-color: transparent;
   }
   .checkbox input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    flex: 0 0 auto;
+    accent-color: var(--green);
   }
-  .checkbox .box {
-    width: 22px; height: 22px;
-    flex: 0 0 22px;
-    border: 1px solid rgba(26,77,62,0.24);
-    background:
-      linear-gradient(145deg, rgba(255,253,247,0.96), rgba(239,233,218,0.9));
-    position: relative;
-    transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-    border-radius: 7px;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.85),
-      0 8px 18px -14px rgba(7,36,27,0.62);
-  }
-  .checkbox .box::before {
-    content: "";
-    position: absolute;
-    inset: 2px;
-    border-radius: 5px;
-    background:
-      radial-gradient(circle at 28% 18%, rgba(248,244,232,0.44), transparent 42%),
-      linear-gradient(145deg, rgba(36,104,81,0.98), rgba(15,58,44,1));
-    opacity: 0;
-    transition: opacity .2s ease;
-  }
-  .checkbox input:checked + .box {
-    background: linear-gradient(145deg, #246851, var(--green-deep));
-    border-color: rgba(7,36,27,0.92);
-    box-shadow:
-      inset 0 1px 0 rgba(248,244,232,0.22),
-      0 12px 24px -16px rgba(7,36,27,0.85),
-      0 0 0 1px rgba(26,77,62,0.06);
-  }
-  .checkbox input:checked + .box::before {
-    opacity: 1;
-  }
-  .checkbox input:checked + .box::after {
-    content: "";
-    position: absolute;
-    top: 4px; left: 7px;
-    width: 6px; height: 10px;
-    border: 2px solid var(--paper);
-    border-top: 0; border-left: 0;
-    transform: rotate(45deg) scale(1);
-    transform-origin: center;
-    filter: drop-shadow(0 1px 0 rgba(7,36,27,0.28));
-  }
-  .checkbox:hover .box {
-    border-color: rgba(26,77,62,0.44);
-    transform: translateY(-1px);
-  }
-  .checkbox input:focus-visible + .box {
-    outline: 0;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.85),
-      0 8px 18px -14px rgba(7,36,27,0.62),
-      0 0 0 4px rgba(26,77,62,0.1);
+  .checkbox input:focus-visible {
+    outline: 2px solid rgba(26,77,62,0.42);
+    outline-offset: 3px;
   }
   .field-aux a {
     font-size: 12px;
@@ -1010,7 +953,6 @@
         <div class="field-aux">
           <label class="checkbox">
             <input type="checkbox" checked />
-            <span class="box"></span>
             Keep me signed in
           </label>
           <a href="#">Forgot password →</a>
@@ -1043,7 +985,6 @@
         <div class="field-aux">
           <label class="checkbox">
             <input type="checkbox" checked />
-            <span class="box"></span>
             I am a qualified institutional recipient
           </label>
         </div>
