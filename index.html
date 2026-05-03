@@ -1342,9 +1342,32 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 960px) {
     html, body { overflow-x: hidden; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 45;
+      pointer-events: none;
+      opacity: 0;
+      background-color: rgba(8, 23, 18, 0);
+      backdrop-filter: blur(0) saturate(100%);
+      -webkit-backdrop-filter: blur(0) saturate(100%);
+      transition:
+        opacity 420ms var(--ease-out-quint),
+        background-color 520ms var(--ease-out-quint),
+        backdrop-filter 560ms var(--ease-out-expo),
+        -webkit-backdrop-filter 560ms var(--ease-out-expo);
+    }
+    body.menu-open::before {
+      opacity: 1;
+      background-color: rgba(8, 23, 18, 0.24);
+      backdrop-filter: blur(5px) saturate(82%);
+      -webkit-backdrop-filter: blur(5px) saturate(82%);
+    }
     .wrap { padding: 0 28px; }
     .site-header {
       background: rgba(247,245,238,0.94);
+      z-index: 70;
     }
     .nav {
       min-height: 66px;
@@ -1370,13 +1393,20 @@
       gap: 5px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      transition:
+        background-color 320ms var(--ease-out-quint),
+        border-color 320ms var(--ease-out-quint);
+    }
+    body.menu-open .mobile-menu-toggle {
+      background: var(--bg);
+      border-color: rgba(26, 77, 62, 0.38);
     }
     .mobile-menu-toggle .bar {
       width: 18px;
       height: 1.5px;
       background: currentColor;
       border-radius: 999px;
-      transition: transform 220ms var(--ease-out-quart), opacity 180ms ease;
+      transition: transform 320ms var(--ease-out-quart), opacity 240ms ease;
     }
     body.menu-open .mobile-menu-toggle .bar:nth-child(1) {
       transform: translateY(6.5px) rotate(45deg);
@@ -1399,22 +1429,24 @@
       border-bottom: 1px solid var(--rule);
       box-shadow: 0 22px 40px rgba(20, 32, 27, 0.08);
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateY(-16px) scale(0.985);
+      transform-origin: top center;
       visibility: hidden;
       pointer-events: none;
       transition:
-        opacity 220ms var(--ease-out-quint),
-        transform 280ms var(--ease-out-expo),
-        visibility 0s linear 280ms;
+        opacity 360ms var(--ease-out-quint),
+        transform 520ms var(--ease-out-expo),
+        visibility 0s linear 520ms;
+      will-change: opacity, transform;
     }
     body.menu-open .mobile-menu {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
       visibility: visible;
       pointer-events: auto;
       transition:
-        opacity 220ms var(--ease-out-quint),
-        transform 280ms var(--ease-out-expo),
+        opacity 360ms var(--ease-out-quint),
+        transform 520ms var(--ease-out-expo),
         visibility 0s linear 0s;
     }
     .mobile-menu ul {
@@ -1424,6 +1456,25 @@
       display: grid;
       gap: 2px;
     }
+    .mobile-menu li,
+    .mobile-menu .pill {
+      opacity: 0;
+      transform: translateY(-8px);
+      transition:
+        opacity 300ms var(--ease-out-quint),
+        transform 460ms var(--ease-out-expo);
+    }
+    body.menu-open .mobile-menu li,
+    body.menu-open .mobile-menu .pill {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    body.menu-open .mobile-menu li:nth-child(1) { transition-delay: 80ms; }
+    body.menu-open .mobile-menu li:nth-child(2) { transition-delay: 120ms; }
+    body.menu-open .mobile-menu li:nth-child(3) { transition-delay: 160ms; }
+    body.menu-open .mobile-menu li:nth-child(4) { transition-delay: 200ms; }
+    body.menu-open .mobile-menu li:nth-child(5) { transition-delay: 240ms; }
+    body.menu-open .mobile-menu .pill { transition-delay: 280ms; }
     .mobile-menu a:not(.pill) {
       min-height: 48px;
       display: flex;
@@ -1452,6 +1503,33 @@
     body.menu-open main,
     body.menu-open footer {
       pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before,
+      .mobile-menu,
+      .mobile-menu li,
+      .mobile-menu .pill,
+      .mobile-menu-toggle,
+      .mobile-menu-toggle .bar {
+        transition: none;
+      }
+      body::before,
+      body.menu-open::before {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+      .mobile-menu,
+      body.menu-open .mobile-menu,
+      .mobile-menu li,
+      body.menu-open .mobile-menu li,
+      .mobile-menu .pill,
+      body.menu-open .mobile-menu .pill {
+        transform: none;
+      }
+      .mobile-menu li,
+      .mobile-menu .pill {
+        opacity: 1;
+      }
     }
 
     .hero {
@@ -2932,6 +3010,12 @@
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') closeMenu();
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!document.body.classList.contains('menu-open')) return;
+      if (menu.contains(event.target) || toggle.contains(event.target)) return;
+      closeMenu();
     });
 
     window.matchMedia('(min-width: 961px)').addEventListener('change', closeMenu);
