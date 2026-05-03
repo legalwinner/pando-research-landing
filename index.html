@@ -1516,19 +1516,20 @@
       min-height: 48px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       border-top: 1px solid rgba(220, 213, 191, 0.68);
       color: var(--ink);
       font-family: 'Source Serif 4', serif;
       font-size: 23px;
       line-height: 1.1;
       letter-spacing: -0.01em;
+      text-align: center;
+    }
+    .mobile-menu li:first-child a:not(.pill) {
+      border-top: none;
     }
     .mobile-menu a:not(.pill)::after {
-      content: "→";
-      color: var(--sage);
-      font-family: 'Inter', sans-serif;
-      font-size: 16px;
+      content: none;
     }
     .mobile-menu .pill {
       min-height: 50px;
