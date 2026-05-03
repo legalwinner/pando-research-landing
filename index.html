@@ -1342,32 +1342,44 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 960px) {
     html, body { overflow-x: hidden; }
+    :root {
+      --mobile-header-height: 66px;
+    }
     body::before {
       content: "";
       position: fixed;
       inset: 0;
-      z-index: 45;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100lvh;
+      z-index: 900;
       pointer-events: none;
       opacity: 0;
-      background-color: rgba(8, 23, 18, 0);
-      backdrop-filter: blur(0) saturate(100%);
-      -webkit-backdrop-filter: blur(0) saturate(100%);
+      visibility: hidden;
+      background: var(--bg);
       transition:
-        opacity 420ms var(--ease-out-quint),
-        background-color 520ms var(--ease-out-quint),
-        backdrop-filter 560ms var(--ease-out-expo),
-        -webkit-backdrop-filter 560ms var(--ease-out-expo);
+        opacity 260ms var(--ease-out-quint),
+        visibility 0s linear 260ms;
     }
     body.menu-open::before {
       opacity: 1;
-      background-color: rgba(8, 23, 18, 0.24);
-      backdrop-filter: blur(5px) saturate(82%);
-      -webkit-backdrop-filter: blur(5px) saturate(82%);
+      visibility: visible;
+      transition:
+        opacity 260ms var(--ease-out-quint),
+        visibility 0s linear 0s;
     }
     .wrap { padding: 0 28px; }
     .site-header {
-      background: rgba(247,245,238,0.94);
-      z-index: 70;
+      background: var(--bg);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      z-index: 1100;
+    }
+    body.menu-open .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
     }
     .nav {
       min-height: 66px;
@@ -1419,34 +1431,40 @@
     }
     .mobile-menu {
       display: block;
-      position: absolute;
+      position: fixed;
       left: 0;
       right: 0;
-      top: 100%;
-      max-height: calc(100dvh - 66px);
+      top: var(--mobile-header-height, 66px);
+      height: calc(100vh - var(--mobile-header-height, 66px));
+      height: calc(100dvh - var(--mobile-header-height, 66px));
+      min-height: calc(100lvh - var(--mobile-header-height, 66px));
       overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
       background: var(--bg);
+      padding-bottom: max(32px, env(safe-area-inset-bottom));
       border-bottom: 1px solid var(--rule);
-      box-shadow: 0 22px 40px rgba(20, 32, 27, 0.08);
+      box-shadow: none;
       opacity: 0;
-      transform: translateY(-16px) scale(0.985);
+      transform: translateY(-8px);
       transform-origin: top center;
       visibility: hidden;
       pointer-events: none;
+      z-index: 1000;
       transition:
-        opacity 360ms var(--ease-out-quint),
-        transform 520ms var(--ease-out-expo),
-        visibility 0s linear 520ms;
+        opacity 280ms var(--ease-out-quint),
+        transform 360ms var(--ease-out-expo),
+        visibility 0s linear 360ms;
       will-change: opacity, transform;
     }
     body.menu-open .mobile-menu {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
       visibility: visible;
       pointer-events: auto;
       transition:
-        opacity 360ms var(--ease-out-quint),
-        transform 520ms var(--ease-out-expo),
+        opacity 280ms var(--ease-out-quint),
+        transform 360ms var(--ease-out-expo),
         visibility 0s linear 0s;
     }
     .mobile-menu ul {
@@ -1515,8 +1533,7 @@
       }
       body::before,
       body.menu-open::before {
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
+        transition: none;
       }
       .mobile-menu,
       body.menu-open .mobile-menu,
@@ -3003,15 +3020,63 @@
   (function setupMobileMenu() {
     const toggle = document.querySelector('.mobile-menu-toggle');
     const menu = document.querySelector('#mobile-menu');
+    const header = document.querySelector('.site-header');
     if (!toggle || !menu) return;
 
+    let scrollLockY = 0;
+    let scrollLocked = false;
+    const previousBodyStyles = {};
+
+    const setHeaderHeight = () => {
+      const headerHeight = header ? Math.ceil(header.offsetHeight) : 66;
+      document.documentElement.style.setProperty('--mobile-header-height', `${headerHeight}px`);
+    };
+
+    const lockPageScroll = () => {
+      if (scrollLocked) return;
+      scrollLockY = window.scrollY || window.pageYOffset || 0;
+      previousBodyStyles.position = document.body.style.position;
+      previousBodyStyles.top = document.body.style.top;
+      previousBodyStyles.left = document.body.style.left;
+      previousBodyStyles.right = document.body.style.right;
+      previousBodyStyles.width = document.body.style.width;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollLockY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      scrollLocked = true;
+    };
+
+    const unlockPageScroll = () => {
+      if (!scrollLocked) return;
+      const restoreY = scrollLockY;
+      const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.body.style.position = previousBodyStyles.position || '';
+      document.body.style.top = previousBodyStyles.top || '';
+      document.body.style.left = previousBodyStyles.left || '';
+      document.body.style.right = previousBodyStyles.right || '';
+      document.body.style.width = previousBodyStyles.width || '';
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, restoreY);
+      requestAnimationFrame(() => {
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      });
+      scrollLocked = false;
+    };
+
     const closeMenu = () => {
+      const wasOpen = document.body.classList.contains('menu-open');
       document.body.classList.remove('menu-open');
       toggle.setAttribute('aria-expanded', 'false');
       toggle.setAttribute('aria-label', 'Open menu');
+      if (wasOpen) unlockPageScroll();
     };
 
     const openMenu = () => {
+      if (document.body.classList.contains('menu-open')) return;
+      setHeaderHeight();
+      lockPageScroll();
       document.body.classList.add('menu-open');
       toggle.setAttribute('aria-expanded', 'true');
       toggle.setAttribute('aria-label', 'Close menu');
@@ -3039,6 +3104,12 @@
       closeMenu();
     });
 
+    setHeaderHeight();
+    window.addEventListener('resize', setHeaderHeight);
+    window.addEventListener('orientationchange', setHeaderHeight);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setHeaderHeight);
+    }
     window.matchMedia('(min-width: 961px)').addEventListener('change', closeMenu);
   })();
 
