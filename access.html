@@ -105,9 +105,12 @@
   .access-main {
     min-height: calc(100vh - 88px);
     display: grid;
-    grid-template-columns: 1.15fr 1fr;
+    grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+    gap: clamp(24px, 4vw, 68px);
+    align-items: center;
     position: relative;
     overflow: hidden;
+    padding-right: clamp(28px, 4vw, 64px);
   }
 
   /* paper grain on background */
@@ -143,6 +146,7 @@
     display: flex;
     flex-direction: column;
     padding: 56px 48px 48px;
+    min-height: calc(100vh - 88px);
     z-index: 2;
     overflow: hidden;
   }
@@ -440,31 +444,50 @@
   /* ---------- RIGHT PANE: auth ---------- */
   .auth {
     position: relative;
-    background: var(--paper);
-    border-left: 1px solid var(--rule);
-    padding: 56px 56px 48px;
+    width: min(520px, 100%);
+    justify-self: center;
+    align-self: center;
+    margin: 48px 0;
+    background:
+      linear-gradient(145deg, rgba(255,253,247,0.72), rgba(248,244,232,0.98) 42%),
+      var(--paper);
+    border: 1px solid rgba(220,213,191,0.92);
+    border-radius: 24px;
+    padding: 44px 44px 38px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     z-index: 2;
-    overflow: hidden;
+    overflow: visible;
+    isolation: isolate;
+    box-shadow:
+      0 54px 120px -54px rgba(7,36,27,0.52),
+      0 28px 62px -44px rgba(7,36,27,0.36),
+      0 2px 0 rgba(255,255,255,0.55) inset,
+      0 0 0 10px rgba(248,244,232,0.28);
+    transform: translateZ(0);
   }
   .auth::before {
-    /* subtle vertical strip */
     content: "";
     position: absolute;
-    top: 0; bottom: 0; left: 0;
-    width: 4px;
-    background: var(--green);
+    inset: -36px -34px -42px;
+    border-radius: 36px;
+    background:
+      radial-gradient(ellipse 70% 58% at 52% 56%, rgba(7,36,27,0.26), transparent 72%),
+      radial-gradient(ellipse 76% 58% at 50% 0%, rgba(255,253,247,0.5), transparent 62%);
+    filter: blur(18px);
+    opacity: 0.72;
+    z-index: -2;
+    pointer-events: none;
   }
   .auth::after {
-    /* corner registration */
     content: "";
     position: absolute;
-    top: 32px; right: 32px;
+    top: 24px; right: 24px;
     width: 18px; height: 18px;
     border-top: 1px solid var(--rule);
     border-right: 1px solid var(--rule);
+    opacity: 0.9;
     pointer-events: none;
   }
   .auth-eyebrow {
@@ -548,10 +571,10 @@
   .input {
     width: 100%;
     padding: 14px 16px;
-    background: var(--bg);
+    background: rgba(247,245,238,0.68);
     color: var(--ink);
     border: 1px solid var(--rule);
-    border-radius: 2px;
+    border-radius: 10px;
     font-family: 'Source Serif 4', serif;
     font-size: 16px;
     transition: border-color .2s, box-shadow .2s, background .2s;
@@ -591,6 +614,7 @@
     background: var(--bg);
     position: relative;
     transition: background .15s, border-color .15s;
+    border-radius: 3px;
   }
   .checkbox input:checked + .box {
     background: var(--green);
@@ -713,12 +737,22 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width: 1080px) {
-    .access-main { grid-template-columns: 1fr; }
-    .auth { border-left: 0; border-top: 1px solid var(--rule); }
-    .auth::before { width: 100%; height: 4px; left: 0; bottom: auto; }
+    .access-main {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding-right: 0;
+      overflow: visible;
+    }
     .stage h1 { font-size: 48px; }
-    .stage { padding: 40px 24px 32px; }
-    .auth { padding: 40px 24px; }
+    .stage {
+      min-height: auto;
+      padding: 40px 24px 32px;
+    }
+    .auth {
+      width: min(640px, calc(100% - 48px));
+      margin: 18px auto 48px;
+      padding: 40px 34px 34px;
+    }
     .ticker { left: 24px; bottom: 16px; }
     nav.primary ul { display: none; }
     .brand-logo { height: 34px; }
@@ -726,6 +760,22 @@
   @media (max-width: 640px) {
     .stage h1 { font-size: 36px; }
     .field-row { grid-template-columns: 1fr; }
+    .auth {
+      width: calc(100% - 32px);
+      padding: 30px 22px 26px;
+      border-radius: 18px;
+      box-shadow:
+        0 32px 72px -42px rgba(7,36,27,0.5),
+        0 16px 38px -30px rgba(7,36,27,0.34),
+        0 1px 0 rgba(255,255,255,0.55) inset;
+    }
+    .auth::before {
+      inset: -22px -8px -26px;
+      border-radius: 26px;
+      filter: blur(14px);
+      opacity: 0.58;
+    }
+    .auth h2 { font-size: 30px; }
     .wrap { padding: 0 22px; }
     .nav { padding-top: 14px; padding-bottom: 14px; }
     .brand-logo { height: 27px; }
