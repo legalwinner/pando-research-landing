@@ -79,6 +79,13 @@
       overflow-x: clip;
     }
   }
+  @media (min-width: 861px) {
+    html,
+    body {
+      overflow-x: visible;
+      overscroll-behavior-x: auto;
+    }
+  }
   :where(
     input[type="text"],
     input[type="email"],
