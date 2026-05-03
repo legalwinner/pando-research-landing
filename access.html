@@ -337,6 +337,8 @@
     line-height: 1.25;
     letter-spacing: 0.22em;
     text-transform: uppercase;
+  }
+  .cf-foot .pages {
     opacity: 0.55;
   }
   .cf-foot .pages strong {
@@ -349,6 +351,14 @@
     margin-bottom: 2px;
     opacity: 1;
   }
+  .cf-brand-logo {
+    display: block;
+    width: 24px;
+    height: auto;
+    color: #fff;
+    opacity: 0.82;
+    filter: drop-shadow(0 1px 1px rgba(7,36,27,0.35));
+  }
   /* tiny diagram in middle of card to differentiate */
   .cf-glyph {
     margin: 14px auto;
@@ -360,34 +370,6 @@
     opacity: 0.85;
   }
   .cf-glyph svg { width: 100%; height: 100%; }
-
-  /* Lock overlay on covers */
-  .cf-lock {
-    position: absolute;
-    bottom: 18px; right: 18px;
-    width: 26px; height: 26px;
-    border: 1px solid currentColor;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.6;
-  }
-  .cf-lock::before {
-    content: "";
-    width: 8px; height: 8px;
-    border: 1px solid currentColor;
-    border-radius: 1px;
-  }
-  .cf-lock::after {
-    content: "";
-    position: absolute;
-    top: 6px;
-    width: 5px; height: 4px;
-    border: 1px solid currentColor;
-    border-bottom: 0;
-    border-radius: 2.5px 2.5px 0 0;
-  }
 
   /* Coverflow controls */
   .cf-controls {
@@ -1012,6 +994,13 @@
       <circle cx="23" cy="21" r="2.5" fill="currentColor"/>
     </svg>`;
   }
+  function pandoMark() {
+    return `<svg class="cf-brand-logo" viewBox="0 0 146 151" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <path d="M47.89 33.65C48.53 32.5 48.9 31.19 48.9 29.78C48.9 25.39 45.34 21.83 40.95 21.83C36.56 21.83 33 25.39 33 29.78C33 34.17 36.56 37.73 40.95 37.73C42.25 37.73 43.48 37.41 44.56 36.86C52.87 45.06 59 57.16 59 73.2V87.8L58.6 87.3C50.34 74.92 37.06 64.96 21.7 58.54C21.83 57.97 21.9 57.39 21.9 56.78C21.9 52.39 18.34 48.83 13.95 48.83C9.56 48.83 6 52.39 6 56.78C6 61.17 9.56 64.73 13.95 64.73C15.95 64.73 17.77 63.99 19.17 62.77C34.09 68.81 47.02 79.06 54.8 90.19C57.9 94.99 59 98.59 58.8 104.69V119.09L58.3 118.19C50.76 104.65 37.2 92.93 15.89 88.46C15.72 84.22 12.24 80.83 7.95 80.83C3.66 80.83 0 84.39 0 88.78C0 93.17 3.56 96.73 7.95 96.73C10.86 96.73 13.39 95.17 14.78 92.84C34.02 96.02 47.06 107.04 54.3 119.59C57.5 125.39 58.4 131.09 58.4 137.49V150.69H63.3L63.4 72.19C63.4 58.42 58.32 44.55 48.16 33.46C48.07 33.52 47.98 33.59 47.89 33.65Z" fill="currentColor"/>
+      <path d="M72.95 0C68.56 0 65 3.56 65 7.95C65 11.49 67.31 14.48 70.5 15.51L70.6 150.69H75V15.63C78.4 14.73 80.9 11.64 80.9 7.96C80.9 3.57 77.34 0.01 72.95 0.01V0Z" fill="currentColor"/>
+      <path d="M137.95 80.83C133.68 80.83 130.21 84.19 130.02 88.42C113.62 91.59 97.75 100.18 88 117.1L87.3 118.8V104.5C87.3 101.1 87.8 97.7 89.2 94.6C93.53 85.16 106.38 72.15 126.96 62.97C128.32 64.07 130.06 64.73 131.95 64.73C136.34 64.73 139.9 61.17 139.9 56.78C139.9 52.39 136.34 48.83 131.95 48.83C127.56 48.83 124 52.39 124 56.78C124 57.36 124.07 57.92 124.18 58.46C111.76 63.64 98 72.59 88 86.09L87.3 87.49V74.19C87.3 63.02 90.49 49.66 101.82 37.08C102.78 37.49 103.84 37.72 104.95 37.72C109.34 37.72 112.9 34.16 112.9 29.77C112.9 25.38 109.34 21.82 104.95 21.82C100.56 21.82 97 25.38 97 29.77C97 31.22 97.39 32.57 98.07 33.74C89.69 42.41 82.4 54.58 82.4 73.28V150.68H87.4V136.48C87.7 132.38 88.1 127.58 91.1 121.78C97.55 109.46 110.42 97.65 131.25 93.03C132.66 95.25 135.13 96.72 137.95 96.72C142.34 96.72 145.9 93.16 145.9 88.77C145.9 84.38 142.34 80.82 137.95 80.82V80.83Z" fill="currentColor"/>
+    </svg>`;
+  }
 
   /* =============================================================
      Build cards
@@ -1036,10 +1025,8 @@
 
         <div class="cf-foot">
           <div class="pages"><strong>${c.pages}pp</strong>institutional</div>
-          <div>Pando · IV</div>
+          <div>${pandoMark()}</div>
         </div>
-
-        <div class="cf-lock"></div>
       </div>
     `;
     card.addEventListener('click', () => goTo(i));
