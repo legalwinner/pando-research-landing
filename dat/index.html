@@ -472,87 +472,23 @@
   }
   .quick-ticker:hover { transform: translateY(-1px); border-color: rgba(26,77,62,0.36); background: var(--white); }
   .dat-section { padding: 54px 0 92px; }
-  .empty-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 28px;
-    align-items: stretch;
+  body:not(.has-company) .dat-section { display: none; }
+  body:not(.has-company) .dat-hero {
+    min-height: calc(100svh - var(--nav-height));
+    display: flex;
+    align-items: center;
+    border-bottom: 0;
+    padding: clamp(52px, 8vh, 88px) 0;
   }
-  .model-card, .preview-card, .panel-card, .assumption-card, .company-card, .summary-card, .chart-card {
+  body:not(.has-company) .dat-hero .wrap {
+    width: 100%;
+  }
+  .panel-card, .assumption-card, .company-card, .summary-card, .chart-card {
     border: 1px solid var(--rule);
     background: rgba(248,244,232,0.82);
     border-radius: 26px;
     box-shadow: var(--shadow-soft);
   }
-  .model-card { padding: 30px; }
-  .model-card h2, .preview-card h2 {
-    margin: 0 0 14px;
-    font-family: 'Source Serif 4', serif;
-    font-weight: 380;
-    font-size: clamp(28px, 3vw, 38px);
-    letter-spacing: -0.018em;
-    line-height: 1.08;
-  }
-  .model-card p, .preview-card p { margin: 0; color: var(--ink-soft); }
-  .step-list {
-    display: grid;
-    gap: 14px;
-    margin-top: 24px;
-  }
-  .step {
-    display: grid;
-    grid-template-columns: 42px 1fr;
-    gap: 14px;
-    align-items: start;
-    padding: 16px;
-    border-radius: 18px;
-    background: rgba(255,253,247,0.62);
-    border: 1px solid var(--rule-soft);
-  }
-  .step-number {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: var(--green);
-    color: var(--paper);
-    font-family: 'Source Serif 4', serif;
-    font-weight: 600;
-    font-size: 21px;
-  }
-  .step strong { display: block; margin-bottom: 3px; color: var(--ink); }
-  .step div span { color: var(--ink-soft); font-size: 14px; }
-  .preview-card {
-    padding: 30px;
-    overflow: hidden;
-    background:
-      radial-gradient(520px 360px at 92% 6%, rgba(26,77,62,0.14), transparent 60%),
-      rgba(248,244,232,0.82);
-  }
-  .mini-dashboard {
-    margin-top: 26px;
-    display: grid;
-    gap: 12px;
-  }
-  .mini-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  .mini-row:last-child { border-bottom: none; }
-  .mini-label { color: var(--ink-soft); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; }
-  .mini-value { color: var(--green); font-size: 30px; line-height: 1; }
-  .mini-bars {
-    display: grid;
-    gap: 9px;
-    margin-top: 22px;
-  }
-  .mini-bar { height: 9px; border-radius: 999px; background: var(--bg-deep); overflow: hidden; }
-  .mini-bar span { display: block; height: 100%; border-radius: inherit; background: var(--green); opacity: 0.82; }
 
   .workspace {
     display: grid;
@@ -983,6 +919,9 @@
     color: var(--paper);
     font-weight: 900;
   }
+  .mobile-browser-backdrop {
+    display: none;
+  }
 
   footer {
     background: var(--bg);
@@ -1102,13 +1041,13 @@
     .mobile-menu a { min-height: 44px; display: flex; align-items: center; color: var(--ink-soft); }
     .mobile-menu .pill { justify-self: start; }
     .dat-hero { padding: 54px 0 38px; }
+    body:not(.has-company) .dat-hero { min-height: calc(100svh - 74px); padding: 44px 0 52px; }
     .wrap { padding: 0 22px; }
-    .empty-grid { grid-template-columns: 1fr; }
     .metric-grid, .impact-metrics { grid-template-columns: 1fr; }
     .company-top, .chart-head, .summary-kicker { flex-direction: column; align-items: flex-start; }
     .output-panel { order: 0; }
     .control-panel { order: 1; }
-    body.has-mobile-impact { padding-bottom: 110px; }
+    body.has-mobile-impact { padding-bottom: calc(188px + env(safe-area-inset-bottom)); }
     body.has-mobile-impact::after {
       content: "";
       position: fixed;
@@ -1119,6 +1058,22 @@
       background: var(--mobile-safe-bg);
       z-index: 55;
       pointer-events: none;
+    }
+    .mobile-browser-backdrop {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: block;
+      height: calc(188px + env(safe-area-inset-bottom));
+      background: var(--mobile-safe-bg);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 58;
+      transform: translateZ(0);
+    }
+    body.has-mobile-impact .mobile-browser-backdrop {
+      opacity: 1;
     }
     footer {
       padding: 56px 0 26px;
@@ -1167,7 +1122,7 @@
     .nav { min-height: 74px; }
     .brand-logo { height: 36px; max-width: 196px; object-fit: contain; object-position: left center; }
     .hero-copy h1 { font-size: clamp(42px, 13vw, 58px); }
-    .search-card, .model-card, .preview-card, .company-card, .assumption-card, .summary-card, .chart-card, .breakdown-card { border-radius: 22px; }
+    .search-card, .company-card, .assumption-card, .summary-card, .chart-card, .breakdown-card { border-radius: 22px; }
     .search-card { padding: 22px; }
     .ticker-row { grid-template-columns: 1fr 54px; }
     .ticker-input, .search-button { min-height: 54px; }
@@ -1177,7 +1132,10 @@
     .check-content { min-height: 58px; }
     .assumption-note { display: block; }
     .assumption-note strong { display: block; margin-top: 4px; }
-    .chart-wrap { height: 242px; margin-left: 0; margin-right: 0; width: 100%; }
+    .chart-card { padding: 18px; }
+    .chart-wrap { height: 312px; margin-left: 0; margin-right: 0; width: 100%; }
+    .chart-axis-label { font-size: 11px; }
+    .chart-value-label { font-size: 12px; }
     .breakdown-row { grid-template-columns: 1fr; gap: 6px; }
     .breakdown-value { text-align: left; }
     .foot-grid {
@@ -1197,6 +1155,11 @@
       flex-direction: column;
       gap: 8px;
     }
+  }
+
+  @media (max-width: 420px) {
+    .chart-card { padding: 14px; }
+    .chart-wrap { height: 300px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1294,29 +1257,6 @@
 
     <section class="dat-section" id="calculator">
       <div class="wrap">
-        <div class="empty-grid" id="emptyState">
-          <article class="model-card">
-            <p class="eyebrow">Simple model, sharper UX</p>
-            <h2>Less scrolling. More signal.</h2>
-            <p>The old calculator stacked every input above every output. This version moves the experience into a control panel plus live output panel, so the user can see cause and effect immediately.</p>
-            <div class="step-list">
-              <div class="step"><span class="step-number num">1</span><div><strong>Load company baseline</strong><span>Price, market cap, cash, book value, and employee count are pulled server-side or enriched from fallback records.</span></div></div>
-              <div class="step"><span class="step-number num">2</span><div><strong>Adjust four levers</strong><span>Cash allocation, employee adoption, infrastructure modules, and tokenized assets update instantly.</span></div></div>
-              <div class="step"><span class="step-number num">3</span><div><strong>Read the valuation case</strong><span>Executive summary, price scenarios, and contribution bars stay visible while users explore.</span></div></div>
-            </div>
-          </article>
-          <article class="preview-card" aria-label="Output preview">
-            <p class="eyebrow">Output preview</p>
-            <h2>Built to invite tinkering.</h2>
-            <p>People should understand the model in ten seconds and keep exploring for ten minutes. Big sliders, thumb-safe toggles, compact metrics, and a chart that does not vanish below the fold.</p>
-            <div class="mini-dashboard" aria-hidden="true">
-              <div class="mini-row"><span class="mini-label">Optimized price</span><strong class="mini-value num">$280.99</strong></div>
-              <div class="mini-row"><span class="mini-label">Equity uplift</span><strong class="mini-value num">+0.3%</strong></div>
-              <div class="mini-bars"><div class="mini-bar"><span style="width: 44%"></span></div><div class="mini-bar"><span style="width: 67%"></span></div><div class="mini-bar"><span style="width: 82%"></span></div></div>
-            </div>
-          </article>
-        </div>
-
         <div class="workspace" id="workspace" hidden>
           <aside class="control-panel" aria-label="Calculator controls">
             <section class="company-card" aria-labelledby="companyName">
@@ -1459,6 +1399,7 @@
       <div class="mobile-jump"><a href="#chartPanel" aria-label="Jump to price chart">↗</a></div>
     </div>
   </div>
+  <div class="mobile-browser-backdrop" aria-hidden="true"></div>
 
   <footer id="contact">
     <div class="wrap">
@@ -1546,7 +1487,6 @@
     input: document.getElementById('tickerInput'),
     searchButton: document.getElementById('searchButton'),
     helper: document.getElementById('helperText'),
-    emptyState: document.getElementById('emptyState'),
     workspace: document.getElementById('workspace'),
     desktopPriceStrip: document.getElementById('desktopPriceStrip'),
     desktopStripTicker: document.getElementById('desktopStripTicker'),
@@ -1887,7 +1827,7 @@
     renderStatus();
     syncControls();
     const hasCompany = Boolean(state.company);
-    el.emptyState.hidden = hasCompany;
+    document.body.classList.toggle('has-company', hasCompany);
     el.workspace.hidden = !hasCompany;
     el.desktopPriceStrip.hidden = !hasCompany;
     el.mobileImpactBar.hidden = !hasCompany;
@@ -1966,9 +1906,13 @@
   }
 
   function renderChart(scenarios) {
-    const width = 720;
+    const compact = window.matchMedia('(max-width: 620px)').matches;
+    const measuredWidth = Math.round(el.chart.clientWidth || 0);
+    const width = compact ? Math.max(260, Math.min(360, measuredWidth || 360)) : 720;
     const height = 300;
-    const pad = { top: 24, right: 30, bottom: 58, left: 62 };
+    const pad = compact
+      ? { top: 34, right: 24, bottom: 60, left: 44 }
+      : { top: 24, right: 30, bottom: 58, left: 62 };
     const innerW = width - pad.left - pad.right;
     const innerH = height - pad.top - pad.bottom;
     const values = scenarios.map(item => item.value);
@@ -1984,14 +1928,31 @@
     const line = smoothPath(points);
     const area = `${line} L ${points[points.length - 1].x.toFixed(2)} ${pad.top + innerH} L ${points[0].x.toFixed(2)} ${pad.top + innerH} Z`;
 
+    el.chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    el.chart.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
     const gridTicks = Array.from({ length: 4 }, (_, index) => min + ((max - min) / 3) * index).reverse();
     const grid = gridTicks.map(value => {
       const yy = y(value);
       return `<line class="chart-grid" x1="${pad.left}" y1="${yy.toFixed(2)}" x2="${width - pad.right}" y2="${yy.toFixed(2)}"></line><text class="chart-axis-label" x="${pad.left - 12}" y="${(yy + 4).toFixed(2)}" text-anchor="end">$${value.toFixed(0)}</text>`;
     }).join('');
 
-    const labels = points.map(point => `<text class="chart-axis-label" x="${point.x.toFixed(2)}" y="${height - 18}" text-anchor="middle">${escapeHtml(point.scenario)}</text>`).join('');
-    const dots = points.map(point => `<circle class="chart-dot" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="5"></circle><text class="chart-value-label" x="${point.x.toFixed(2)}" y="${(point.y - 12).toFixed(2)}" text-anchor="middle">$${point.value.toFixed(0)}</text>`).join('');
+    const compactLabels = {
+      Conservative: 'Conserv.',
+      'Base Case': 'Base',
+      'Bull Macro': 'Bull'
+    };
+    const textAnchor = index => {
+      if (!compact) return 'middle';
+      if (index === 0) return 'start';
+      if (index === points.length - 1) return 'end';
+      return 'middle';
+    };
+    const labels = points.map((point, index) => {
+      const label = compact ? (compactLabels[point.scenario] || point.scenario) : point.scenario;
+      return `<text class="chart-axis-label" x="${point.x.toFixed(2)}" y="${height - 20}" text-anchor="${textAnchor(index)}">${escapeHtml(label)}</text>`;
+    }).join('');
+    const dots = points.map((point, index) => `<circle class="chart-dot" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="${compact ? 4.5 : 5}"></circle><text class="chart-value-label" x="${point.x.toFixed(2)}" y="${(point.y - 12).toFixed(2)}" text-anchor="${textAnchor(index)}">$${point.value.toFixed(0)}</text>`).join('');
 
     el.chart.innerHTML = `
       <defs>
@@ -2116,6 +2077,15 @@
   });
   document.querySelectorAll('[data-preset]').forEach(button => {
     button.addEventListener('click', () => applyPreset(button.dataset.preset));
+  });
+
+  let chartResizeFrame = 0;
+  window.addEventListener('resize', () => {
+    if (!state.company || chartResizeFrame) return;
+    chartResizeFrame = requestAnimationFrame(() => {
+      chartResizeFrame = 0;
+      renderChart(calculate(state.company).scenarios);
+    });
   });
 
   const menuToggle = document.getElementById('mobileMenuToggle');
